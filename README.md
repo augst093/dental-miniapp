@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦷 DentaLux Tashkent — Telegram Mini App (TWA)
 
-## Getting Started
+Премиальная интерактивная витрина клиники цифровой стоматологии **DentaLux Tashkent** для Telegram Mini App (Web App).
 
-First, run the development server:
+Построена на базе **Next.js 16 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS v4** и **Telegram WebApp SDK**.
+
+---
+
+## 🌟 Возможности Mini App:
+
+1. **Интерактивный каталог услуг с фильтрацией:**
+   - Брекет-системы (Damon Q2, Damon Clear)
+   - Элайнеры (Spark / 3D Smile)
+   - Имплантация зубов (Osstem, Straumann SLActive, All-on-4)
+   - Виниры (E.max ультратонкие 0.3 мм)
+   - Отбеливание холодным светом (Beyond Polus / Zoom 4)
+   - Детская стоматология и терапия
+2. **Карточки ведущих врачей клиники:**
+   - Главврач Сардор Каримов, ведущий ортодонт Мадина Усманова, ортопед Тимур Рахимов, детский врач Нилуфар Ахмедова.
+   - Опыт, специализация, международные сертификаты (ITI, Ormco, E.max).
+3. **Интерактивная форма записи на приём:**
+   - Выбор процедуры и врача
+   - Чипы быстрого выбора даты и времени (Сегодня, Завтра, В субботу и т.д.)
+   - Интеграция с Telegram Haptic Feedback (тактильный виброотклик при кликах и успешной записи)
+   - Автоматическая подстановка имени пользователя из Telegram (`initDataUnsafe`)
+   - Отправка данных обратно в Telegram-бота через `Telegram.WebApp.sendData()`
+4. **Мультиязычность в 1 клик:**
+   - Поддержка Русского (RU), Узбекского (UZ) и Английского (EN) языков.
+5. **Контакты и локация:**
+   - Прямой вызов регистратуры клиники (`tel:+998712004488`)
+   - Ссылка на Яндекс.Карты (метро Ойбек, ул. Афросиёб 12Б, напротив Grand Mir Hotel).
+
+---
+
+## 🚀 Запуск и разработка
 
 ```bash
+cd dental_miniapp
+
+# Запуск локального сервера разработки:
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Приложение откроется по адресу `http://localhost:3000`.
+
+### Сборка для продакшена:
+```bash
+npm run build
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔗 Подключение к Telegram-боту:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Разверните `dental_miniapp` на **Vercel**, **Railway** или пробросьте локальный URL через `ngrok`:
+   ```bash
+   ngrok http 3000
+   ```
+2. Откройте [@BotFather](https://t.me/BotFather) в Telegram:
+   - Введите команду `/newapp` (для отдельного веб-приложения) или `/setmenubutton` (чтобы добавить кнопку «Открыть витрину» прямо в меню бота `@automationtash_bot`).
+   - Укажите URL вашего развернутого приложения (например, `https://your-dental-app.vercel.app`).
