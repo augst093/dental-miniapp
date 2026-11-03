@@ -1,20 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Libre_Franklin, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const displayFont = Libre_Franklin({
+  subsets: ["latin", "cyrillic"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-display",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const bodyFont = Source_Serif_4({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "600"],
+  variable: "--font-body",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "DentaLux Tashkent — Цифровая Стоматология",
-  description: "Премиальная цифровая стоматология в Ташкенте (метро Ойбек). Брекеты, элайнеры, имплантация, виниры.",
+  description: "Швейцарская эстетическая стоматология и имплантология в Ташкенте. Брекеты, элайнеры, виниры, имплантация.",
 };
 
 export const viewport: Viewport = {
@@ -30,11 +34,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
+    <html lang="ru" className={`${displayFont.variable} ${bodyFont.variable} h-full`}>
       <head>
         <script src="https://telegram.org/js/telegram-web-app.js" async></script>
       </head>
-      <body className="min-h-full bg-slate-950 text-slate-100 antialiased selection:bg-teal-500 selection:text-white">
+      <body className="min-h-full bg-[#F6F4F0] text-[#1C1B1A] antialiased selection:bg-[#1B4332] selection:text-white">
         {children}
       </body>
     </html>

@@ -85,7 +85,7 @@ export const SERVICES: ServiceItem[] = [
     description: {
       ru: 'Прозрачные эстетические замочки, незаметные на зубах при улыбке и общении.',
       uz: 'Shaffof estetik qulflar, jilmayganda va suhbatda mutlaqo sezilmaydi.',
-      en: 'Transparent aesthetic brackets that blend seamlessly with natural tooth enamel.',
+      en: 'Transparent aesthetic brackets that blend with natural tooth enamel.',
     },
   },
   {
@@ -232,7 +232,7 @@ export const DOCTORS: Doctor[] = [
       en: 'ITI member, trained in Switzerland & Germany. 4,500+ successful implants.',
     },
     initials: 'СК',
-    color: 'from-emerald-500 to-teal-700',
+    color: 'bg-[#1B4332] text-white',
   },
   {
     id: 'usmanova',
@@ -253,7 +253,7 @@ export const DOCTORS: Doctor[] = [
       en: 'Certified Ormco specialist. 1,300+ transformed smiles.',
     },
     initials: 'МУ',
-    color: 'from-blue-500 to-indigo-700',
+    color: 'bg-[#2E383F] text-white',
   },
   {
     id: 'rahimov',
@@ -274,7 +274,7 @@ export const DOCTORS: Doctor[] = [
       en: 'Digital Smile Design expert, natural aesthetics and long-lasting veneers.',
     },
     initials: 'ТР',
-    color: 'from-amber-500 to-orange-700',
+    color: 'bg-[#4A4743] text-white',
   },
   {
     id: 'ahmedova',
@@ -295,6 +295,6 @@ export const DOCTORS: Doctor[] = [
       en: 'Psychological adaptation for kids, painless and friendly dentistry.',
     },
     initials: 'НА',
-    color: 'from-rose-500 to-pink-700',
+    color: 'bg-[#3A453C] text-white',
   },
 ];
