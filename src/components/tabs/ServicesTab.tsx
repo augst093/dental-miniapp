@@ -1,0 +1,229 @@
+'use client';
+
+import React, { useState } from 'react';
+import { Search, X, AlertCircle } from 'lucide-react';
+import {
+  CATEGORIES,
+  SERVICES,
+  Language,
+  UI_TRANSLATIONS,
+} from '../../data/clinicData';
+
+interface ServicesTabProps {
+  lang: Language;
+  onOpenBooking: (serviceTitle?: string) => void;
+  triggerHaptic: (style?: 'light' | 'medium' | 'heavy') => void;
+}
+
+export const ServicesTab: React.FC<ServicesTabProps> = ({
+  lang,
+  onOpenBooking,
+  triggerHaptic,
+}) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const t = UI_TRANSLATIONS;
+
+  const handleCategorySelect = (catId: string) => {
+    triggerHaptic('light');
+    setSelectedCategory(catId);
+  };
+
+  const handleClearSearch = () => {
+    triggerHaptic('light');
+    setSearchQuery('');
+  };
+
+  const filteredServices = SERVICES.filter((s) => {
+    const matchesCategory = selectedCategory === 'all' || s.category === selectedCategory;
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return matchesCategory;
+
+    const matchesName = s.name[lang].toLowerCase().includes(query);
+    const matchesDesc = s.description[lang].toLowerCase().includes(query);
+    const matchesKeywords = s.keywords?.some((k) => k.toLowerCase().includes(query));
+
+    return matchesCategory && (matchesName || matchesDesc || matchesKeywords);
+  });
+
+  return (
+    <div className="space-y-4 pb-24">
+      {/* Header and Search */}
+      <div className="space-y-3">
+        <div>
+          <h1 className="text-xl font-extrabold text-[var(--ink)]">
+            {t.quickTiles.catalogTitle[lang]}
+          </h1>
+          <p className="text-[12px] text-[var(--ink-muted)]">
+            {lang === 'uz'
+              ? 'Toshkentdagi DentaLux klinikasining to‘liq xizmatlar narxnomasi'
+              : lang === 'en'
+              ? 'Complete dental treatment and diagnostics price list'
+              : 'Официальный прайс-лист клиники DentaLux в Ташкенте'}
+          </p>
+        </div>
+
+        {/* Search Input */}
+        <div className="relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={
+              lang === 'uz'
+                ? 'Xizmat, og‘riq yoki mutaxassis bo‘yicha qidiruv...'
+                : lang === 'en'
+                ? 'Search treatment, symptom or specialist...'
+                : 'Поиск услуги, симптома (болит зуб, пломба, брекеты)...'
+            }
+            className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--ink)] text-[13px] placeholder:text-slate-400 focus:border-[var(--accent)] focus:outline-none shadow-xs"
+          />
+          {searchQuery && (
+            <button
+              onClick={handleClearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Horizontal Category Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+          {CATEGORIES.map((cat) => {
+            const isSelected = selectedCategory === cat.id;
+            const isEmergency = cat.id === 'emergency';
+
+            return (
+              <button
+                key={cat.id}
+                onClick={() => handleCategorySelect(cat.id)}
+                className={`px-3 py-1.5 rounded-xl text-[12px] font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 ${
+                  isSelected
+                    ? isEmergency
+                      ? 'bg-red-600 text-white shadow-xs'
+                      : 'bg-[var(--accent)] text-white shadow-xs'
+                    : isEmergency
+                    ? 'bg-red-50 text-red-700 border border-red-200'
+                    : 'bg-[var(--surface)] text-[var(--ink-secondary)] border border-[var(--border)] hover:border-slate-300'
+                }`}
+              >
+                {isEmergency && <AlertCircle className="w-3.5 h-3.5" />}
+                <span>{cat.label[lang]}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Services List */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between text-[12px] text-[var(--ink-muted)] px-1">
+          <span>
+            {lang === 'uz'
+              ? `Topildi: ${filteredServices.length} xizmat`
+              : lang === 'en'
+              ? `Found: ${filteredServices.length} services`
+              : `Найдено: ${filteredServices.length} услуг`}
+          </span>
+          {selectedCategory !== 'all' && (
+            <button
+              onClick={() => handleCategorySelect('all')}
+              className="text-[var(--accent)] font-semibold hover:underline"
+            >
+              {lang === 'uz' ? 'Barchasini ko‘rsatish' : lang === 'en' ? 'Show all' : 'Сбросить фильтр'}
+            </button>
+          )}
+        </div>
+
+        {filteredServices.length === 0 ? (
+          <div className="clinic-card p-8 text-center space-y-2">
+            <Search className="w-8 h-8 text-slate-300 mx-auto" />
+            <h3 className="font-bold text-[14px] text-[var(--ink)]">
+              {lang === 'uz'
+                ? 'Hech narsa topilmadi'
+                : lang === 'en'
+                ? 'No matching services found'
+                : 'Ничего не найдено'}
+            </h3>
+            <p className="text-[12px] text-[var(--ink-muted)] max-w-xs mx-auto">
+              {lang === 'uz'
+                ? 'Boshqa so‘z bilan qidiring yoki umumiy konsultatsiyaga yoziling'
+                : lang === 'en'
+                ? 'Try another keyword or book a general initial consultation'
+                : 'Попробуйте изменить поисковый запрос или запишитесь на первичный осмотр'}
+            </p>
+            <button
+              onClick={() => onOpenBooking()}
+              className="mt-3 py-2 px-4 rounded-xl bg-[var(--accent)] text-white text-[13px] font-bold"
+            >
+              {t.hero.ctaBooking[lang]}
+            </button>
+          </div>
+        ) : (
+          filteredServices.map((srv) => (
+            <div
+              key={srv.id}
+              className={`clinic-card p-4 space-y-2.5 transition-all ${
+                srv.highlight ? 'border-emerald-300 bg-emerald-50/20' : ''
+              }`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="space-y-1 min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <h3 className="font-bold text-[14px] text-[var(--ink)] leading-snug">
+                      {srv.name[lang]}
+                    </h3>
+                    {srv.badge && (
+                      <span
+                        className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
+                          srv.badge.ru === 'SOS'
+                            ? 'bg-red-100 text-red-700'
+                            : 'bg-[var(--accent-subtle)] text-[var(--accent)]'
+                        }`}
+                      >
+                        {srv.badge[lang]}
+                      </span>
+                    )}
+                    {srv.partnerBrand && (
+                      <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
+                        {srv.partnerBrand}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[12px] text-[var(--ink-secondary)] leading-relaxed">
+                    {srv.description[lang]}
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[15px] font-bold text-[var(--accent)] leading-tight">
+                    {srv.priceUzs}
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-[var(--ink-muted)]">
+                    <span>{srv.duration[lang]}</span>
+                    {srv.priceUsd && <span>· ≈ {srv.priceUsd}</span>}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    triggerHaptic('medium');
+                    onOpenBooking(srv.name[lang]);
+                  }}
+                  className="py-2 px-3.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] active:scale-95 text-white font-bold text-[12px] transition-all touch-target"
+                >
+                  {t.featured.bookItem[lang]}
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};

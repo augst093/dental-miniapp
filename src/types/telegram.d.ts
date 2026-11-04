@@ -26,6 +26,13 @@ declare global {
           onClick: (fn: () => void) => void;
           offClick: (fn: () => void) => void;
         };
+        BackButton: {
+          isVisible: boolean;
+          show: () => void;
+          hide: () => void;
+          onClick: (fn: () => void) => void;
+          offClick: (fn: () => void) => void;
+        };
         initDataUnsafe?: {
           user?: {
             id: number;
