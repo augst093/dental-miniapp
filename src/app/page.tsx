@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Language } from '../data/clinicData';
+import { CLINIC_CONFIG, Language } from '../data/clinicData';
 import { Header } from '../components/Header';
 import { BottomNav, TabType } from '../components/BottomNav';
 import { StickyCta } from '../components/StickyCta';
@@ -37,6 +37,9 @@ export default function MiniAppPage() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     setIsDemoMode(new URLSearchParams(window.location.search).has('demo'));
+
+    // Clinic branding: the accent colour comes from config, not from hardcoded CSS
+    document.documentElement.style.setProperty('--accent', CLINIC_CONFIG.brand.accentColor);
   }, []);
 
   // Initialize Telegram WebApp

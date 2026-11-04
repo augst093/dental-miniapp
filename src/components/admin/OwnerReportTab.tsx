@@ -14,7 +14,7 @@ import {
   BarChart3,
   RefreshCw,
 } from 'lucide-react';
-import { Language } from '../../data/clinicData';
+import { CLINIC_CONFIG, Language } from '../../data/clinicData';
 import { ClinicMetrics } from '../../lib/db';
 
 interface OwnerReportTabProps {
@@ -226,6 +226,15 @@ export const OwnerReportTab: React.FC<OwnerReportTabProps> = ({
             ~{m.adminHoursSaved} ч
           </span>
         </div>
+        {CLINIC_CONFIG.adminHourlyRateUzs > 0 && (
+          <p className="text-[12px] text-blue-100">
+            В деньгах: ~
+            {Math.round(m.adminHoursSaved * CLINIC_CONFIG.adminHourlyRateUzs)
+              .toLocaleString('ru-RU')
+              .replace(/ |,/g, ' ')}{' '}
+            сум за период
+          </p>
+        )}
         <p className="text-[11px] text-blue-100 leading-relaxed">
           Автоматический выбор слотов, запись 24/7 и авто-напоминания освободили
           администратора от рутинных звонков.{' '}

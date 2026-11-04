@@ -8,6 +8,12 @@ export interface ClinicConfig {
   phone: string;
   phoneDisplay: string;
   telegramAdminUrl: string;
+  // Branding: applied to the accent colour on load, so each clinic can have its own
+  brand: {
+    accentColor: string;
+  };
+  // Administrator hourly cost in UZS, used to show savings in money; 0 hides the line
+  adminHourlyRateUzs: number; // TODO: уточнить ставку администратора у клиники
   hours: {
     weekdays: string;
     saturday: string;
@@ -47,6 +53,10 @@ export const CLINIC_CONFIG: ClinicConfig = {
   phone: '+998712000000',
   phoneDisplay: '+998 (71) 200-00-00',
   telegramAdminUrl: 'https://t.me/dentalux_admin', // TODO: заменить реальным логином администратора
+  brand: {
+    accentColor: '#1D4ED8', // Electric royal cobalt, matches the current design
+  },
+  adminHourlyRateUzs: 0, // TODO: уточнить ставку администратора у клиники
   hours: {
     weekdays: '09:00 — 21:00',
     saturday: '09:00 — 20:00',
