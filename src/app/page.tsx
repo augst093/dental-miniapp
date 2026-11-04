@@ -49,8 +49,6 @@ export default function MiniAppPage() {
       tg.ready();
       tg.expand();
 
-      // Follow the user's Telegram colour scheme
-      document.documentElement.classList.toggle('tg-dark', tg.colorScheme === 'dark');
 
       const tgUser = tg.initDataUnsafe?.user;
       if (tgUser) {

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Sparkles,
   Phone,
@@ -42,6 +42,14 @@ export const HomeTab: React.FC<HomeTabProps> = ({
   const config = CLINIC_CONFIG;
 
   const featuredServices = SERVICES.filter((s) => s.highlight);
+
+  // Show the photo block only once public/hero-clinic.jpg actually loads
+  const [hasHeroPhoto, setHasHeroPhoto] = useState<boolean>(false);
+  useEffect(() => {
+    const probe = new Image();
+    probe.onload = () => setHasHeroPhoto(true);
+    probe.src = '/hero-clinic.jpg';
+  }, []);
 
   const handleTileClick = (tab: TabType) => {
     triggerHaptic('light');
@@ -109,7 +117,9 @@ export const HomeTab: React.FC<HomeTabProps> = ({
          ======================================================== */}
       <section className="clinic-card p-5 sm:p-7 relative overflow-hidden space-y-5 border border-white/90 shadow-xl">
         {/* Clinic photo: drop a file at public/hero-clinic.jpg; gradient shows until then */}
-        <div className="hero-media" role="img" aria-label="DentaLux Tashkent" />
+        {hasHeroPhoto && (
+          <div className="hero-media" role="img" aria-label="DentaLux Tashkent" />
+        )}
 
         {/* Soft atmospheric ambient light glows */}
         <div className="absolute -top-16 -right-16 w-60 h-60 bg-blue-500/10 rounded-full pointer-events-none blur-3xl" />
