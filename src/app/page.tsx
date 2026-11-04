@@ -14,6 +14,8 @@ import { ContactsTab } from '../components/tabs/ContactsTab';
 import { AdminPanel } from '../components/admin/AdminPanel';
 import { OwnerReportTab } from '../components/admin/OwnerReportTab';
 import { DemoControlDrawer } from '../components/admin/DemoControlDrawer';
+import { ChatScreen } from '../components/chat/ChatScreen';
+import { MessageCircle } from 'lucide-react';
 
 export default function MiniAppPage() {
   const [lang, setLang] = useState<Language>('ru');
@@ -30,6 +32,9 @@ export default function MiniAppPage() {
 
   // Sticky CTA Dismissed State
   const [isCtaDismissed, setIsCtaDismissed] = useState<boolean>(false);
+
+  // Assistant chat (full-screen, opened from the floating button)
+  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
 
   // Demo panel is hidden for patients; enable with ?demo=1 in the URL
   const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
@@ -228,6 +233,33 @@ export default function MiniAppPage() {
           lang={lang}
           onOpenBooking={() => handleOpenBooking()}
           onDismiss={() => setIsCtaDismissed(true)}
+          triggerHaptic={triggerHaptic}
+        />
+      )}
+
+      {/* 3b. Floating chat button (patient view, above the navigation dock) */}
+      {currentRole === 'patient' && !isBookingOpen && !isChatOpen && activeTab !== 'calculator' && (
+        <button
+          onClick={() => {
+            triggerHaptic('medium');
+            setIsChatOpen(true);
+          }}
+          aria-label="Чат с ассистентом"
+          className="fixed right-4 bottom-[150px] z-30 w-14 h-14 rounded-full bg-[var(--accent)] text-white shadow-2xl flex items-center justify-center active:scale-90 transition-transform chat-fab"
+        >
+          <MessageCircle className="w-6 h-6" />
+        </button>
+      )}
+
+      {/* 3c. Assistant chat */}
+      {isChatOpen && (
+        <ChatScreen
+          lang={lang}
+          onClose={() => setIsChatOpen(false)}
+          onOpenBooking={() => {
+            setIsChatOpen(false);
+            handleOpenBooking();
+          }}
           triggerHaptic={triggerHaptic}
         />
       )}
