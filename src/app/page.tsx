@@ -100,7 +100,7 @@ export default function MiniAppPage() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-[var(--bg)] text-[var(--ink)] flex flex-col font-sans select-none antialiased">
+    <div className="min-h-[100dvh] bg-[var(--bg)] text-[var(--ink)] flex flex-col font-sans select-none antialiased bg-mesh-radial">
       {/* 1. Sticky Opaque Header */}
       <Header
         lang={lang}

@@ -71,7 +71,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
     <div className="space-y-4 pb-24">
       {/* Title & Clinical Context */}
       <div>
-        <h1 className="text-xl font-extrabold text-[var(--ink)]">
+        <h1 className="text-2xl font-extrabold text-[var(--ink)] tracking-tight">
           {t.title[lang]}
         </h1>
         <p className="text-[12px] text-[var(--ink-secondary)] mt-1 leading-relaxed">
@@ -91,10 +91,10 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
               <button
                 key={plan.id}
                 onClick={() => handlePlanSelect(idx)}
-                className={`p-3 rounded-xl border text-left transition-all ${
+                className={`p-3.5 rounded-2xl border text-left transition-all ${
                   isSelected
                     ? 'border-[var(--accent)] bg-[var(--accent-subtle)] ring-1 ring-[var(--accent)] shadow-xs'
-                    : 'border-[var(--border)] bg-[var(--surface)] hover:border-slate-300'
+                    : 'border-slate-200/80 bg-white/80 hover:border-slate-300'
                 }`}
               >
                 <div className="font-bold text-[13px] text-[var(--ink)] leading-snug">
@@ -110,23 +110,23 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
       </div>
 
       {/* Interactive Units & Stepper Card */}
-      <div className="clinic-card p-4 space-y-4">
+      <div className="clinic-card p-4 sm:p-5 space-y-4 rounded-3xl">
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="text-[13px] font-bold text-[var(--ink)]">
               {t.selectUnits[lang]}
             </div>
-            <div className="text-[12px] text-[var(--accent)] font-semibold mt-0.5">
+            <div className="text-[12px] text-[var(--accent)] font-bold mt-0.5">
               {planUnits} {currentPlan.unitLabel[lang]}
             </div>
           </div>
 
           {/* Stepper Controls */}
-          <div className="flex items-center gap-2 bg-[var(--surface-subtle)] border border-[var(--border)] p-1 rounded-xl">
+          <div className="flex items-center gap-2 bg-slate-100/80 border border-slate-200/80 p-1 rounded-full">
             <button
               onClick={handleDecrement}
               disabled={planUnits <= currentPlan.minUnits}
-              className="w-9 h-9 rounded-lg bg-[var(--surface)] text-[var(--ink)] hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center transition-all border border-[var(--border)]"
+              className="w-9 h-9 rounded-full bg-white text-[var(--ink)] hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center transition-all border border-slate-200/80 shadow-xs"
               aria-label="Decrease quantity"
             >
               <Minus className="w-4 h-4" />
@@ -137,7 +137,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
             <button
               onClick={handleIncrement}
               disabled={planUnits >= currentPlan.maxUnits}
-              className="w-9 h-9 rounded-lg bg-[var(--surface)] text-[var(--ink)] hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center transition-all border border-[var(--border)]"
+              className="w-9 h-9 rounded-full bg-white text-[var(--ink)] hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center transition-all border border-slate-200/80 shadow-xs"
               aria-label="Increase quantity"
             >
               <Plus className="w-4 h-4" />
@@ -154,10 +154,10 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
                 <button
                   key={preset.units}
                   onClick={() => handlePresetSelect(preset.units)}
-                  className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${
+                  className={`px-3.5 py-1.5 rounded-full text-[12px] font-semibold transition-all ${
                     isSelected
                       ? 'bg-[var(--accent)] text-white shadow-xs'
-                      : 'bg-[var(--surface-subtle)] text-[var(--ink-secondary)] hover:bg-slate-200'
+                      : 'bg-slate-100/90 text-[var(--ink-secondary)] hover:bg-slate-200'
                   }`}
                 >
                   {preset.label[lang]}
@@ -168,7 +168,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
         )}
 
         {/* Total Cost Display Box */}
-        <div className="bg-slate-900 text-white rounded-xl p-4 shadow-sm space-y-1">
+        <div className="bg-[#091124] text-white rounded-2xl p-4 sm:p-5 shadow-sm space-y-1">
           <div className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
             {t.totalLabel[lang]}
           </div>
@@ -176,31 +176,31 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
             <div className="text-2xl sm:text-3xl font-extrabold text-white">
               {totalUzs} сум
             </div>
-            <div className="text-[13px] text-slate-300 font-mono">
+            <div className="text-[13px] text-blue-200 font-mono">
               ≈ ${totalUsd}
             </div>
           </div>
         </div>
 
         {/* Installment Badge */}
-        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-50 border border-purple-200/80 text-purple-900 text-[12px]">
-          <CreditCard className="w-4 h-4 text-purple-600 shrink-0" />
+        <div className="flex items-center gap-2 p-3 rounded-2xl bg-blue-50/80 border border-blue-200/70 text-blue-950 text-[12px]">
+          <CreditCard className="w-4 h-4 text-[var(--accent)] shrink-0" />
           <span className="font-medium">{t.installmentBadge[lang]}</span>
         </div>
 
         {/* Included Scope Breakdown */}
-        <div className="space-y-2 pt-2 border-t border-[var(--border)]">
+        <div className="space-y-2 pt-2 border-t border-slate-200/80">
           <div className="text-[13px] font-bold text-[var(--ink)]">
             {t.scopeTitle[lang]}
           </div>
-          <div className="text-[12px] text-[var(--ink-secondary)] bg-[var(--surface-subtle)] p-3 rounded-xl border border-[var(--border-subtle)] space-y-1.5">
-            <p className="font-semibold text-[var(--ink)] mb-2">
+          <div className="text-[12px] text-[var(--ink-secondary)] bg-slate-100/80 p-3.5 rounded-2xl border border-slate-200/60 space-y-2">
+            <p className="font-semibold text-[var(--ink)]">
               {currentPlan.clinicalScope[lang]}
             </p>
             <ul className="space-y-1.5">
               {currentPlan.breakdown[lang].map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <Check className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
                   <span className="leading-snug">{item}</span>
                 </li>
               ))}
@@ -209,14 +209,14 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
         </div>
 
         {/* Trust Notice (No Prepayment, Zero Fear) */}
-        <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-[12px] text-emerald-900 leading-relaxed font-medium">
+        <div className="bg-blue-50/80 border border-blue-200/80 p-3.5 rounded-2xl text-[12px] text-blue-950 leading-relaxed font-medium">
           {t.trustNotice[lang]}
         </div>
 
         {/* Primary Action Button */}
         <button
           onClick={handleBookWithEstimate}
-          className="w-full py-3.5 px-4 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] active:scale-95 text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-md transition-all touch-target"
+          className="btn-pill-primary w-full py-4 text-[14px] flex items-center justify-center gap-2 touch-target"
         >
           <Calendar className="w-4 h-4" />
           <span>{t.ctaBookWithEstimate[lang]}</span>

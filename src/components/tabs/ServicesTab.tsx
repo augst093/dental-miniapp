@@ -66,7 +66,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
 
         {/* Search Input */}
         <div className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
@@ -78,12 +78,12 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                 ? 'Search treatment, symptom or specialist...'
                 : 'Поиск услуги, симптома (болит зуб, пломба, брекеты)...'
             }
-            className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--ink)] text-[13px] placeholder:text-slate-400 focus:border-[var(--accent)] focus:outline-none shadow-xs"
+            className="w-full pl-11 pr-10 py-3 rounded-full border border-slate-200/90 bg-white/90 text-[var(--ink)] text-[13px] placeholder:text-slate-400 focus:border-[var(--accent)] focus:outline-none shadow-xs"
           />
           {searchQuery && (
             <button
               onClick={handleClearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
             >
               <X className="w-4 h-4" />
             </button>
@@ -100,14 +100,14 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
               <button
                 key={cat.id}
                 onClick={() => handleCategorySelect(cat.id)}
-                className={`px-3 py-1.5 rounded-xl text-[12px] font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 ${
+                className={`px-3.5 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 ${
                   isSelected
                     ? isEmergency
                       ? 'bg-red-600 text-white shadow-xs'
                       : 'bg-[var(--accent)] text-white shadow-xs'
                     : isEmergency
                     ? 'bg-red-50 text-red-700 border border-red-200'
-                    : 'bg-[var(--surface)] text-[var(--ink-secondary)] border border-[var(--border)] hover:border-slate-300'
+                    : 'bg-white/80 text-[var(--ink-secondary)] border border-slate-200/80 hover:border-slate-300'
                 }`}
               >
                 {isEmergency && <AlertCircle className="w-3.5 h-3.5" />}
@@ -166,8 +166,8 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
           filteredServices.map((srv) => (
             <div
               key={srv.id}
-              className={`clinic-card p-4 space-y-2.5 transition-all ${
-                srv.highlight ? 'border-emerald-300 bg-emerald-50/20' : ''
+              className={`clinic-card p-4 sm:p-5 space-y-3 rounded-2xl transition-all ${
+                srv.highlight ? 'border-blue-300/80 bg-blue-50/20' : ''
               }`}
             >
               <div className="flex items-start justify-between gap-2">
@@ -178,7 +178,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                     </h3>
                     {srv.badge && (
                       <span
-                        className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
+                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
                           srv.badge.ru === 'SOS'
                             ? 'bg-red-100 text-red-700'
                             : 'bg-[var(--accent-subtle)] text-[var(--accent)]'
@@ -188,7 +188,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                       </span>
                     )}
                     {srv.partnerBrand && (
-                      <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
                         {srv.partnerBrand}
                       </span>
                     )}
@@ -199,7 +199,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between gap-3">
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[15px] font-bold text-[var(--accent)] leading-tight">
                     {srv.priceUzs}
@@ -215,7 +215,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                     triggerHaptic('medium');
                     onOpenBooking(srv.name[lang]);
                   }}
-                  className="py-2 px-3.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] active:scale-95 text-white font-bold text-[12px] transition-all touch-target"
+                  className="btn-pill-primary py-2 px-4 text-[12px] touch-target"
                 >
                   {t.featured.bookItem[lang]}
                 </button>

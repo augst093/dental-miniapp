@@ -50,17 +50,17 @@ export const HomeTab: React.FC<HomeTabProps> = ({
   return (
     <div className="space-y-4 pb-24">
       {/* ========================================================
-          1. EMERGENCY SOS BANNER (ACUTE PAIN RELIEF)
+          1. EMERGENCY SOS BANNER (ACUTE PAIN RELIEF) - Frosted Red Glass
          ======================================================== */}
-      <section className="bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/10 border border-red-300/80 rounded-2xl p-3.5 sm:p-4 shadow-xs">
+      <section className="bg-red-500/5 backdrop-blur-md border border-red-200/90 rounded-2xl p-3.5 sm:p-4 shadow-xs">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+            <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 shadow-xs">
               <AlertCircle className="w-4 h-4 stroke-[2.5]" />
             </div>
             <div>
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-red-700 bg-red-100 px-2 py-0.5 rounded-md">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-red-700 bg-red-100/80 px-2 py-0.5 rounded-full">
                   {t.emergencyBanner.badge[lang]}
                 </span>
                 <span className="text-[11px] font-semibold text-red-600">
@@ -86,7 +86,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                   'Неотложная помощь при острой боли'
               );
             }}
-            className="flex-1 py-2 px-3 rounded-xl bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-xs transition-all touch-target"
+            className="flex-1 py-2.5 px-4 rounded-full bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-sm shadow-red-600/25 transition-all touch-target"
           >
             <span>{t.emergencyBanner.action[lang]}</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -95,7 +95,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           <a
             href={`tel:${config.phone}`}
             onClick={() => triggerHaptic('medium')}
-            className="py-2 px-3 rounded-xl bg-[var(--surface)] hover:bg-red-50 active:scale-95 border border-red-300 text-red-700 font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 transition-all touch-target"
+            className="py-2.5 px-4 rounded-full bg-white/80 hover:bg-white active:scale-95 border border-red-200 text-red-700 font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-xs transition-all touch-target"
           >
             <Phone className="w-3.5 h-3.5 fill-current" />
             <span>{t.emergencyBanner.callAction[lang]}</span>
@@ -104,98 +104,126 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       </section>
 
       {/* ========================================================
-          2. HERO CARD (Clean Medical Flat Teal, Doctor Avatars)
+          2. HERO SECTION (V2.1 Aesthetic: Bold Sans + Royal Blue Serif Italic)
          ======================================================== */}
-      <section className="bg-[var(--accent)] text-[var(--accent-contrast)] radius-lg p-5 sm:p-6 shadow-md relative overflow-hidden">
-        {/* Subtle decorative medical cross glow */}
-        <div className="absolute -right-12 -bottom-12 w-48 h-48 bg-white/5 rounded-full pointer-events-none blur-xl" />
+      <section className="clinic-card p-5 sm:p-7 relative overflow-hidden space-y-5 border border-white/90 shadow-xl">
+        {/* Soft atmospheric ambient light glows */}
+        <div className="absolute -top-16 -right-16 w-60 h-60 bg-blue-500/10 rounded-full pointer-events-none blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 w-60 h-60 bg-indigo-500/10 rounded-full pointer-events-none blur-3xl" />
 
         <div className="relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-xs px-2.5 py-1 rounded-full text-[11px] font-semibold text-emerald-100">
-            <Sparkles className="w-3 h-3 text-emerald-300" />
+          <div className="inline-flex items-center gap-1.5 bg-[var(--accent-subtle)] border border-blue-200/70 px-3 py-1 rounded-full text-[11px] font-bold text-[var(--accent)] tracking-wide">
+            <Sparkles className="w-3 h-3 text-[var(--accent)]" />
             <span>{t.hero.badge[lang]}</span>
           </div>
 
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight text-white">
-              {t.hero.title[lang]}
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-[1.12] text-[var(--ink)]">
+              {lang === 'uz' ? (
+                <>
+                  <span>Toshkentda tish davolash</span>
+                  <br />
+                  <span className="font-serif italic font-normal text-[var(--accent)] text-[32px] sm:text-[40px]">
+                    va implantatsiya.
+                  </span>
+                </>
+              ) : lang === 'en' ? (
+                <>
+                  <span>Advanced Dental Care</span>
+                  <br />
+                  <span className="font-serif italic font-normal text-[var(--accent)] text-[32px] sm:text-[40px]">
+                    & implants in Tashkent.
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span>Лечение и имплантация</span>
+                  <br />
+                  <span className="font-serif italic font-normal text-[var(--accent)] text-[32px] sm:text-[40px]">
+                    зубов в Ташкенте.
+                  </span>
+                </>
+              )}
             </h1>
-            <p className="text-[13px] sm:text-[14px] text-emerald-100/90 mt-2 leading-relaxed">
+            <p className="text-[13px] sm:text-[14px] text-[var(--ink-secondary)] mt-3 leading-relaxed max-w-lg">
               {t.hero.subtitle[lang]}
             </p>
           </div>
 
-          {/* Doctor Avatar Stack with clean overlapping borders */}
-          <div className="flex items-center gap-3 pt-1">
+          {/* Doctor Avatar Stack with Frosted Pill */}
+          <div className="inline-flex items-center gap-2.5 bg-white/70 backdrop-blur-md border border-slate-200/80 px-3 py-1.5 rounded-full shadow-xs">
             <div className="flex -space-x-2 overflow-hidden py-0.5">
               {DOCTORS.map((doc) => (
                 <div
                   key={doc.id}
-                  className="inline-flex w-7 h-7 rounded-full ring-2 ring-white/50 bg-[#073635] text-white text-[10px] font-extrabold items-center justify-center shrink-0 shadow-xs"
+                  className="inline-flex w-7 h-7 rounded-full ring-2 ring-white bg-[var(--accent)] text-white text-[10px] font-extrabold items-center justify-center shrink-0 shadow-xs"
                   title={doc.name[lang]}
                 >
                   {doc.initials}
                 </div>
               ))}
             </div>
-            <span className="text-[12px] text-emerald-100 font-medium leading-tight">
+            <span className="text-[12px] text-[var(--ink-secondary)] font-medium leading-tight">
               {t.hero.teamSubtitle[lang]}
             </span>
           </div>
 
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
+          {/* Actions with Reference Pill Styling */}
+          <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
             <button
               onClick={() => {
                 triggerHaptic('medium');
                 onOpenBooking();
               }}
-              className="w-full sm:w-auto py-3 px-4 rounded-xl bg-white hover:bg-emerald-50 active:scale-95 text-[var(--accent)] font-bold text-[14px] flex items-center justify-center gap-2 shadow-sm transition-all touch-target"
+              className="btn-pill-primary py-3.5 px-6 text-[13px] sm:text-[14px] flex items-center justify-center gap-2 touch-target"
             >
-              <Calendar className="w-4 h-4 text-[var(--accent)]" />
+              <Calendar className="w-4 h-4" />
               <span>{t.hero.ctaBooking[lang]}</span>
-              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-md">
+              <span className="text-[11px] font-bold text-[var(--accent)] bg-white px-2 py-0.5 rounded-full shadow-xs">
                 {t.hero.badgeFree[lang]}
               </span>
             </button>
 
             <button
               onClick={() => handleTileClick('calculator')}
-              className="w-full sm:w-auto py-3 px-4 rounded-xl bg-white/15 hover:bg-white/20 active:scale-95 border border-white/20 text-white font-semibold text-[14px] flex items-center justify-center gap-1.5 transition-all touch-target"
+              className="btn-pill-secondary py-3.5 px-6 text-[13px] sm:text-[14px] flex items-center justify-center gap-1.5 touch-target"
             >
-              <Calculator className="w-4 h-4" />
+              <Calculator className="w-4 h-4 text-[var(--accent)]" />
               <span>{t.hero.ctaCalculator[lang]}</span>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
             </button>
           </div>
         </div>
 
         {/* Clean photo placeholder container */}
-        <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-emerald-200/80">
+        <div className="mt-3 pt-3 border-t border-slate-200/70 flex items-center justify-between text-[11px] text-[var(--ink-muted)]">
           <div className="flex items-center gap-1.5">
-            <Camera className="w-3.5 h-3.5" />
+            <Camera className="w-3.5 h-3.5 text-[var(--accent)]" />
             <span>{t.hero.photoPlaceholder[lang]}</span>
           </div>
-          <span className="font-mono text-emerald-300">Vatech Pax-i3D</span>
+          <span className="font-mono text-slate-600 font-semibold bg-slate-100/90 px-2 py-0.5 rounded-full">
+            Vatech Pax-i3D
+          </span>
         </div>
       </section>
 
       {/* ========================================================
-          3. QUICK TILES (4 Core Entry Points)
+          3. QUICK TILES (4 Core Entry Points) - Frosted Glass
          ======================================================== */}
       <section className="grid grid-cols-2 gap-2.5">
         <button
           onClick={() => handleTileClick('services')}
-          className="clinic-card-interactive p-3.5 text-left flex flex-col justify-between min-h-[96px] touch-target"
+          className="clinic-card-interactive p-3.5 text-left flex flex-col justify-between min-h-[96px] rounded-2xl touch-target"
         >
           <div className="flex items-start justify-between">
-            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-full bg-blue-50 text-[var(--accent)] flex items-center justify-center font-bold">
               <Layers className="w-4 h-4" />
             </div>
-            <span className="text-[10px] font-bold text-[var(--ink-muted)] bg-[var(--surface-subtle)] px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-bold text-[var(--ink-muted)] bg-slate-100/90 px-2 py-0.5 rounded-full">
               {t.quickTiles.catalogBadge[lang]}
             </span>
           </div>
-          <div>
+          <div className="mt-2">
             <h3 className="font-bold text-[13px] text-[var(--ink)] leading-snug">
               {t.quickTiles.catalogTitle[lang]}
             </h3>
@@ -207,17 +235,17 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
         <button
           onClick={() => handleTileClick('calculator')}
-          className="clinic-card-interactive p-3.5 text-left flex flex-col justify-between min-h-[96px] touch-target"
+          className="clinic-card-interactive p-3.5 text-left flex flex-col justify-between min-h-[96px] rounded-2xl touch-target"
         >
           <div className="flex items-start justify-between">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
               <Calculator className="w-4 h-4" />
             </div>
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-bold text-indigo-700 bg-indigo-100/70 px-2 py-0.5 rounded-full">
               {t.quickTiles.calcBadge[lang]}
             </span>
           </div>
-          <div>
+          <div className="mt-2">
             <h3 className="font-bold text-[13px] text-[var(--ink)] leading-snug">
               {t.quickTiles.calcTitle[lang]}
             </h3>
@@ -229,17 +257,17 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
         <button
           onClick={() => handleTileClick('doctors')}
-          className="clinic-card-interactive p-3.5 text-left flex flex-col justify-between min-h-[96px] touch-target"
+          className="clinic-card-interactive p-3.5 text-left flex flex-col justify-between min-h-[96px] rounded-2xl touch-target"
         >
           <div className="flex items-start justify-between">
-            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center font-bold">
               <Users className="w-4 h-4" />
             </div>
-            <span className="text-[10px] font-bold text-purple-700 bg-purple-100/70 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-bold text-sky-700 bg-sky-100/70 px-2 py-0.5 rounded-full">
               {t.quickTiles.doctorsBadge[lang]}
             </span>
           </div>
-          <div>
+          <div className="mt-2">
             <h3 className="font-bold text-[13px] text-[var(--ink)] leading-snug">
               {t.quickTiles.doctorsTitle[lang]}
             </h3>
@@ -251,17 +279,17 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
         <button
           onClick={() => handleTileClick('contacts')}
-          className="clinic-card-interactive p-3.5 text-left flex flex-col justify-between min-h-[96px] touch-target"
+          className="clinic-card-interactive p-3.5 text-left flex flex-col justify-between min-h-[96px] rounded-2xl touch-target"
         >
           <div className="flex items-start justify-between">
-            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
               <MapPin className="w-4 h-4" />
             </div>
-            <span className="text-[10px] font-bold text-amber-700 bg-amber-100/70 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-bold text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-full">
               {t.quickTiles.contactsBadge[lang]}
             </span>
           </div>
-          <div>
+          <div className="mt-2">
             <h3 className="font-bold text-[13px] text-[var(--ink)] leading-snug">
               {t.quickTiles.contactsTitle[lang]}
             </h3>
@@ -273,9 +301,9 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       </section>
 
       {/* ========================================================
-          4. FEATURED TREATMENTS (Flat, High Contrast Cards)
+          4. FEATURED TREATMENTS - Frosted Glass Cards with Pill Buttons
          ======================================================== */}
-      <section className="space-y-2.5">
+      <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-bold text-[16px] text-[var(--ink)]">
@@ -298,7 +326,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           {featuredServices.map((srv) => (
             <div
               key={srv.id}
-              className="clinic-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              className="clinic-card p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl"
             >
               <div className="space-y-1 min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -306,12 +334,12 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                     {srv.name[lang]}
                   </h3>
                   {srv.badge && (
-                    <span className="text-[10px] font-bold text-[var(--accent)] bg-[var(--accent-subtle)] px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-[var(--accent)] bg-[var(--accent-subtle)] px-2.5 py-0.5 rounded-full">
                       {srv.badge[lang]}
                     </span>
                   )}
                   {srv.partnerBrand && (
-                    <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
+                    <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
                       {srv.partnerBrand}
                     </span>
                   )}
@@ -344,7 +372,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                     triggerHaptic('medium');
                     onOpenBooking(srv.name[lang]);
                   }}
-                  className="py-1.5 px-3 rounded-lg bg-[var(--accent-subtle)] hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white font-semibold text-[12px] transition-all touch-target"
+                  className="btn-pill-primary py-2 px-4 text-[12px] touch-target"
                 >
                   {t.featured.bookItem[lang]}
                 </button>
@@ -355,13 +383,13 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       </section>
 
       {/* ========================================================
-          5. STANDARDS & LICENSING (Trust Foundation)
+          5. STANDARDS & LICENSING - Frosted Card with Rounded Elements
          ======================================================== */}
-      <section className="clinic-card p-4 space-y-3">
+      <section className="clinic-card p-4 sm:p-5 space-y-3 rounded-2xl">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[12px]">
           <div className="flex items-start gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-              <Camera className="w-3.5 h-3.5" />
+            <div className="w-8 h-8 rounded-full bg-blue-50 text-[var(--accent)] flex items-center justify-center shrink-0">
+              <Camera className="w-4 h-4" />
             </div>
             <div>
               <div className="font-bold text-[var(--ink)]">
@@ -374,8 +402,8 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           </div>
 
           <div className="flex items-start gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-              <Clock className="w-3.5 h-3.5" />
+            <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+              <Clock className="w-4 h-4" />
             </div>
             <div>
               <div className="font-bold text-[var(--ink)]">
@@ -388,8 +416,8 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           </div>
 
           <div className="flex items-start gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
               <div className="font-bold text-[var(--ink)]">

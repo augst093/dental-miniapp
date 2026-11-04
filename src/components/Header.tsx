@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
       <div className="max-w-xl mx-auto flex items-center justify-between gap-3">
         {/* Brand & Status */}
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-[var(--accent)] text-[var(--accent-contrast)] flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+          <div className="w-8 h-8 rounded-full bg-[var(--accent)] text-[var(--accent-contrast)] flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
             DL
           </div>
           <div className="min-w-0">
@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
               <span className="font-bold text-[15px] tracking-tight text-[var(--ink)] shrink-0">
                 {config.name[lang]}
               </span>
-              <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-[var(--accent)] bg-[var(--accent-subtle)] px-1.5 py-0.5 rounded-full shrink-0">
+              <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-[var(--accent)] bg-[var(--accent-subtle)] border border-blue-200/50 px-2 py-0.5 rounded-full shrink-0">
                 <Sparkles className="w-2.5 h-2.5 text-[var(--accent)]" />
                 {config.city[lang]}
               </span>
@@ -50,26 +50,26 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
 
         {/* Right Actions: Direct Call & Language Selector */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Direct Phone Call Button */}
+          {/* Direct Phone Call Pill */}
           <a
             href={`tel:${config.phone}`}
             onClick={() => triggerHaptic('medium')}
-            className="w-9 h-9 rounded-xl bg-[var(--surface-subtle)] hover:bg-[var(--accent-subtle)] active:scale-95 border border-[var(--border)] flex items-center justify-center text-[var(--accent)] transition-all touch-target"
+            className="w-8 h-8 rounded-full bg-white/80 hover:bg-blue-50 active:scale-95 border border-slate-200/80 flex items-center justify-center text-[var(--accent)] transition-all touch-target shadow-xs"
             title={t.header.callButtonAria[lang]}
             aria-label={t.header.callButtonAria[lang]}
           >
-            <Phone className="w-4 h-4 fill-current opacity-90" />
+            <Phone className="w-3.5 h-3.5 fill-current opacity-90" />
           </a>
 
-          {/* Language Selector */}
-          <div className="flex items-center p-0.5 bg-[var(--surface-subtle)] border border-[var(--border)] rounded-xl text-[12px] font-semibold">
+          {/* Language Selector Pill */}
+          <div className="flex items-center p-0.5 bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-full text-[12px] font-semibold shadow-xs">
             {(['ru', 'uz', 'en'] as Language[]).map((l) => (
               <button
                 key={l}
                 onClick={() => handleLangClick(l)}
-                className={`px-2 py-1 rounded-lg transition-all ${
+                className={`px-2 py-0.5 rounded-full transition-all ${
                   lang === l
-                    ? 'bg-[var(--surface)] text-[var(--accent)] shadow-xs font-bold'
+                    ? 'bg-[var(--accent)] text-white shadow-xs font-bold'
                     : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
                 }`}
               >

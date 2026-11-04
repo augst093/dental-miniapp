@@ -1,80 +1,154 @@
 @import "tailwindcss";
 
 :root {
-  /* Medical clinical palette: Clean Slate Neutral + Deep Precision Medical Teal */
-  --bg: #F8FAFC;                 /* Slate-50: Crisp, clean, calm medical background */
-  --surface: #FFFFFF;            /* Pure White: Clinical surface for cards */
-  --surface-subtle: #F1F5F9;     /* Slate-100: Soft structured tint */
-  --surface-muted: #E2E8F0;      /* Slate-200: Input & divider tone */
+  /* ========================================================
+     V2.1 Aesthetic Palette (Referenced from Design Spec)
+     - Ambient Ice-Blue Background with Subtle Dot-Matrix Texture
+     - Electric Ultramarine Royal Cobalt Accent (#1D4ED8 / #2563EB)
+     - Deep Obsidian Navy Primary Ink (#091124)
+     - Frosted Glassmorphism Surfaces (backdrop-blur-xl)
+     ======================================================== */
+  --bg: #F4F7FC;
+  --bg-mesh: #EEF3FA;
   
-  --ink: #0F172A;                /* Slate-900: High-contrast primary text (WCAG AAA 15+:1) */
-  --ink-secondary: #334155;      /* Slate-700: Body & secondary text (WCAG AA 7+:1) */
-  --ink-muted: #64748B;          /* Slate-500: Captions & labels >= 13px (WCAG AA 4.6+:1) */
+  --surface: rgba(255, 255, 255, 0.78);
+  --surface-solid: #FFFFFF;
+  --surface-subtle: rgba(241, 245, 249, 0.7);
+  --surface-card: rgba(255, 255, 255, 0.82);
+  --surface-glass: rgba(255, 255, 255, 0.68);
+  --surface-glass-border: rgba(255, 255, 255, 0.9);
 
-  --accent: #0F5E5D;             /* Deep Clinical Teal: Professional medical identity */
-  --accent-hover: #0B4746;       /* Darker hover state */
-  --accent-subtle: #E6F4F2;      /* Light teal tint for chips and badges */
-  --accent-contrast: #FFFFFF;    /* Crisp white text on accent */
+  --ink: #091124;                 /* Deep Obsidian Navy (WCAG AAA 16:1) */
+  --ink-secondary: #334155;       /* Slate-700: Elegant body text */
+  --ink-muted: #64748B;           /* Slate-500: Crisp sub-labels */
 
-  --border: #E2E8F0;             /* Slate-200 clean border */
-  --border-subtle: #F1F5F9;      /* Slate-100 soft border */
-  --border-focus: #0F5E5D;       /* High-visibility focus ring */
+  /* Electric Ultramarine Royal Cobalt from Reference Image */
+  --accent: #1D4ED8;              /* Electric Royal Cobalt Blue */
+  --accent-hover: #1E40AF;        /* Deep Royal Hover */
+  --accent-subtle: #EFF4FF;       /* Soft ice-blue tint for pills & badges */
+  --accent-contrast: #FFFFFF;     /* Crisp white */
+  --accent-glow: rgba(29, 78, 216, 0.25);
 
-  /* 3 Semantic Radii (Strict 3-tier system) */
-  --radius-sm: 8px;              /* Small: badges, chips, tags */
-  --radius-md: 16px;             /* Medium: cards, inputs, buttons */
-  --radius-lg: 24px;             /* Large: hero block only */
+  --border: rgba(226, 232, 240, 0.85);
+  --border-subtle: rgba(241, 245, 249, 0.9);
+  --border-glass: rgba(255, 255, 255, 0.75);
+  --border-focus: #1D4ED8;
+
+  /* Apple-style Smooth Radii System */
+  --radius-sm: 12px;              /* Small chips & tags */
+  --radius-md: 20px;              /* Cards & input boxes */
+  --radius-lg: 28px;              /* Hero blocks & bottom sheet */
+  --radius-pill: 9999px;          /* Full rounded pill buttons */
 }
 
 body {
   background-color: var(--bg);
   color: var(--ink);
-  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 3 Semantic Radii Utilities */
-.radius-sm { border-radius: var(--radius-sm); }
-.radius-md { border-radius: var(--radius-md); }
-.radius-lg { border-radius: var(--radius-lg); }
+/* Serif font utility matching editorial reference */
+.font-serif {
+  font-family: var(--font-serif), Georgia, Cambria, "Times New Roman", serif;
+}
 
-/* Minimalist border-based elevation (no heavy skeuomorphic shadows) */
+/* Ambient Radial Mesh + Dot Matrix Texture */
+.bg-mesh-radial {
+  background-color: var(--bg);
+  background-image: 
+    radial-gradient(circle at 90% 12%, rgba(29, 78, 216, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 10% 45%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 92%, rgba(29, 78, 216, 0.07) 0%, transparent 45%),
+    radial-gradient(rgba(148, 163, 184, 0.22) 0.85px, transparent 0.85px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 20px 20px;
+}
+
+/* Glassmorphism Cards */
 .clinic-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  box-shadow: 
+    0 10px 25px -5px rgba(15, 23, 42, 0.04),
+    0 8px 10px -6px rgba(15, 23, 42, 0.02),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .clinic-card-interactive {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+  box-shadow: 
+    0 10px 25px -5px rgba(15, 23, 42, 0.04),
+    0 8px 10px -6px rgba(15, 23, 42, 0.02),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .clinic-card-interactive:hover {
-  border-color: #CBD5E1;
-  background-color: #FAFCFD;
+  border-color: rgba(29, 78, 216, 0.25);
+  background: rgba(255, 255, 255, 0.92);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px -4px rgba(15, 23, 42, 0.07);
 }
 .clinic-card-interactive:active {
-  transform: scale(0.99);
+  transform: scale(0.985);
 }
 
-/* Opaque / dense header and bottom dock with zero content bleed */
+/* Glass Header and Bottom Dock */
 .header-bar {
-  background-color: rgba(248, 250, 252, 0.98);
+  background: rgba(244, 247, 252, 0.82);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
 }
 
 .bottom-dock {
-  background-color: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 -4px 20px -2px rgba(15, 23, 42, 0.05);
+}
+
+/* Button Pills from Reference Image */
+.btn-pill-primary {
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+  box-shadow: 0 4px 14px 0 var(--accent-glow);
+  transition: all 0.15s ease;
+}
+.btn-pill-primary:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 6px 20px 0 rgba(29, 78, 216, 0.35);
+}
+.btn-pill-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-pill-secondary {
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(203, 213, 225, 0.75);
+  color: var(--ink);
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+.btn-pill-secondary:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(148, 163, 184, 0.9);
+}
+.btn-pill-secondary:active {
+  transform: scale(0.97);
 }
 
 /* Safe area padding for mobile & Telegram */

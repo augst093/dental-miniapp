@@ -255,14 +255,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       />
 
       {/* Modal Card / Bottom Sheet */}
-      <div className="relative w-full max-w-lg bg-[var(--surface)] border-t sm:border border-[var(--border)] rounded-t-[28px] sm:rounded-2xl max-h-[92dvh] flex flex-col shadow-2xl z-10 overflow-hidden pb-safe">
+      <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-2xl border-t sm:border border-white/90 rounded-t-[32px] sm:rounded-3xl max-h-[92dvh] flex flex-col shadow-2xl z-10 overflow-hidden pb-safe">
         {/* Drag handle for mobile */}
         <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mt-2.5 mb-1 sm:hidden shrink-0" />
 
         {/* Modal Header */}
-        <div className="px-5 py-3.5 border-b border-[var(--border)] flex items-center justify-between shrink-0">
+        <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-full bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold">
               <Calendar className="w-4 h-4" />
             </div>
             <div>
@@ -364,7 +364,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   href={config.yandexMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-[var(--surface-subtle)] hover:bg-[var(--border)] border border-[var(--border)] text-[13px] font-medium text-[var(--ink)] transition-all touch-target"
+                  className="flex items-center justify-center gap-2 p-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[13px] font-semibold text-[var(--ink)] transition-all touch-target"
                 >
                   <MapPin className="w-4 h-4 text-red-500" />
                   <span>{t.routeAction[lang]}</span>
@@ -373,7 +373,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                 <a
                   href={`tel:${config.phone}`}
-                  className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-[var(--surface-subtle)] hover:bg-[var(--border)] border border-[var(--border)] text-[13px] font-medium text-[var(--ink)] transition-all touch-target"
+                  className="flex items-center justify-center gap-2 p-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[13px] font-semibold text-[var(--ink)] transition-all touch-target"
                 >
                   <Phone className="w-4 h-4 text-emerald-600" />
                   <span>{t.callAction[lang]}</span>
@@ -384,7 +384,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 href={config.telegramAdminUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9]/20 border border-[#229ED9]/30 text-[13px] font-semibold text-[#0088cc] transition-all touch-target"
+                className="w-full flex items-center justify-center gap-2 p-3.5 rounded-full bg-[#229ED9]/10 hover:bg-[#229ED9]/20 border border-[#229ED9]/30 text-[13px] font-bold text-[#0088cc] transition-all touch-target"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>{t.telegramAction[lang]}</span>
@@ -392,7 +392,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               <button
                 onClick={resetAndClose}
-                className="w-full py-3 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-contrast)] font-bold text-[14px] shadow-sm transition-all touch-target"
+                className="btn-pill-primary w-full py-3.5 text-[14px] touch-target"
               >
                 {t.closeSuccess[lang]}
               </button>
@@ -477,7 +477,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     <button
                       type="button"
                       onClick={handleNextStep}
-                      className="w-full py-3 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-contrast)] font-bold text-[14px] flex items-center justify-center gap-1.5 shadow-sm transition-all touch-target"
+                      className="btn-pill-primary w-full py-3.5 text-[14px] flex items-center justify-center gap-1.5 touch-target"
                     >
                       <span>{t.nextStep[lang]}</span>
                       <ArrowRight className="w-4 h-4" />
@@ -508,10 +508,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                               triggerHaptic('light');
                               setSelectedDayPreset(item.id as 'today' | 'tomorrow' | 'weekend');
                             }}
-                            className={`p-3 rounded-xl border text-center transition-all ${
+                            className={`p-3 rounded-2xl border text-center transition-all ${
                               isSelected
-                                ? 'border-[var(--accent)] bg-[var(--accent-subtle)] font-bold text-[var(--accent)]'
-                                : 'border-[var(--border)] bg-[var(--surface)] text-[var(--ink-secondary)] hover:border-slate-300'
+                                ? 'border-[var(--accent)] bg-[var(--accent-subtle)] font-bold text-[var(--accent)] ring-1 ring-[var(--accent)]'
+                                : 'border-slate-200/80 bg-white/80 text-[var(--ink-secondary)] hover:border-slate-300'
                             }`}
                           >
                             <div className="text-[13px] font-semibold">{item.label}</div>
@@ -537,10 +537,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                               triggerHaptic('light');
                               setSelectedTimeSlot(slot);
                             }}
-                            className={`py-2.5 px-2 rounded-xl border text-[13px] font-semibold transition-all ${
+                            className={`py-2.5 px-2 rounded-full border text-[13px] font-semibold transition-all ${
                               isSelected
-                                ? 'bg-[var(--accent)] text-[var(--accent-contrast)] border-[var(--accent)] shadow-sm'
-                                : 'bg-[var(--surface)] border-[var(--border)] text-[var(--ink)] hover:border-slate-300'
+                                ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-md shadow-blue-600/25'
+                                : 'bg-white/80 border-slate-200/80 text-[var(--ink)] hover:border-slate-300'
                             }`}
                           >
                             {slot}
@@ -551,9 +551,9 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   </div>
 
                   {/* Summary of Step 1 */}
-                  <div className="bg-[var(--surface-subtle)] border border-[var(--border)] p-2.5 rounded-xl text-[12px] flex items-center justify-between">
+                  <div className="bg-slate-100/80 border border-slate-200/80 p-2.5 rounded-2xl text-[12px] flex items-center justify-between">
                     <span className="text-[var(--ink-muted)]">Выбрано:</span>
-                    <span className="font-medium text-[var(--ink)] truncate max-w-[220px]">
+                    <span className="font-semibold text-[var(--ink)] truncate max-w-[220px]">
                       {selectedService} ({selectedDoctor})
                     </span>
                   </div>
@@ -562,7 +562,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     <button
                       type="button"
                       onClick={handlePrevStep}
-                      className="flex-1 py-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--ink-secondary)] font-semibold text-[14px] flex items-center justify-center gap-1.5 transition-all touch-target"
+                      className="btn-pill-secondary flex-1 py-3 text-[14px] flex items-center justify-center gap-1.5 touch-target"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       <span>{t.backStep[lang]}</span>
@@ -570,7 +570,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     <button
                       type="button"
                       onClick={handleNextStep}
-                      className="flex-1 py-3 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-contrast)] font-bold text-[14px] flex items-center justify-center gap-1.5 shadow-sm transition-all touch-target"
+                      className="btn-pill-primary flex-1 py-3 text-[14px] flex items-center justify-center gap-1.5 touch-target"
                     >
                       <span>{t.nextStep[lang]}</span>
                       <ArrowRight className="w-4 h-4" />
@@ -594,7 +594,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
                         placeholder={t.namePlaceholder[lang]}
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--ink)] text-[14px] focus:border-[var(--accent)] focus:outline-none"
+                        className="w-full pl-10 pr-3.5 py-3 rounded-2xl border border-slate-200/90 bg-white/90 text-[var(--ink)] text-[14px] focus:border-[var(--accent)] focus:outline-none shadow-xs"
                       />
                     </div>
                   </div>
@@ -612,19 +612,19 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                         value={clientPhone}
                         onChange={handlePhoneChange}
                         placeholder="+998 (90) 123-45-67"
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--ink)] font-mono text-[14px] focus:border-[var(--accent)] focus:outline-none"
+                        className="w-full pl-10 pr-3.5 py-3 rounded-2xl border border-slate-200/90 bg-white/90 text-[var(--ink)] font-mono text-[14px] focus:border-[var(--accent)] focus:outline-none shadow-xs"
                       />
                     </div>
                   </div>
 
                   {/* Trust Reassurance Badge */}
-                  <div className="bg-emerald-50/80 border border-emerald-200 p-3 rounded-xl flex items-start gap-2.5 text-emerald-900 text-[12px] leading-relaxed">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="bg-blue-50/90 border border-blue-200/80 p-3 rounded-2xl flex items-start gap-2.5 text-blue-950 text-[12px] leading-relaxed">
+                    <ShieldCheck className="w-4 h-4 text-[var(--accent)] shrink-0 mt-0.5" />
                     <span>{t.trustGuarantee[lang]}</span>
                   </div>
 
                   {/* Summary recap */}
-                  <div className="bg-[var(--surface-subtle)] border border-[var(--border)] p-3 rounded-xl text-[12px] space-y-1 text-[var(--ink-secondary)]">
+                  <div className="bg-slate-100/80 border border-slate-200/80 p-3 rounded-2xl text-[12px] space-y-1 text-[var(--ink-secondary)]">
                     <div className="flex justify-between">
                       <span className="text-[var(--ink-muted)]">Приём:</span>
                       <span className="font-semibold text-[var(--ink)]">{selectedService}</span>
@@ -646,14 +646,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     <button
                       type="button"
                       onClick={handlePrevStep}
-                      className="py-3 px-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--ink-secondary)] font-semibold text-[14px] flex items-center justify-center gap-1 transition-all touch-target"
+                      className="btn-pill-secondary py-3.5 px-5 text-[14px] flex items-center justify-center gap-1 touch-target"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       <span>{t.backStep[lang]}</span>
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 py-3 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-contrast)] font-bold text-[14px] flex items-center justify-center gap-1.5 shadow-md transition-all touch-target"
+                      className="btn-pill-primary flex-1 py-3.5 text-[14px] flex items-center justify-center gap-1.5 touch-target"
                     >
                       <Sparkles className="w-4 h-4" />
                       <span>{t.submitButton[lang]}</span>
