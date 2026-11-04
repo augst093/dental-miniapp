@@ -195,6 +195,29 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
   const [busy, setBusy] = useState<boolean>(false);
   const listRef = useRef<HTMLDivElement | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
+  // Visible area above the on-screen keyboard (null on platforms without visualViewport)
+  const [viewport, setViewport] = useState<{ top: number; height: number } | null>(null);
+
+  // When the keyboard opens, the chat must fit the remaining area so the header and the
+  // newest messages stay on screen. iOS shifts the whole page otherwise.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const update = () => {
+      setViewport({ top: vv.offsetTop, height: vv.height });
+      const list = listRef.current;
+      if (list) list.scrollTop = list.scrollHeight;
+    };
+
+    update();
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
+  }, []);
 
   // Load saved history once
   useEffect(() => {
@@ -285,7 +308,10 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
   const greeting: ChatMessage = { id: 'greeting', role: 'assistant', text: copy.greeting, time: 0 };
 
   return (
-    <div className="chat-wallpaper fixed inset-0 z-[60] flex flex-col sheet-enter">
+    <div
+      className="chat-wallpaper fixed inset-x-0 z-[60] flex flex-col sheet-enter"
+      style={viewport ? { top: viewport.top, height: viewport.height } : { top: 0, bottom: 0 }}
+    >
       {/* Header */}
       <header className="pt-safe bg-white/90 backdrop-blur-xl border-b border-slate-200/70 shadow-xs">
         <div className="flex items-center gap-2.5 px-2.5 py-2">
@@ -374,8 +400,11 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
             }}
             rows={1}
             maxLength={1000}
+            enterKeyHint="send"
             placeholder={copy.placeholder}
-            className="w-full resize-none bg-transparent outline-none text-[15px] leading-snug max-h-32 py-1 text-[var(--ink)] placeholder:text-slate-400"
+            // 16px prevents iOS from zooming into the field when it is focused
+            style={{ fontSize: 16, caretColor: 'var(--accent)' }}
+            className="w-full resize-none bg-transparent outline-none leading-snug max-h-32 py-1 text-[var(--ink)] placeholder:text-slate-400"
           />
         </div>
         <button
