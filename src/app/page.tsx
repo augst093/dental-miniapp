@@ -243,78 +243,84 @@ export default function MiniAppPage() {
     : SERVICES.filter((s) => s.category === selectedCategory);
 
   return (
-    <div className="min-h-[100dvh] bg-[#F6F4F0] text-[#1C1B1A] flex flex-col font-sans selection:bg-[#1B4332] selection:text-white pb-28">
+    <div className="min-h-[100dvh] bg-[#F6F4F0] text-[#1C1B1A] flex flex-col font-sans selection:bg-[#1B4332] selection:text-white pb-32">
       
-      {/* 1. APPLE GLASS HEADER */}
-      <header className="sticky top-0 z-30 glass-panel px-5 py-3.5 flex items-center justify-between border-b border-[#DDD8CE]/60">
-        <div>
-          <div className="font-display font-extrabold text-[17px] tracking-tight text-[#1C1B1A] flex items-center gap-1.5">
-            DENTALUX
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#1B4332]"></span>
+      {/* 1. FLOATING APPLE GLASS ISLAND HEADER (Zero sharp edges) */}
+      <header className="sticky top-2 z-30 px-3 max-w-xl mx-auto w-full">
+        <div className="apple-glass rounded-full px-5 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-[#1B4332] text-white flex items-center justify-center font-black text-xs shadow-sm">
+              D
+            </div>
+            <div>
+              <div className="font-display font-black text-[15px] tracking-tight text-[#1C1B1A] leading-none">
+                DENTALUX
+              </div>
+              <div className="text-[10px] text-[#6B6762] font-semibold mt-0.5">
+                Tashkent · Swiss Tech
+              </div>
+            </div>
           </div>
-          <div className="text-[11px] text-[#6B6762] font-medium tracking-normal">
-            Tashkent · Swiss Protocols
-          </div>
-        </div>
 
-        {/* Apple Segmented Language Control */}
-        <div className="flex items-center gap-1 bg-[#ECE8E1]/80 p-1 rounded-full text-xs font-semibold">
-          {(['ru', 'uz', 'en'] as Language[]).map((l) => (
-            <button
-              key={l}
-              onClick={() => {
-                triggerHaptic('light');
-                setLang(l);
-              }}
-              className={`px-3 py-1 rounded-full transition-all duration-200 ${
-                lang === l
-                  ? 'bg-white text-[#1C1B1A] shadow-sm'
-                  : 'text-[#6B6762] hover:text-[#1C1B1A]'
-              }`}
-            >
-              {l === 'ru' ? 'РУС' : l === 'uz' ? 'O‘ZB' : 'ENG'}
-            </button>
-          ))}
+          {/* Apple Segmented Language Control */}
+          <div className="flex items-center gap-0.5 bg-[#ECE8E1]/90 p-1 rounded-full text-xs font-bold">
+            {(['ru', 'uz', 'en'] as Language[]).map((l) => (
+              <button
+                key={l}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setLang(l);
+                }}
+                className={`px-3 py-1 rounded-full transition-all duration-200 text-[11px] ${
+                  lang === l
+                    ? 'bg-white text-[#1C1B1A] shadow-sm'
+                    : 'text-[#6B6762] hover:text-[#1C1B1A]'
+                }`}
+              >
+                {l === 'ru' ? 'РУС' : l === 'uz' ? 'O‘ZB' : 'ENG'}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
       {/* 2. TAB CONTENT VIEWS */}
-      <main className="flex-1 px-4 pt-5 max-w-xl mx-auto w-full">
+      <main className="flex-1 px-3 pt-4 max-w-xl mx-auto w-full">
         
         {/* ========================================================
             TAB 1: ГЛАВНАЯ (HOME / DASHBOARD)
            ======================================================== */}
         {activeTab === 'home' && (
-          <div className="space-y-5 animate-in fade-in duration-300">
+          <div className="space-y-4 animate-in fade-in duration-300">
             
-            {/* Hero Glass Card */}
-            <div className="glass-card-dark rounded-3xl p-6 text-white relative overflow-hidden">
+            {/* Hero Apple Glass Dark Card (Rounded 32px) */}
+            <div className="apple-glass-dark rounded-[32px] p-6 sm:p-7 text-white relative overflow-hidden">
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-[11px] font-medium tracking-wide mb-3 backdrop-blur-md">
-                  <Sparkles className="w-3 h-3 text-[#E2DDD4]" />
-                  {lang === 'ru' && 'Бесплатный 3D-снимок (КТ) на первой консультации'}
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 text-[11px] font-semibold tracking-wide mb-3.5 backdrop-blur-md">
+                  <Sparkles className="w-3.5 h-3.5 text-[#E2DDD4]" />
+                  {lang === 'ru' && 'Бесплатный 3D-снимок (КТ) при записи'}
                   {lang === 'uz' && 'Birinchi ko‘rikda bepul 3D KT rentgen'}
-                  {lang === 'en' && 'Free 3D CT scan with initial consultation'}
+                  {lang === 'en' && 'Free 3D CT scan with initial exam'}
                 </div>
 
-                <h1 className="font-display font-extrabold text-[24px] sm:text-[28px] leading-[1.12] mb-2.5">
+                <h1 className="font-display font-extrabold text-[25px] sm:text-[30px] leading-[1.12] mb-3">
                   {lang === 'ru' && 'Швейцарская точность и эстетика улыбки'}
                   {lang === 'uz' && 'Toshkent markazida Shveytsariya aniqligi'}
                   {lang === 'en' && 'Swiss precision dentistry in Tashkent'}
                 </h1>
 
-                <p className="text-white/80 text-[13px] leading-relaxed mb-5">
-                  {lang === 'ru' && 'Официальные протоколы Straumann и Damon. Бережное лечение под микроскопом и прозрачная смета без скрытых доплат.'}
-                  {lang === 'uz' && 'Straumann va Damon rasmiy protokollari. Mikroskop ostida og‘riqsiz davolash va birinchi ko‘rikdayoq aniq narx rejasi.'}
-                  {lang === 'en' && 'Official Straumann & Damon protocols. Gentle microscope treatment with fully transparent estimates.'}
+                <p className="text-white/85 text-[14px] leading-relaxed mb-6 font-normal">
+                  {lang === 'ru' && 'Официальные протоколы Straumann и Damon. Бережное лечение под микроскопом и фиксированная прозрачная смета.'}
+                  {lang === 'uz' && 'Straumann va Damon rasmiy protokollari. Mikroskop ostida og‘riqsiz davolash va aniq narx rejasi.'}
+                  {lang === 'en' && 'Official Straumann & Damon protocols. Gentle microscope care with 100% transparent pricing.'}
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-2.5">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={() => openBookingFor(
                       lang === 'ru' ? 'Консультация главврача + 3D-снимок (0 сум)' : 'Bosh shifokor ko‘rigi + 3D KT (0 so‘m)'
                     )}
-                    className="font-semibold text-xs tracking-wide bg-white text-[#1B4332] px-5 py-3 rounded-2xl hover:bg-white/95 transition-all text-center shadow-sm active:scale-98"
+                    className="font-bold text-xs bg-white text-[#1B4332] px-6 py-3.5 rounded-full hover:bg-white/95 transition-all text-center shadow-md active:scale-97"
                   >
                     {lang === 'ru' && 'Записаться на 3D-осмотр (0 сум)'}
                     {lang === 'uz' && 'Bepul 3D-ko‘rikka yozilish (0 so‘m)'}
@@ -323,7 +329,7 @@ export default function MiniAppPage() {
 
                   <button
                     onClick={() => switchTab('calculator')}
-                    className="font-medium text-xs tracking-wide bg-white/15 hover:bg-white/20 text-white px-4 py-3 rounded-2xl backdrop-blur-md transition-all text-center active:scale-98"
+                    className="font-semibold text-xs bg-white/15 hover:bg-white/25 text-white px-5 py-3.5 rounded-full backdrop-blur-md transition-all text-center active:scale-97"
                   >
                     {lang === 'ru' && 'Калькулятор сметы →'}
                     {lang === 'uz' && 'Narx kalkulyatori →'}
@@ -333,23 +339,23 @@ export default function MiniAppPage() {
               </div>
             </div>
 
-            {/* Apple Quick-Access Navigation Grid */}
+            {/* Apple Quick-Access Rounded Grid (Rounded 28px) */}
             <div className="grid grid-cols-2 gap-3">
               <div
                 onClick={() => switchTab('services')}
-                className="glass-panel rounded-3xl p-4 cursor-pointer hover:bg-white/90 transition-all active:scale-98 flex flex-col justify-between"
+                className="apple-glass rounded-[28px] p-5 cursor-pointer hover:bg-white/95 transition-all active:scale-97 flex flex-col justify-between"
               >
-                <div className="w-10 h-10 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] mb-3">
-                  <Layers className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] mb-4 shadow-sm">
+                  <Layers className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="font-display font-bold text-sm text-[#1C1B1A] flex items-center justify-between">
+                  <div className="font-display font-extrabold text-[15px] text-[#1C1B1A] flex items-center justify-between">
                     {lang === 'ru' && 'Каталог услуг'}
                     {lang === 'uz' && 'Xizmatlar'}
                     {lang === 'en' && 'Services'}
                     <ChevronRight className="w-4 h-4 text-[#6B6762]" />
                   </div>
-                  <div className="text-[11px] text-[#6B6762] mt-0.5">
+                  <div className="text-[12px] text-[#6B6762] font-medium mt-0.5">
                     {lang === 'ru' && '7 категорий и цены'}
                     {lang === 'uz' && '7 yo‘nalish va narxlar'}
                     {lang === 'en' && '7 categories & rates'}
@@ -359,41 +365,41 @@ export default function MiniAppPage() {
 
               <div
                 onClick={() => switchTab('calculator')}
-                className="glass-panel rounded-3xl p-4 cursor-pointer hover:bg-white/90 transition-all active:scale-98 flex flex-col justify-between"
+                className="apple-glass rounded-[28px] p-5 cursor-pointer hover:bg-white/95 transition-all active:scale-97 flex flex-col justify-between"
               >
-                <div className="w-10 h-10 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] mb-3">
-                  <Calculator className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] mb-4 shadow-sm">
+                  <Calculator className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="font-display font-bold text-sm text-[#1C1B1A] flex items-center justify-between">
+                  <div className="font-display font-extrabold text-[15px] text-[#1C1B1A] flex items-center justify-between">
                     {lang === 'ru' && 'Калькулятор'}
                     {lang === 'uz' && 'Kalkulyator'}
                     {lang === 'en' && 'Calculator'}
                     <ChevronRight className="w-4 h-4 text-[#6B6762]" />
                   </div>
-                  <div className="text-[11px] text-[#6B6762] mt-0.5">
-                    {lang === 'ru' && 'Расчёт стоимости'}
+                  <div className="text-[12px] text-[#6B6762] font-medium mt-0.5">
+                    {lang === 'ru' && 'Точный расчёт'}
                     {lang === 'uz' && 'Aniq hisob-kitob'}
-                    {lang === 'en' && 'Custom estimates'}
+                    {lang === 'en' && 'Instant estimate'}
                   </div>
                 </div>
               </div>
 
               <div
                 onClick={() => switchTab('doctors')}
-                className="glass-panel rounded-3xl p-4 cursor-pointer hover:bg-white/90 transition-all active:scale-98 flex flex-col justify-between"
+                className="apple-glass rounded-[28px] p-5 cursor-pointer hover:bg-white/95 transition-all active:scale-97 flex flex-col justify-between"
               >
-                <div className="w-10 h-10 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] mb-3">
-                  <Users className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] mb-4 shadow-sm">
+                  <Users className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="font-display font-bold text-sm text-[#1C1B1A] flex items-center justify-between">
+                  <div className="font-display font-extrabold text-[15px] text-[#1C1B1A] flex items-center justify-between">
                     {lang === 'ru' && 'Врачи клиники'}
                     {lang === 'uz' && 'Shifokorlar'}
                     {lang === 'en' && 'Doctors'}
                     <ChevronRight className="w-4 h-4 text-[#6B6762]" />
                   </div>
-                  <div className="text-[11px] text-[#6B6762] mt-0.5">
+                  <div className="text-[12px] text-[#6B6762] font-medium mt-0.5">
                     {lang === 'ru' && 'Стаж от 9 до 16 лет'}
                     {lang === 'uz' && '9 yildan ortiq tajriba'}
                     {lang === 'en' && 'Senior specialists'}
@@ -403,19 +409,19 @@ export default function MiniAppPage() {
 
               <div
                 onClick={() => switchTab('contacts')}
-                className="glass-panel rounded-3xl p-4 cursor-pointer hover:bg-white/90 transition-all active:scale-98 flex flex-col justify-between"
+                className="apple-glass rounded-[28px] p-5 cursor-pointer hover:bg-white/95 transition-all active:scale-97 flex flex-col justify-between"
               >
-                <div className="w-10 h-10 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] mb-3">
-                  <MapPin className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] mb-4 shadow-sm">
+                  <MapPin className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="font-display font-bold text-sm text-[#1C1B1A] flex items-center justify-between">
+                  <div className="font-display font-extrabold text-[15px] text-[#1C1B1A] flex items-center justify-between">
                     {lang === 'ru' && 'Адрес и часы'}
                     {lang === 'uz' && 'Manzil va vaqt'}
                     {lang === 'en' && 'Location'}
                     <ChevronRight className="w-4 h-4 text-[#6B6762]" />
                   </div>
-                  <div className="text-[11px] text-[#6B6762] mt-0.5">
+                  <div className="text-[12px] text-[#6B6762] font-medium mt-0.5">
                     {lang === 'ru' && 'Метро Ойбек, 09-21'}
                     {lang === 'uz' && 'Oybek metrosi, 09-21'}
                     {lang === 'en' && 'Oybek metro, 9-21'}
@@ -424,24 +430,24 @@ export default function MiniAppPage() {
               </div>
             </div>
 
-            {/* Popular Specimens (Apple Horizontal Glass Scroller) */}
-            <div className="glass-panel rounded-3xl p-5">
-              <div className="flex items-center justify-between mb-3.5">
+            {/* Popular Treatments (Rounded 32px with Horizontal Glass Carousel) */}
+            <div className="apple-glass rounded-[32px] p-6">
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <div className="font-display font-bold text-base text-[#1C1B1A]">
-                    {lang === 'ru' && 'Флагманские направления'}
+                  <div className="font-display font-black text-base text-[#1C1B1A]">
+                    {lang === 'ru' && 'Флагманские процедуры'}
                     {lang === 'uz' && 'Asosiy xizmatlar'}
                     {lang === 'en' && 'Featured Treatments'}
                   </div>
                   <div className="text-[11px] text-[#6B6762]">
-                    {lang === 'ru' && 'Официальные швейцарские и немецкие материалы'}
-                    {lang === 'uz' && 'Shveytsariya va Germaniya materiallari'}
-                    {lang === 'en' && 'Swiss & German certified materials'}
+                    {lang === 'ru' && 'Швейцарские и американские материалы'}
+                    {lang === 'uz' && 'Shveytsariya va AQSh materiallari'}
+                    {lang === 'en' && 'Swiss & USA certified materials'}
                   </div>
                 </div>
                 <button
                   onClick={() => switchTab('services')}
-                  className="text-xs font-semibold text-[#1B4332] hover:underline flex items-center"
+                  className="text-xs font-bold text-[#1B4332] hover:underline flex items-center gap-0.5 bg-[#1B4332]/10 px-3 py-1.5 rounded-full"
                 >
                   {lang === 'ru' && 'Все'}
                   {lang === 'uz' && 'Barchasi'}
@@ -484,44 +490,50 @@ export default function MiniAppPage() {
                   <div
                     key={idx}
                     onClick={() => openBookingFor(specimen.title)}
-                    className="snap-item min-w-[210px] bg-[#ECE8E1]/60 hover:bg-[#ECE8E1] transition-all rounded-2xl p-4 flex flex-col justify-between cursor-pointer border border-white/60 active:scale-98"
+                    className="snap-item min-w-[210px] bg-[#ECE8E1]/60 hover:bg-[#ECE8E1] transition-all rounded-[24px] p-5 flex flex-col justify-between cursor-pointer border border-white/80 active:scale-97"
                   >
                     <div>
-                      <div className="text-[10px] uppercase font-semibold text-[#6B6762] mb-1">
+                      <span className="text-[10px] font-bold text-[#6B6762] uppercase tracking-wider block mb-1">
                         {specimen.maker}
-                      </div>
-                      <div className="font-display font-bold text-sm text-[#1C1B1A] leading-snug mb-1">
+                      </span>
+                      <div className="font-display font-bold text-[15px] text-[#1C1B1A] leading-snug mb-1">
                         {specimen.title}
                       </div>
-                      <div className="text-[11px] text-[#524F4B] mb-3">
+                      <div className="text-[12px] text-[#524F4B] mb-4">
                         {specimen.note}
                       </div>
                     </div>
-                    <div className="pt-2.5 border-t border-[#DDD8CE]/60 flex items-baseline justify-between">
-                      <span className="font-bold text-xs text-[#1B4332]">{specimen.price}</span>
-                      <span className="text-[11px] text-[#6B6762]">{specimen.usd}</span>
+                    <div className="pt-3 border-t border-[#DDD8CE]/60 flex items-baseline justify-between">
+                      <span className="font-extrabold text-sm text-[#1B4332]">{specimen.price}</span>
+                      <span className="text-xs font-semibold text-[#6B6762]">{specimen.usd}</span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Quality Badges */}
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="glass-panel rounded-2xl p-3">
-                <ShieldCheck className="w-5 h-5 text-[#1B4332] mx-auto mb-1" />
-                <div className="text-[11px] font-bold text-[#1C1B1A]">100% стерильность</div>
-                <div className="text-[9px] text-[#6B6762]">Автоклавы класс B</div>
+            {/* Apple Pill Badges */}
+            <div className="grid grid-cols-3 gap-2.5 text-center">
+              <div className="apple-glass rounded-3xl p-4">
+                <div className="w-8 h-8 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center mx-auto mb-1.5">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+                <div className="text-xs font-bold text-[#1C1B1A]">100% стерильно</div>
+                <div className="text-[10px] text-[#6B6762]">Автоклавы B</div>
               </div>
-              <div className="glass-panel rounded-2xl p-3">
-                <Award className="w-5 h-5 text-[#1B4332] mx-auto mb-1" />
-                <div className="text-[11px] font-bold text-[#1C1B1A]">Швейцария & США</div>
-                <div className="text-[9px] text-[#6B6762]">Сертифицировано</div>
+              <div className="apple-glass rounded-3xl p-4">
+                <div className="w-8 h-8 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center mx-auto mb-1.5">
+                  <Award className="w-4 h-4" />
+                </div>
+                <div className="text-xs font-bold text-[#1C1B1A]">Швейцария</div>
+                <div className="text-[10px] text-[#6B6762]">Сертификаты</div>
               </div>
-              <div className="glass-panel rounded-2xl p-3">
-                <Clock className="w-5 h-5 text-[#1B4332] mx-auto mb-1" />
-                <div className="text-[11px] font-bold text-[#1C1B1A]">09:00 — 21:00</div>
-                <div className="text-[9px] text-[#6B6762]">Без выходных</div>
+              <div className="apple-glass rounded-3xl p-4">
+                <div className="w-8 h-8 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center mx-auto mb-1.5">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <div className="text-xs font-bold text-[#1C1B1A]">09:00 — 21:00</div>
+                <div className="text-[10px] text-[#6B6762]">Без выходных</div>
               </div>
             </div>
 
@@ -533,10 +545,10 @@ export default function MiniAppPage() {
            ======================================================== */}
         {activeTab === 'services' && (
           <div className="space-y-4 animate-in fade-in duration-300">
-            <div>
-              <h2 className="font-display font-bold text-xl text-[#1C1B1A]">
-                {lang === 'ru' && 'Каталог услуг и фиксированные цены'}
-                {lang === 'uz' && 'Xizmatlar katalogi va aniq narxlar'}
+            <div className="px-1">
+              <h2 className="font-display font-extrabold text-2xl text-[#1C1B1A]">
+                {lang === 'ru' && 'Каталог услуг и цены'}
+                {lang === 'uz' && 'Xizmatlar katalogi va narxlar'}
                 {lang === 'en' && 'Services & Transparent Pricing'}
               </h2>
               <p className="text-xs text-[#6B6762] mt-0.5">
@@ -546,8 +558,8 @@ export default function MiniAppPage() {
               </p>
             </div>
 
-            {/* Apple Pill Category Scroller */}
-            <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+            {/* Apple Pill Category Scroller (Rounded Full) */}
+            <div className="flex gap-2 overflow-x-auto pb-1.5 no-scrollbar">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat.id}
@@ -555,10 +567,10 @@ export default function MiniAppPage() {
                     triggerHaptic('light');
                     setSelectedCategory(cat.id);
                   }}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+                  className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 active:scale-95 ${
                     selectedCategory === cat.id
-                      ? 'bg-[#1B4332] text-white shadow-sm'
-                      : 'glass-panel text-[#6B6762] hover:text-[#1C1B1A]'
+                      ? 'bg-[#1B4332] text-white shadow-md'
+                      : 'apple-glass text-[#6B6762] hover:text-[#1C1B1A]'
                   }`}
                 >
                   {cat.label[lang]}
@@ -566,35 +578,35 @@ export default function MiniAppPage() {
               ))}
             </div>
 
-            {/* Services Cards */}
-            <div className="space-y-3">
+            {/* Services Cards (Rounded 30px) */}
+            <div className="space-y-3.5">
               {filteredServices.map((svc) => (
                 <div
                   key={svc.id}
-                  className="glass-panel rounded-3xl p-4 sm:p-5 flex flex-col justify-between gap-3 hover:bg-white/95 transition-all"
+                  className="apple-glass rounded-[30px] p-5 sm:p-6 flex flex-col justify-between gap-3.5 hover:bg-white/95 transition-all shadow-sm"
                 >
                   <div>
-                    <div className="flex items-start justify-between gap-2 mb-1.5">
-                      <div className="font-display font-bold text-sm sm:text-base text-[#1C1B1A] leading-snug">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="font-display font-extrabold text-base text-[#1C1B1A] leading-snug">
                         {svc.name[lang]}
                       </div>
-                      <span className="text-[11px] font-medium text-[#6B6762] whitespace-nowrap bg-[#ECE8E1]/80 px-2.5 py-0.5 rounded-full">
+                      <span className="text-[11px] font-bold text-[#6B6762] whitespace-nowrap bg-[#ECE8E1] px-3 py-1 rounded-full">
                         {svc.duration}
                       </span>
                     </div>
 
-                    <p className="text-xs text-[#524F4B] leading-relaxed mb-3">
+                    <p className="text-xs text-[#524F4B] leading-relaxed mb-1">
                       {svc.description[lang]}
                     </p>
                   </div>
 
                   <div className="pt-3 border-t border-[#DDD8CE]/50 flex items-center justify-between">
                     <div>
-                      <div className="font-bold text-sm sm:text-base text-[#1B4332]">
+                      <div className="font-extrabold text-base text-[#1B4332]">
                         {svc.priceUzs}
                       </div>
                       {svc.priceUsd && (
-                        <div className="text-[11px] text-[#6B6762]">
+                        <div className="text-[11px] font-semibold text-[#6B6762]">
                           ≈ {svc.priceUsd}
                         </div>
                       )}
@@ -602,7 +614,7 @@ export default function MiniAppPage() {
 
                     <button
                       onClick={() => openBookingFor(svc.name[lang])}
-                      className="text-xs font-semibold bg-[#1C1B1A] text-white px-4 py-2 rounded-xl hover:bg-[#1B4332] transition-colors active:scale-98"
+                      className="text-xs font-bold bg-[#1C1B1A] text-white px-5 py-2.5 rounded-full hover:bg-[#1B4332] transition-colors active:scale-95 shadow-sm"
                     >
                       {lang === 'ru' && 'Записаться'}
                       {lang === 'uz' && 'Yozilish'}
@@ -620,9 +632,9 @@ export default function MiniAppPage() {
            ======================================================== */}
         {activeTab === 'calculator' && (
           <div className="space-y-4 animate-in fade-in duration-300">
-            <div>
-              <h2 className="font-display font-bold text-xl text-[#1C1B1A]">
-                {lang === 'ru' && 'Интерактивный калькулятор сметы'}
+            <div className="px-1">
+              <h2 className="font-display font-extrabold text-2xl text-[#1C1B1A]">
+                {lang === 'ru' && 'Калькулятор сметы'}
                 {lang === 'uz' && 'Narx va muddat kalkulyatori'}
                 {lang === 'en' && 'Treatment Cost Estimator'}
               </h2>
@@ -633,8 +645,8 @@ export default function MiniAppPage() {
               </p>
             </div>
 
-            {/* Treatment Selector Pills */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {/* Treatment Selector Pills (Rounded 24px) */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               {TREATMENT_OPTIONS.map((opt, idx) => (
                 <button
                   key={opt.id}
@@ -643,10 +655,10 @@ export default function MiniAppPage() {
                     setActivePlanIdx(idx);
                     setPlanUnits(opt.defaultUnits);
                   }}
-                  className={`p-3 rounded-2xl text-left transition-all duration-200 text-xs font-semibold ${
+                  className={`p-4 rounded-[24px] text-left transition-all duration-200 text-xs font-bold active:scale-97 ${
                     activePlanIdx === idx
-                      ? 'bg-[#1B4332] text-white shadow-md'
-                      : 'glass-panel text-[#1C1B1A] hover:bg-white/90'
+                      ? 'bg-[#1B4332] text-white shadow-lg'
+                      : 'apple-glass text-[#1C1B1A] hover:bg-white/95'
                   }`}
                 >
                   {opt.name[lang]}
@@ -654,32 +666,32 @@ export default function MiniAppPage() {
               ))}
             </div>
 
-            {/* Apple Glass Calculation Panel */}
-            <div className="glass-panel rounded-3xl p-5 space-y-4">
+            {/* Apple Glass Calculation Panel (Rounded 32px) */}
+            <div className="apple-glass rounded-[32px] p-6 space-y-5 shadow-md">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-[11px] text-[#6B6762] uppercase tracking-wider font-semibold">
-                    {lang === 'ru' && 'Выбранная услуга'}
+                  <div className="text-[10px] text-[#6B6762] uppercase tracking-wider font-bold">
+                    {lang === 'ru' && 'Выбранная процедура'}
                     {lang === 'uz' && 'Tanlangan muolaja'}
                     {lang === 'en' && 'Selected procedure'}
                   </div>
-                  <div className="font-display font-bold text-base text-[#1C1B1A]">
+                  <div className="font-display font-black text-lg text-[#1C1B1A] mt-0.5">
                     {currentPlan.name[lang]}
                   </div>
                 </div>
 
-                {/* Apple Stepper Pill */}
-                <div className="flex items-center gap-2 bg-[#ECE8E1]/90 p-1 rounded-full">
+                {/* Apple Stepper Pill (Rounded Full) */}
+                <div className="flex items-center gap-2 bg-[#ECE8E1] p-1.5 rounded-full shadow-inner">
                   <button
                     onClick={() => {
                       triggerHaptic('light');
                       if (planUnits > 1) setPlanUnits(planUnits - 1);
                     }}
-                    className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1C1B1A] shadow-sm font-bold text-sm active:scale-95"
+                    className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#1C1B1A] shadow-sm font-bold text-sm active:scale-90"
                   >
-                    <Minus className="w-3.5 h-3.5" />
+                    <Minus className="w-4 h-4" />
                   </button>
-                  <span className="font-bold text-xs min-w-[20px] text-center">
+                  <span className="font-extrabold text-sm min-w-[24px] text-center">
                     {planUnits}
                   </span>
                   <button
@@ -687,37 +699,41 @@ export default function MiniAppPage() {
                       triggerHaptic('light');
                       if (planUnits < 16) setPlanUnits(planUnits + 1);
                     }}
-                    className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#1C1B1A] shadow-sm font-bold text-sm active:scale-95"
+                    className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#1C1B1A] shadow-sm font-bold text-sm active:scale-90"
                   >
-                    <Plus className="w-3.5 h-3.5" />
+                    <Plus className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              {/* Scope Detail */}
-              <div className="bg-[#ECE8E1]/50 rounded-2xl p-3.5 text-xs text-[#524F4B] space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5 text-[#1B4332]" />
+              {/* Scope Detail (Rounded 24px) */}
+              <div className="bg-[#ECE8E1]/60 rounded-[24px] p-4 text-xs text-[#524F4B] space-y-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-[#1B4332] shadow-xs">
+                    <Clock className="w-3.5 h-3.5" />
+                  </div>
                   <span><b>{lang === 'ru' ? 'Срок:' : 'Muddat:'}</b> {currentPlan.durationStr[lang]}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#1B4332]" />
+                <div className="flex items-center gap-2.5">
+                  <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-[#1B4332] shadow-xs">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                  </div>
                   <span><b>{lang === 'ru' ? 'Гарантия:' : 'Kafolat:'}</b> {currentPlan.guaranteeStr[lang]}</span>
                 </div>
               </div>
 
-              {/* Total Price & Lock Button */}
-              <div className="pt-2 border-t border-[#DDD8CE]/60 flex items-center justify-between">
+              {/* Total Price & Pill CTA */}
+              <div className="pt-3 border-t border-[#DDD8CE]/60 flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] text-[#6B6762] uppercase tracking-wider font-semibold">
+                  <div className="text-[10px] text-[#6B6762] uppercase tracking-wider font-bold">
                     {lang === 'ru' && 'Итоговая стоимость'}
                     {lang === 'uz' && 'Jami qiymat'}
                     {lang === 'en' && 'Total estimate'}
                   </div>
-                  <div className="font-display font-extrabold text-xl text-[#1B4332]">
+                  <div className="font-display font-black text-2xl text-[#1B4332]">
                     {calculatedTotalUzs} сум
                   </div>
-                  <div className="text-[11px] text-[#6B6762]">
+                  <div className="text-xs font-semibold text-[#6B6762]">
                     ≈ ${calculatedTotalUsd} USD
                   </div>
                 </div>
@@ -726,7 +742,7 @@ export default function MiniAppPage() {
                   onClick={() => openBookingFor(
                     `${currentPlan.name[lang]} (${planUnits} ${currentPlan.unitLabel[lang]})`
                   )}
-                  className="font-semibold text-xs bg-[#1B4332] text-white px-5 py-3 rounded-2xl hover:bg-[#143326] transition-all shadow-sm active:scale-98"
+                  className="font-bold text-xs bg-[#1B4332] text-white px-6 py-3.5 rounded-full hover:bg-[#143326] transition-all shadow-md active:scale-95"
                 >
                   {lang === 'ru' && 'Зафиксировать расчёт'}
                   {lang === 'uz' && 'Hisobni tasdiqlash'}
@@ -742,9 +758,9 @@ export default function MiniAppPage() {
            ======================================================== */}
         {activeTab === 'doctors' && (
           <div className="space-y-4 animate-in fade-in duration-300">
-            <div>
-              <h2 className="font-display font-bold text-xl text-[#1C1B1A]">
-                {lang === 'ru' && 'Врачи клиники и консилиум'}
+            <div className="px-1">
+              <h2 className="font-display font-extrabold text-2xl text-[#1C1B1A]">
+                {lang === 'ru' && 'Врачи клиники'}
                 {lang === 'uz' && 'Yetakchi mutaxassislar'}
                 {lang === 'en' && 'Medical Specialists'}
               </h2>
@@ -755,36 +771,36 @@ export default function MiniAppPage() {
               </p>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               {DOCTORS.map((doc) => (
                 <div
                   key={doc.id}
-                  className="glass-panel rounded-3xl p-5 hover:bg-white/95 transition-all flex flex-col justify-between"
+                  className="apple-glass rounded-[32px] p-6 hover:bg-white/95 transition-all flex flex-col justify-between shadow-sm"
                 >
-                  <div className="flex items-start gap-3.5 mb-3">
-                    <div className="w-12 h-12 rounded-2xl bg-[#1B4332] text-white flex items-center justify-center font-bold text-sm tracking-wider shrink-0 shadow-sm">
+                  <div className="flex items-start gap-4 mb-3.5">
+                    <div className="w-14 h-14 rounded-2xl bg-[#1B4332] text-white flex items-center justify-center font-black text-base tracking-wider shrink-0 shadow-md">
                       {doc.initials}
                     </div>
                     <div>
-                      <div className="font-display font-bold text-base text-[#1C1B1A]">
+                      <div className="font-display font-extrabold text-base sm:text-lg text-[#1C1B1A]">
                         {doc.name[lang]}
                       </div>
-                      <div className="text-xs font-semibold text-[#1B4332] mt-0.5">
+                      <div className="text-xs font-bold text-[#1B4332] mt-0.5">
                         {doc.role[lang]}
                       </div>
-                      <div className="text-[11px] text-[#6B6762] mt-0.5">
+                      <div className="text-[11px] font-semibold text-[#6B6762] mt-0.5">
                         {lang === 'ru' ? `Стаж ${doc.experienceYears} лет` : `${doc.experienceYears} yil tajriba`}
                       </div>
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#524F4B] leading-relaxed mb-3.5 bg-[#ECE8E1]/50 p-3 rounded-2xl">
+                  <p className="text-xs text-[#524F4B] leading-relaxed mb-4 bg-[#ECE8E1]/60 p-4 rounded-2xl">
                     {doc.credentials[lang]}
                   </p>
 
                   <button
                     onClick={() => openBookingFor('Консультация', doc.name[lang])}
-                    className="w-full text-xs font-semibold py-2.5 rounded-xl bg-[#1C1B1A] text-white hover:bg-[#1B4332] transition-colors text-center active:scale-98"
+                    className="w-full text-xs font-bold py-3 rounded-full bg-[#1C1B1A] text-white hover:bg-[#1B4332] transition-colors text-center active:scale-97 shadow-sm"
                   >
                     {lang === 'ru' && `Записаться к доктору`}
                     {lang === 'uz' && `Qabuliga yozilish`}
@@ -801,10 +817,10 @@ export default function MiniAppPage() {
            ======================================================== */}
         {activeTab === 'contacts' && (
           <div className="space-y-4 animate-in fade-in duration-300">
-            <div>
-              <h2 className="font-display font-bold text-xl text-[#1C1B1A]">
-                {lang === 'ru' && 'Адрес, контакты и часы работы'}
-                {lang === 'uz' && 'Manzil, aloqa va ish vaqti'}
+            <div className="px-1">
+              <h2 className="font-display font-extrabold text-2xl text-[#1C1B1A]">
+                {lang === 'ru' && 'Адрес и контакты'}
+                {lang === 'uz' && 'Manzil va aloqa'}
                 {lang === 'en' && 'Clinic Location & Hours'}
               </h2>
               <p className="text-xs text-[#6B6762] mt-0.5">
@@ -814,12 +830,13 @@ export default function MiniAppPage() {
               </p>
             </div>
 
-            <div className="glass-panel rounded-3xl p-5 space-y-4">
+            {/* Address Card (Rounded 32px) */}
+            <div className="apple-glass rounded-[32px] p-6 space-y-4 shadow-sm">
               <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-[#1B4332] mb-1">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1B4332] bg-[#1B4332]/10 px-3 py-1 rounded-full inline-block mb-2">
                   DentaLux Aesthetic Clinic
-                </div>
-                <div className="font-display font-bold text-base text-[#1C1B1A] mb-1">
+                </span>
+                <div className="font-display font-extrabold text-base text-[#1C1B1A] mb-1">
                   {lang === 'ru' && 'г. Ташкент, Яккасарайский р-н, ул. Шота Руставели, 54'}
                   {lang === 'uz' && 'Toshkent sh., Yakkasaroy t., Shota Rustaveli ko‘chasi, 54'}
                   {lang === 'en' && '54 Shota Rustaveli st., Yakkasaray district, Tashkent'}
@@ -831,14 +848,14 @@ export default function MiniAppPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-2 pt-2">
+              <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
                 <a
                   href="https://yandex.uz/maps/-/CDuWjF8A"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex-1 text-center font-semibold text-xs py-3 rounded-2xl bg-[#1B4332] text-white hover:bg-[#143326] transition-colors flex items-center justify-center gap-1.5 active:scale-98"
+                  className="flex-1 text-center font-bold text-xs py-3.5 rounded-full bg-[#1B4332] text-white hover:bg-[#143326] transition-colors flex items-center justify-center gap-1.5 active:scale-97 shadow-sm"
                 >
-                  <MapPin className="w-3.5 h-3.5" />
+                  <MapPin className="w-4 h-4" />
                   {lang === 'ru' && 'Маршрут на Яндекс.Картах'}
                   {lang === 'uz' && 'Yandex Xaritada ochish'}
                   {lang === 'en' && 'Yandex Maps route'}
@@ -846,41 +863,42 @@ export default function MiniAppPage() {
 
                 <a
                   href="tel:+998712000000"
-                  className="flex-1 text-center font-semibold text-xs py-3 rounded-2xl glass-panel text-[#1C1B1A] hover:bg-white transition-colors flex items-center justify-center gap-1.5 active:scale-98"
+                  className="flex-1 text-center font-bold text-xs py-3.5 rounded-full apple-glass text-[#1C1B1A] hover:bg-white transition-colors flex items-center justify-center gap-1.5 active:scale-97 shadow-xs"
                 >
-                  <Phone className="w-3.5 h-3.5" />
+                  <Phone className="w-4 h-4" />
                   +998 (71) 200-00-00
                 </a>
               </div>
             </div>
 
-            <div className="glass-panel rounded-3xl p-5 space-y-3">
-              <div className="font-display font-bold text-sm text-[#1C1B1A]">
+            {/* Operating Hours Card (Rounded 32px) */}
+            <div className="apple-glass rounded-[32px] p-6 space-y-3.5 shadow-sm">
+              <div className="font-display font-extrabold text-base text-[#1C1B1A]">
                 {lang === 'ru' && 'График приёма'}
                 {lang === 'uz' && 'Qabul grafigi'}
                 {lang === 'en' && 'Operating Hours'}
               </div>
-              <div className="flex justify-between items-center text-xs py-1 border-b border-[#DDD8CE]/40">
+              <div className="flex justify-between items-center text-xs py-1.5 border-b border-[#DDD8CE]/40">
                 <span className="text-[#6B6762]">
                   {lang === 'ru' ? 'Понедельник — Пятница' : 'Dushanba — Juma'}
                 </span>
-                <span className="font-bold text-[#1C1B1A]">09:00 — 21:00</span>
+                <span className="font-extrabold text-[#1C1B1A]">09:00 — 21:00</span>
               </div>
-              <div className="flex justify-between items-center text-xs py-1 border-b border-[#DDD8CE]/40">
+              <div className="flex justify-between items-center text-xs py-1.5 border-b border-[#DDD8CE]/40">
                 <span className="text-[#6B6762]">
                   {lang === 'ru' ? 'Суббота' : 'Shanba'}
                 </span>
-                <span className="font-bold text-[#1C1B1A]">09:00 — 20:00</span>
+                <span className="font-extrabold text-[#1C1B1A]">09:00 — 20:00</span>
               </div>
-              <div className="flex justify-between items-center text-xs py-1">
+              <div className="flex justify-between items-center text-xs py-1.5">
                 <span className="text-[#6B6762]">
                   {lang === 'ru' ? 'Воскресенье' : 'Yakshanba'}
                 </span>
-                <span className="font-bold text-[#1C1B1A]">10:00 — 18:00</span>
+                <span className="font-extrabold text-[#1C1B1A]">10:00 — 18:00</span>
               </div>
             </div>
 
-            <div className="text-center text-[11px] text-[#6B6762] pt-2">
+            <div className="text-center text-[11px] text-[#6B6762] pt-3">
               Лицензия Минздрава РУз №008412 · Официальный партнёр Straumann (Базель)
             </div>
           </div>
@@ -889,121 +907,119 @@ export default function MiniAppPage() {
       </main>
 
       {/* ========================================================
-          3. APPLE DOCKED BOTTOM NAVIGATION TABBAR (Панель управления)
+          3. FLOATING APPLE GLASS DOCK (Нижняя панель управления без острых краёв)
          ======================================================== */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 glass-nav pb-safe pt-2 px-3">
-        <div className="max-w-md mx-auto flex items-center justify-around">
-          
-          {/* Tab 1: Home */}
-          <button
-            onClick={() => switchTab('home')}
-            className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all duration-200 ${
-              activeTab === 'home'
-                ? 'text-[#1B4332] scale-105'
-                : 'text-[#6B6762] hover:text-[#1C1B1A]'
-            }`}
-          >
-            <div className={`p-1 rounded-xl ${activeTab === 'home' ? 'bg-[#1B4332]/10' : ''}`}>
-              <Home className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-semibold mt-0.5">
-              {lang === 'ru' ? 'Главная' : lang === 'uz' ? 'Asosiy' : 'Home'}
-            </span>
-          </button>
+      <nav className="fixed bottom-4 left-3 right-3 z-40 max-w-md mx-auto apple-glass-dock rounded-full py-2 px-3 flex items-center justify-around shadow-2xl">
+        
+        {/* Tab 1: Home */}
+        <button
+          onClick={() => switchTab('home')}
+          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 active:scale-90 ${
+            activeTab === 'home'
+              ? 'text-[#1B4332] scale-105'
+              : 'text-[#6B6762] hover:text-[#1C1B1A]'
+          }`}
+        >
+          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'home' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
+            <Home className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] font-bold mt-0.5">
+            {lang === 'ru' ? 'Главная' : lang === 'uz' ? 'Asosiy' : 'Home'}
+          </span>
+        </button>
 
-          {/* Tab 2: Services */}
-          <button
-            onClick={() => switchTab('services')}
-            className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all duration-200 ${
-              activeTab === 'services'
-                ? 'text-[#1B4332] scale-105'
-                : 'text-[#6B6762] hover:text-[#1C1B1A]'
-            }`}
-          >
-            <div className={`p-1 rounded-xl ${activeTab === 'services' ? 'bg-[#1B4332]/10' : ''}`}>
-              <Layers className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-semibold mt-0.5">
-              {lang === 'ru' ? 'Услуги' : lang === 'uz' ? 'Xizmatlar' : 'Services'}
-            </span>
-          </button>
+        {/* Tab 2: Services */}
+        <button
+          onClick={() => switchTab('services')}
+          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 active:scale-90 ${
+            activeTab === 'services'
+              ? 'text-[#1B4332] scale-105'
+              : 'text-[#6B6762] hover:text-[#1C1B1A]'
+          }`}
+        >
+          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'services' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
+            <Layers className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] font-bold mt-0.5">
+            {lang === 'ru' ? 'Услуги' : lang === 'uz' ? 'Xizmat' : 'Services'}
+          </span>
+        </button>
 
-          {/* Tab 3: Calculator */}
-          <button
-            onClick={() => switchTab('calculator')}
-            className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all duration-200 ${
-              activeTab === 'calculator'
-                ? 'text-[#1B4332] scale-105'
-                : 'text-[#6B6762] hover:text-[#1C1B1A]'
-            }`}
-          >
-            <div className={`p-1 rounded-xl ${activeTab === 'calculator' ? 'bg-[#1B4332]/10' : ''}`}>
-              <Calculator className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-semibold mt-0.5">
-              {lang === 'ru' ? 'Расчёт' : lang === 'uz' ? 'Hisob' : 'Estimate'}
-            </span>
-          </button>
+        {/* Tab 3: Calculator */}
+        <button
+          onClick={() => switchTab('calculator')}
+          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 active:scale-90 ${
+            activeTab === 'calculator'
+              ? 'text-[#1B4332] scale-105'
+              : 'text-[#6B6762] hover:text-[#1C1B1A]'
+          }`}
+        >
+          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'calculator' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
+            <Calculator className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] font-bold mt-0.5">
+            {lang === 'ru' ? 'Расчёт' : lang === 'uz' ? 'Hisob' : 'Estimate'}
+          </span>
+        </button>
 
-          {/* Tab 4: Doctors */}
-          <button
-            onClick={() => switchTab('doctors')}
-            className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all duration-200 ${
-              activeTab === 'doctors'
-                ? 'text-[#1B4332] scale-105'
-                : 'text-[#6B6762] hover:text-[#1C1B1A]'
-            }`}
-          >
-            <div className={`p-1 rounded-xl ${activeTab === 'doctors' ? 'bg-[#1B4332]/10' : ''}`}>
-              <Users className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-semibold mt-0.5">
-              {lang === 'ru' ? 'Врачи' : lang === 'uz' ? 'Shifokor' : 'Doctors'}
-            </span>
-          </button>
+        {/* Tab 4: Doctors */}
+        <button
+          onClick={() => switchTab('doctors')}
+          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 active:scale-90 ${
+            activeTab === 'doctors'
+              ? 'text-[#1B4332] scale-105'
+              : 'text-[#6B6762] hover:text-[#1C1B1A]'
+          }`}
+        >
+          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'doctors' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
+            <Users className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] font-bold mt-0.5">
+            {lang === 'ru' ? 'Врачи' : lang === 'uz' ? 'Shifokor' : 'Doctors'}
+          </span>
+        </button>
 
-          {/* Tab 5: Contacts */}
-          <button
-            onClick={() => switchTab('contacts')}
-            className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all duration-200 ${
-              activeTab === 'contacts'
-                ? 'text-[#1B4332] scale-105'
-                : 'text-[#6B6762] hover:text-[#1C1B1A]'
-            }`}
-          >
-            <div className={`p-1 rounded-xl ${activeTab === 'contacts' ? 'bg-[#1B4332]/10' : ''}`}>
-              <MapPin className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-semibold mt-0.5">
-              {lang === 'ru' ? 'Клиника' : lang === 'uz' ? 'Klinika' : 'Clinic'}
-            </span>
-          </button>
+        {/* Tab 5: Contacts */}
+        <button
+          onClick={() => switchTab('contacts')}
+          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 active:scale-90 ${
+            activeTab === 'contacts'
+              ? 'text-[#1B4332] scale-105'
+              : 'text-[#6B6762] hover:text-[#1C1B1A]'
+          }`}
+        >
+          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'contacts' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
+            <MapPin className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] font-bold mt-0.5">
+            {lang === 'ru' ? 'Клиника' : lang === 'uz' ? 'Klinika' : 'Clinic'}
+          </span>
+        </button>
 
-        </div>
       </nav>
 
       {/* ========================================================
-          4. APPLE BOTTOM SHEET MODAL (Форма записи)
+          4. APPLE ROUNDED BOTTOM SHEET MODAL (Rounded 36px)
          ======================================================== */}
       {isBookingOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end justify-center animate-in fade-in duration-200">
-          <div className="w-full sm:max-w-md bg-[#F6F4F0] p-6 max-h-[88vh] overflow-y-auto rounded-t-[32px] shadow-2xl border-t border-white/80 animate-in slide-in-from-bottom duration-200">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="w-full sm:max-w-md bg-[#F6F4F0] p-6 max-h-[88vh] overflow-y-auto rounded-t-[36px] sm:rounded-[36px] shadow-2xl border-t sm:border border-white/90 animate-in slide-in-from-bottom duration-200">
             
-            {/* Apple Drag Handle */}
-            <div className="w-10 h-1 bg-[#DDD8CE] rounded-full mx-auto mb-5" />
+            {/* Apple Drag Handle Pill */}
+            <div className="w-12 h-1.5 bg-[#DDD8CE] rounded-full mx-auto mb-5" />
 
             {isSuccess ? (
               <div className="text-center py-6">
-                <div className="w-14 h-14 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center mx-auto mb-3">
-                  <Check className="w-7 h-7" />
+                <div className="w-16 h-16 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center mx-auto mb-3 shadow-inner">
+                  <Check className="w-8 h-8" />
                 </div>
-                <div className="font-display font-bold text-xl text-[#1C1B1A] mb-1.5">
-                  {lang === 'ru' && 'Запись успешно принята'}
+                <div className="font-display font-extrabold text-xl text-[#1C1B1A] mb-1.5">
+                  {lang === 'ru' && 'Запись принята'}
                   {lang === 'uz' && 'Ariza qabul qilindi'}
                   {lang === 'en' && 'Booking Confirmed'}
                 </div>
                 <p className="text-xs text-[#524F4B] mb-6 leading-relaxed">
-                  {lang === 'ru' && 'Мы перезвоним вам в течение 10 минут для согласования точного времени.'}
+                  {lang === 'ru' && 'Мы перезвоним вам в течение 10 минут для согласования точного времени приёма.'}
                   {lang === 'uz' && "10 daqiqa ichida administratorimiz siz bilan bog'lanadi."}
                   {lang === 'en' && 'Our clinic administrator will contact you within 10 minutes.'}
                 </p>
@@ -1012,7 +1028,7 @@ export default function MiniAppPage() {
                     setIsBookingOpen(false);
                     setIsSuccess(false);
                   }}
-                  className="w-full font-semibold text-xs bg-[#1C1B1A] text-white py-3 rounded-2xl active:scale-98"
+                  className="w-full font-bold text-xs bg-[#1C1B1A] text-white py-3.5 rounded-full active:scale-95 shadow-md"
                 >
                   {lang === 'ru' && 'Готово'}
                   {lang === 'uz' && 'Tayyor'}
@@ -1023,26 +1039,26 @@ export default function MiniAppPage() {
               <form onSubmit={handleBookingSubmit} className="space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-display font-bold text-lg text-[#1C1B1A]">
+                    <h3 className="font-display font-extrabold text-lg text-[#1C1B1A]">
                       {lang === 'ru' && 'Запись на приём'}
                       {lang === 'uz' && 'Qabulga yozilish'}
                       {lang === 'en' && 'Book Appointment'}
                     </h3>
-                    <div className="text-xs text-[#1B4332] font-semibold mt-0.5">
+                    <div className="text-xs text-[#1B4332] font-bold mt-0.5">
                       {bookingService}
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsBookingOpen(false)}
-                    className="w-8 h-8 rounded-full bg-[#ECE8E1] flex items-center justify-center text-[#6B6762] hover:text-[#1C1B1A]"
+                    className="w-8 h-8 rounded-full bg-[#ECE8E1] flex items-center justify-center text-[#6B6762] hover:text-[#1C1B1A] active:scale-90"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#4A4743] mb-1">
+                  <label className="block text-xs font-bold text-[#4A4743] mb-1.5">
                     {lang === 'ru' && 'Ваше имя:'}
                     {lang === 'uz' && 'Ismingiz:'}
                     {lang === 'en' && 'Your Name:'}
@@ -1053,12 +1069,12 @@ export default function MiniAppPage() {
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
                     placeholder="Азиз"
-                    className="w-full px-3.5 py-2.5 bg-white rounded-2xl border border-[#DDD8CE] text-sm text-[#1C1B1A] focus:outline-none focus:border-[#1B4332]"
+                    className="w-full px-4 py-3 bg-white rounded-2xl border border-[#DDD8CE]/80 text-sm text-[#1C1B1A] focus:outline-none focus:border-[#1B4332] shadow-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#4A4743] mb-1">
+                  <label className="block text-xs font-bold text-[#4A4743] mb-1.5">
                     {lang === 'ru' && 'Номер телефона:'}
                     {lang === 'uz' && 'Telefon raqam:'}
                     {lang === 'en' && 'Phone Number:'}
@@ -1069,12 +1085,12 @@ export default function MiniAppPage() {
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value)}
                     placeholder="+998 90 123 45 67"
-                    className="w-full px-3.5 py-2.5 bg-white rounded-2xl border border-[#DDD8CE] text-sm text-[#1C1B1A] focus:outline-none focus:border-[#1B4332]"
+                    className="w-full px-4 py-3 bg-white rounded-2xl border border-[#DDD8CE]/80 text-sm text-[#1C1B1A] focus:outline-none focus:border-[#1B4332] shadow-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#4A4743] mb-1">
+                  <label className="block text-xs font-bold text-[#4A4743] mb-1.5">
                     {lang === 'ru' && 'Удобное время:'}
                     {lang === 'uz' && 'Qulay vaqt:'}
                     {lang === 'en' && 'Preferred Time:'}
@@ -1082,7 +1098,7 @@ export default function MiniAppPage() {
                   <select
                     value={bookingDate}
                     onChange={(e) => setBookingDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white rounded-2xl border border-[#DDD8CE] text-sm text-[#1C1B1A] focus:outline-none focus:border-[#1B4332]"
+                    className="w-full px-4 py-3 bg-white rounded-2xl border border-[#DDD8CE]/80 text-sm text-[#1C1B1A] focus:outline-none focus:border-[#1B4332] shadow-xs"
                   >
                     <option value="Сегодня (в ближайшее время)">Сегодня (в ближайшее время)</option>
                     <option value="Завтра утро (10:00 - 13:00)">Завтра утро (10:00 - 13:00)</option>
@@ -1092,7 +1108,7 @@ export default function MiniAppPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#4A4743] mb-1">
+                  <label className="block text-xs font-bold text-[#4A4743] mb-1.5">
                     {lang === 'ru' && 'Врач:'}
                     {lang === 'uz' && 'Shifokor:'}
                     {lang === 'en' && 'Doctor:'}
@@ -1100,7 +1116,7 @@ export default function MiniAppPage() {
                   <select
                     value={bookingDoctor}
                     onChange={(e) => setBookingDoctor(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white rounded-2xl border border-[#DDD8CE] text-sm text-[#1C1B1A] focus:outline-none focus:border-[#1B4332]"
+                    className="w-full px-4 py-3 bg-white rounded-2xl border border-[#DDD8CE]/80 text-sm text-[#1C1B1A] focus:outline-none focus:border-[#1B4332] shadow-xs"
                   >
                     <option value="Любой свободный специалист">Любой свободный специалист</option>
                     <option value="Д-р Азиз Каримов (Имплантолог)">Д-р Азиз Каримов (Хирург-имплантолог)</option>
@@ -1112,13 +1128,13 @@ export default function MiniAppPage() {
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full font-semibold text-xs bg-[#1B4332] text-white py-3.5 rounded-2xl hover:bg-[#143326] transition-all shadow-sm active:scale-98"
+                    className="w-full font-bold text-xs bg-[#1B4332] text-white py-4 rounded-full hover:bg-[#143326] transition-all shadow-md active:scale-97"
                   >
                     {lang === 'ru' && 'Подтвердить запись'}
                     {lang === 'uz' && 'Band qilishni tasdiqlash'}
                     {lang === 'en' && 'Confirm Booking'}
                   </button>
-                  <div className="text-[10px] text-[#6B6762] text-center mt-2">
+                  <div className="text-[10px] text-[#6B6762] text-center mt-2 font-medium">
                     {lang === 'ru' && 'Конфиденциально · Мгновенное подтверждение в Telegram'}
                     {lang === 'uz' && 'Maxfiy · Telegram orqali tezkor tasdiq'}
                     {lang === 'en' && 'Confidential · Instant Telegram notification'}

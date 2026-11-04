@@ -26,38 +26,39 @@ body {
 
 h1, h2, h3, h4, .font-display {
   font-family: var(--font-display), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 
-/* Apple-style Frosted Glass Utilities */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.72);
+/* Apple iOS Frosted Glass & Squircle Utilities */
+.apple-glass {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 36px -6px rgba(28, 27, 26, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
+}
+
+.apple-glass-subtle {
+  background: rgba(255, 255, 255, 0.52);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.75);
 }
 
-.glass-panel-subtle {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+.apple-glass-dock {
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 48px -10px rgba(28, 27, 26, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
 }
 
-.glass-nav {
-  background: rgba(246, 244, 240, 0.88);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(221, 216, 206, 0.6);
-}
-
-.glass-card-dark {
-  background: rgba(27, 67, 50, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 12px 32px rgba(27, 67, 50, 0.22);
+.apple-glass-dark {
+  background: linear-gradient(145deg, rgba(27, 67, 50, 0.98), rgba(18, 46, 35, 0.98));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 16px 40px -8px rgba(27, 67, 50, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
 }
 
 /* Custom smooth horizontal snapping */
@@ -81,5 +82,5 @@ h1, h2, h3, h4, .font-display {
 
 /* Safe area padding for Telegram & iOS Home Indicator */
 .pb-safe {
-  padding-bottom: env(safe-area-inset-bottom, 16px);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
 }
