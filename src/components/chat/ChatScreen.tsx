@@ -610,14 +610,14 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
       >
         <div
           ref={inputWrapRef}
-          className="relative flex-1 bg-white rounded-3xl px-4 py-2 shadow-sm border border-slate-200/70"
+          className="relative flex-1 min-h-11 bg-white rounded-3xl px-4 py-1.5 shadow-sm border border-slate-200/70"
         >
           {/* Hidden mirror of the text, used only to measure where the caret belongs */}
           <div
             ref={mirrorRef}
             aria-hidden="true"
-            className="absolute left-4 right-4 top-2 py-1 leading-snug whitespace-pre-wrap break-words invisible pointer-events-none"
-            style={{ fontSize: 16 }}
+            className="absolute left-4 right-4 top-[6px] py-1 whitespace-pre-wrap break-words invisible pointer-events-none"
+            style={{ fontSize: 16, lineHeight: '22px' }}
           >
             {draft.slice(0, caretIndex)}
             <span ref={markerRef}>&#8203;</span>
@@ -652,8 +652,8 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
             placeholder={copy.placeholder}
             // 16px prevents iOS from zooming into the field when it is focused.
             // The native caret is hidden; our own blinking caret is drawn below.
-            style={{ fontSize: 16, caretColor: 'transparent' }}
-            className="relative w-full resize-none bg-transparent outline-none leading-snug max-h-32 py-1 text-[var(--ink)] placeholder:text-slate-400"
+            style={{ fontSize: 16, lineHeight: '22px', caretColor: 'transparent' }}
+            className="relative block w-full resize-none bg-transparent outline-none max-h-32 py-1 text-[var(--ink)] placeholder:text-slate-400"
           />
 
           {/* Always mounted and moved with transform: no remounts, no flicker while typing.
