@@ -327,7 +327,7 @@ export default function MiniAppPage() {
       </header>
 
       {/* 2. TAB CONTENT VIEWS */}
-      <main className="flex-1 px-3 pt-3 max-w-xl mx-auto w-full">
+      <main className="flex-1 px-3 pt-3 pb-32 max-w-xl mx-auto w-full">
         
         {/* ========================================================
             TAB 1: ГЛАВНАЯ (HOME / DASHBOARD)
@@ -365,16 +365,16 @@ export default function MiniAppPage() {
                 </p>
 
                 {/* Micro-Social Proof / Doctor Avatar Stack */}
-                <div className="flex items-center gap-3 mb-6 bg-white/10 backdrop-blur-md px-3.5 py-2 rounded-2xl w-fit border border-white/10">
-                  <div className="flex -space-x-2 overflow-hidden">
-                    <div className="inline-block h-6 w-6 rounded-full bg-[#E2DDD4] text-[#1B4332] text-[10px] font-bold flex items-center justify-center ring-2 ring-[#1B4332]">СК</div>
-                    <div className="inline-block h-6 w-6 rounded-full bg-[#ECE8E1] text-[#1B4332] text-[10px] font-bold flex items-center justify-center ring-2 ring-[#1B4332]">МУ</div>
-                    <div className="inline-block h-6 w-6 rounded-full bg-[#E3DDD4] text-[#1B4332] text-[10px] font-bold flex items-center justify-center ring-2 ring-[#1B4332]">ТР</div>
+                <div className="flex items-center gap-3 mb-6 bg-white/10 backdrop-blur-md px-3.5 py-2 rounded-full w-fit border border-white/15">
+                  <div className="flex -space-x-1.5 items-center">
+                    <span className="w-6 h-6 rounded-full bg-[#ECE8E1] text-[#1B4332] text-[9px] font-bold flex items-center justify-center ring-2 ring-[#1B4332] shadow-xs">АК</span>
+                    <span className="w-6 h-6 rounded-full bg-[#E2DDD4] text-[#1B4332] text-[9px] font-bold flex items-center justify-center ring-2 ring-[#1B4332] shadow-xs">МУ</span>
+                    <span className="w-6 h-6 rounded-full bg-[#D8D2C7] text-[#1B4332] text-[9px] font-bold flex items-center justify-center ring-2 ring-[#1B4332] shadow-xs">СР</span>
                   </div>
                   <span className="text-[11px] text-white/90 font-medium">
-                    {lang === 'ru' && '4 ведущих хирурга на смене сегодня'}
+                    {lang === 'ru' && '4 ведущих врача на смене сегодня'}
                     {lang === 'uz' && 'Bugun 4 nafar yetakchi shifokor qabulda'}
-                    {lang === 'en' && '4 senior specialists on duty today'}
+                    {lang === 'en' && '4 senior doctors on duty today'}
                   </span>
                 </div>
 
