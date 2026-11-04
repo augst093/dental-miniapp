@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
               <span className="font-extrabold text-[14px] sm:text-[15px] tracking-tight text-[var(--ink)] shrink-0 whitespace-nowrap">
                 {config.name[lang]}
               </span>
-              <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-bold text-[var(--accent)] bg-[var(--accent-subtle)] border border-blue-200/60 px-1.5 py-0.5 rounded-full shrink-0">
+              <span className="hidden sm:inline-flex items-center gap-0.5 text-[10px] font-bold text-[var(--accent)] bg-[var(--accent-subtle)] border border-blue-200/60 px-1.5 py-0.5 rounded-full shrink-0">
                 <Sparkles className="w-2.5 h-2.5 text-[var(--accent)]" />
                 {config.city[lang]}
               </span>

@@ -80,7 +80,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
               <h2 className="font-bold text-[14px] sm:text-[15px] text-[var(--ink)] mt-1 leading-snug">
                 {t.emergencyBanner.title[lang]}
               </h2>
-              <p className="text-[12px] text-[var(--ink-secondary)] mt-0.5">
+              <p className="hidden sm:block text-[12px] text-[var(--ink-secondary)] mt-0.5">
                 {t.emergencyBanner.sub[lang]}
               </p>
             </div>
@@ -108,7 +108,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             lang={lang}
             title={t.emergencyBanner.callAction[lang]}
             triggerHaptic={triggerHaptic}
-            className="py-2.5 px-4 rounded-full bg-white/80 hover:bg-white active:scale-95 border border-red-200 text-red-700 font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-xs transition-all touch-target"
+            className="py-2.5 px-4 rounded-full bg-white/80 hover:bg-white active:scale-95 border border-red-200 text-red-700 font-bold text-[12px] sm:text-[13px] hidden sm:flex items-center justify-center gap-1.5 shadow-xs transition-all touch-target"
           >
             <Phone className="w-3.5 h-3.5 fill-current" />
             <span>{t.emergencyBanner.callAction[lang]}</span>
@@ -130,7 +130,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="absolute -bottom-16 -left-16 w-60 h-60 bg-indigo-500/10 rounded-full pointer-events-none blur-3xl" />
 
         <div className="relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-1.5 bg-[var(--accent-subtle)] border border-blue-200/70 px-3 py-1 rounded-full text-[11px] font-bold text-[var(--accent)] tracking-wide">
+          <div className="hidden sm:inline-flex items-center gap-1.5 bg-[var(--accent-subtle)] border border-blue-200/70 px-3 py-1 rounded-full text-[11px] font-bold text-[var(--accent)] tracking-wide">
             <Sparkles className="w-3 h-3 text-[var(--accent)]" />
             <span>{t.hero.badge[lang]}</span>
           </div>
@@ -169,7 +169,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           </div>
 
           {/* Doctor Avatar Stack with Frosted Pill */}
-          <div className="inline-flex items-center gap-2.5 bg-white/70 backdrop-blur-md border border-slate-200/80 px-3 py-1.5 rounded-full shadow-xs">
+          <div className="hidden sm:inline-flex items-center gap-2.5 bg-white/70 backdrop-blur-md border border-slate-200/80 px-3 py-1.5 rounded-full shadow-xs">
             <div className="flex -space-x-1.5 px-0.5 py-0.5">
               {DOCTORS.map((doc) => (
                 <div

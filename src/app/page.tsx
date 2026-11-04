@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { CLINIC_CONFIG, Language } from '../data/clinicData';
 import { Header } from '../components/Header';
 import { BottomNav, TabType } from '../components/BottomNav';
-import { StickyCta } from '../components/StickyCta';
 import { BookingModal } from '../components/BookingModal';
 import { HomeTab } from '../components/tabs/HomeTab';
 import { ServicesTab } from '../components/tabs/ServicesTab';
@@ -36,7 +35,6 @@ export default function MiniAppPage() {
   const [bookingDoctor, setBookingDoctor] = useState<string>('');
 
   // Sticky CTA Dismissed State
-  const [isCtaDismissed, setIsCtaDismissed] = useState<boolean>(false);
 
   // Assistant chat (full-screen, opened from the floating button)
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
@@ -259,16 +257,6 @@ export default function MiniAppPage() {
         </div>
       </main>
 
-      {/* 3. Sticky Primary CTA (Shown only in Patient mode when not dismissed) */}
-      {currentRole === 'patient' && !isBookingOpen && activeTab !== 'home' && activeTab !== 'calculator' && !isCtaDismissed && (
-        <StickyCta
-          lang={lang}
-          onOpenBooking={() => handleOpenBooking()}
-          onDismiss={() => setIsCtaDismissed(true)}
-          triggerHaptic={triggerHaptic}
-        />
-      )}
-
       {/* 3a. First-open onboarding (patient view; skipped in demo mode so presentations are not interrupted) */}
       <Onboarding lang={lang} enabled={!isDemoMode && currentRole === 'patient'} />
 
@@ -281,7 +269,7 @@ export default function MiniAppPage() {
           }}
           aria-label="Чат с ассистентом"
           className={`fixed right-4 z-30 w-14 h-14 rounded-full bg-white text-[var(--accent)] border border-blue-100 shadow-2xl flex items-center justify-center active:scale-90 transition-transform chat-fab ${
-            activeTab === 'home' ? 'bottom-[96px]' : 'bottom-[156px]'
+            'bottom-[96px]'
           }`}
         >
           <MessageCircle className="w-6 h-6" />
