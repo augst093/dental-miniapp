@@ -37,8 +37,14 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
           <div key={doc.id} className="clinic-card p-4 sm:p-5 space-y-3.5 rounded-3xl">
             <div className="flex items-start gap-3">
               {/* Doctor Avatar */}
-              <div className="w-12 h-12 rounded-full bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center shrink-0 shadow-sm">
-                <User className="w-6 h-6" strokeWidth={1.75} />
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center shrink-0 shadow-sm">
+                {doc.photoUrl ? (
+                  // Real doctor photo when the clinic provides one; silhouette otherwise
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={doc.photoUrl} alt={doc.name[lang]} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-6 h-6" strokeWidth={1.75} />
+                )}
               </div>
 
               <div className="min-w-0 flex-1">

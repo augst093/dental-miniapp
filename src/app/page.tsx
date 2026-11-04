@@ -15,6 +15,8 @@ import { AdminPanel } from '../components/admin/AdminPanel';
 import { OwnerReportTab } from '../components/admin/OwnerReportTab';
 import { DemoControlDrawer } from '../components/admin/DemoControlDrawer';
 import { ChatScreen } from '../components/chat/ChatScreen';
+import { VisitCard } from '../components/VisitCard';
+import { Onboarding } from '../components/Onboarding';
 import { MessageCircle } from 'lucide-react';
 
 // Patient dock order, used to decide which way content slides
@@ -38,6 +40,13 @@ export default function MiniAppPage() {
 
   // Assistant chat (full-screen, opened from the floating button)
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+  // Text prepared for the chat input (for example, from the visit card)
+  const [chatDraft, setChatDraft] = useState<string>('');
+
+  const openChatWith = (text: string) => {
+    setChatDraft(text);
+    setIsChatOpen(true);
+  };
 
   // Demo panel is hidden for patients; enable with ?demo=1 in the URL
   const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
@@ -204,6 +213,7 @@ export default function MiniAppPage() {
         ) : (
           /* ================= PATIENT VIEW ================= */
           <>
+            {activeTab === 'home' && <VisitCard lang={lang} onAskChat={openChatWith} />}
             {activeTab === 'home' && (
               <HomeTab
                 lang={lang}
@@ -259,6 +269,9 @@ export default function MiniAppPage() {
         />
       )}
 
+      {/* 3a. First-open onboarding (patient view; skipped in demo mode so presentations are not interrupted) */}
+      <Onboarding lang={lang} enabled={!isDemoMode && currentRole === 'patient'} />
+
       {/* 3b. Floating chat button (patient view, above the navigation dock) */}
       {currentRole === 'patient' && !isBookingOpen && !isChatOpen && activeTab !== 'calculator' && (
         <button
@@ -302,8 +315,12 @@ export default function MiniAppPage() {
     {isChatOpen && (
       <ChatScreen
         lang={lang}
-        onClose={() => setIsChatOpen(false)}
+        onClose={() => {
+          setIsChatOpen(false);
+          setChatDraft('');
+        }}
         onOpenBooking={() => handleOpenBooking()}
+        initialDraft={chatDraft}
         triggerHaptic={triggerHaptic}
       />
     )}

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { CallButton } from './ui/CallButton';
+import { saveVisit } from '../lib/patientVisit';
 import {
   X,
   Check,
@@ -245,6 +246,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         setIsSubmitting(false);
         return;
       }
+
+      // Keep the booking on this device so the home screen can show it
+      saveVisit({
+        id: `${Date.now().toString(36)}`,
+        doctor: selectedDoctor,
+        service: selectedService,
+        dateStr,
+        timeStr: selectedTimeSlot,
+        status: 'pending',
+      });
 
       setIsSuccess(true);
 

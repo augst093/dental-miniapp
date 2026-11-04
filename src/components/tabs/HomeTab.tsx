@@ -174,10 +174,15 @@ export const HomeTab: React.FC<HomeTabProps> = ({
               {DOCTORS.map((doc) => (
                 <div
                   key={doc.id}
-                  className="inline-flex w-7 h-7 rounded-full ring-2 ring-white bg-[var(--accent-subtle)] text-[var(--accent)] items-center justify-center shrink-0 shadow-xs"
+                  className="inline-flex w-7 h-7 rounded-full overflow-hidden ring-2 ring-white bg-[var(--accent-subtle)] text-[var(--accent)] items-center justify-center shrink-0 shadow-xs"
                   title={doc.name[lang]}
                 >
-                  <User className="w-4 h-4" strokeWidth={1.75} />
+                  {doc.photoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={doc.photoUrl} alt={doc.name[lang]} className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-4 h-4" strokeWidth={1.75} />
+                  )}
                 </div>
               ))}
             </div>

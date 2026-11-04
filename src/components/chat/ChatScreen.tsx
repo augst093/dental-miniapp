@@ -66,6 +66,8 @@ interface ChatScreenProps {
   onClose: () => void;
   onOpenBooking: () => void;
   triggerHaptic: (style?: 'light' | 'medium' | 'heavy') => void;
+  // Ready text to put in the input when the chat opens (for example from the visit card)
+  initialDraft?: string;
 }
 
 // Height of the custom caret in the input (px)
@@ -273,11 +275,17 @@ const Bubble = memo(function Bubble({
   );
 });
 
-export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBooking, triggerHaptic }) => {
+export const ChatScreen: React.FC<ChatScreenProps> = ({
+  lang,
+  onClose,
+  onOpenBooking,
+  triggerHaptic,
+  initialDraft = '',
+}) => {
   const copy = COPY[lang];
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [hydrated, setHydrated] = useState<boolean>(false);
-  const [draft, setDraft] = useState<string>('');
+  const [draft, setDraft] = useState<string>(initialDraft);
   const [busy, setBusy] = useState<boolean>(false);
   // Visible area above the on-screen keyboard (null where visualViewport is unavailable)
   const [viewport, setViewport] = useState<{ top: number; height: number } | null>(null);
