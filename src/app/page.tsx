@@ -34,17 +34,9 @@ export default function MiniAppPage() {
   // Demo panel is hidden for patients; enable with ?demo=1 in the URL
   const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
 
-  // Sticky CTA is shown only after the hero CTA has scrolled out of view
-  const [isScrolledPastHero, setIsScrolledPastHero] = useState<boolean>(false);
-
   useEffect(() => {
     if (typeof window === 'undefined') return;
     setIsDemoMode(new URLSearchParams(window.location.search).has('demo'));
-
-    const onScroll = () => setIsScrolledPastHero(window.scrollY > 320);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   // Initialize Telegram WebApp
@@ -53,6 +45,9 @@ export default function MiniAppPage() {
       const tg = window.Telegram.WebApp;
       tg.ready();
       tg.expand();
+
+      // Follow the user's Telegram colour scheme
+      document.documentElement.classList.toggle('tg-dark', tg.colorScheme === 'dark');
 
       const tgUser = tg.initDataUnsafe?.user;
       if (tgUser) {
@@ -227,7 +222,7 @@ export default function MiniAppPage() {
       </main>
 
       {/* 3. Sticky Primary CTA (Shown only in Patient mode when not dismissed) */}
-      {currentRole === 'patient' && !isBookingOpen && activeTab !== 'calculator' && !isCtaDismissed && isScrolledPastHero && (
+      {currentRole === 'patient' && !isBookingOpen && activeTab !== 'home' && activeTab !== 'calculator' && !isCtaDismissed && (
         <StickyCta
           lang={lang}
           onOpenBooking={() => handleOpenBooking()}

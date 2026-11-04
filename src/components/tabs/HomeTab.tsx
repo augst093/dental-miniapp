@@ -53,7 +53,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       {/* ========================================================
           1. EMERGENCY SOS BANNER (ACUTE PAIN RELIEF) - Frosted Red Glass
          ======================================================== */}
-      <section className="bg-red-500/5 backdrop-blur-md border border-red-200/90 rounded-2xl p-3.5 sm:p-4 shadow-xs">
+      <section className="bg-white/80 backdrop-blur-md border border-red-100 rounded-2xl p-3.5 sm:p-4 shadow-xs">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-2.5">
             <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -307,7 +307,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-bold text-[16px] text-[var(--ink)]">
+            <h2 className="font-serif italic font-normal text-[22px] text-[var(--ink)]">
               {t.featured.title[lang]}
             </h2>
             <p className="text-[12px] text-[var(--ink-muted)]">
