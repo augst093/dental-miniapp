@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ArrowLeft, CalendarDays, Send, Trash2 } from 'lucide-react';
+import { ArrowLeft, CalendarDays, SendHorizonal, Trash2 } from 'lucide-react';
 import { Language } from '../../data/clinicData';
 import { clearHistory, loadHistory, saveHistory } from './chatStorage';
 
@@ -67,6 +67,9 @@ interface ChatScreenProps {
   onOpenBooking: () => void;
   triggerHaptic: (style?: 'light' | 'medium' | 'heavy') => void;
 }
+
+// Height of the custom caret in the input (px)
+const CARET_HEIGHT = 20;
 
 // Messages kept for the AI context and for storage (the storage limit is per value, see chatStorage.ts)
 const MAX_STORED = 30;
@@ -274,6 +277,8 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
   const [caretIndex, setCaretIndex] = useState<number>(0);
   const [inputFocused, setInputFocused] = useState<boolean>(false);
   const [caretPos, setCaretPos] = useState<{ left: number; top: number } | null>(null);
+  // Changes on every keystroke; used to restart the caret blink from its solid phase
+  const [caretPulse, setCaretPulse] = useState<number>(0);
 
   const syncCaret = (el: HTMLTextAreaElement) => {
     setCaretIndex(el.selectionStart ?? el.value.length);
@@ -286,12 +291,14 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
     const field = inputRef.current;
     if (!wrap || !marker || !field) return;
 
+    // Coordinates relative to the padding box of the wrapper (where an absolute child is placed)
     const wrapRect = wrap.getBoundingClientRect();
     const markerRect = marker.getBoundingClientRect();
-    setCaretPos({
-      left: markerRect.left - wrapRect.left,
-      top: markerRect.top - wrapRect.top - field.scrollTop,
-    });
+    const left = markerRect.left - wrapRect.left - wrap.clientLeft;
+    const top = markerRect.top - wrapRect.top - wrap.clientTop - field.scrollTop + (markerRect.height - CARET_HEIGHT) / 2;
+    setCaretPos((previous) =>
+      previous && previous.left === left && previous.top === top ? previous : { left, top }
+    );
   }, [draft, caretIndex, inputFocused]);
   // Whether the list should follow new messages (false when the user scrolled up to read)
   const stickRef = useRef<boolean>(true);
@@ -622,6 +629,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
             value={draft}
             onChange={(e) => {
               setDraft(e.target.value);
+              setCaretPulse((count) => count + 1);
               syncCaret(e.target);
             }}
             onSelect={(e) => syncCaret(e.currentTarget)}
@@ -648,21 +656,31 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
             className="relative w-full resize-none bg-transparent outline-none leading-snug max-h-32 py-1 text-[var(--ink)] placeholder:text-slate-400"
           />
 
-          {inputFocused && caretPos && (
+          {/* Always mounted and moved with transform: no remounts, no flicker while typing.
+              The inner element is keyed by the keystroke counter, so each keystroke restarts the
+              blink from "solid", like a native caret. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute left-0 top-0 transition-opacity duration-150"
+            style={{
+              opacity: inputFocused && caretPos ? 1 : 0,
+              transform: `translate3d(${caretPos?.left ?? 0}px, ${caretPos?.top ?? 0}px, 0)`,
+            }}
+          >
             <span
-              aria-hidden="true"
-              className="chat-caret pointer-events-none absolute w-[2px] rounded-full bg-[var(--accent)]"
-              style={{ left: caretPos.left, top: caretPos.top + 6, height: 20 }}
+              key={caretPulse}
+              className="chat-caret block rounded-full bg-[var(--accent)]"
+              style={{ width: 2, height: CARET_HEIGHT }}
             />
-          )}
+          </span>
         </div>
         <button
           type="submit"
           disabled={!draft.trim() || busy}
           aria-label="Send"
-          className="w-11 h-11 rounded-full bg-[var(--accent)] text-white flex items-center justify-center shadow-md active:scale-90 transition-transform disabled:opacity-40 disabled:shadow-none shrink-0"
+          className="w-11 h-11 rounded-full bg-[var(--accent)] text-white flex items-center justify-center shadow-md active:scale-90 transition-transform disabled:bg-slate-300 disabled:shadow-none shrink-0"
         >
-          <Send className="w-5 h-5" />
+          <SendHorizonal className="w-5 h-5" />
         </button>
       </form>
     </div>
