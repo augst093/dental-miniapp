@@ -1,142 +1,106 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #F6F4F0;
-  --surface: #ECE8E1;
-  --surface-alt: #E3DDD4;
-  --ink: #1C1B1A;
-  --muted: #6B6762;
-  --accent: #1B4332;
-  --accent-hover: #143326;
-  --accent-ink: #FFFFFF;
-  --border: #DDD8CE;
-  --dark-ground: #161A1D;
-  --dark-surface: #20262B;
-  --dark-ink: #F6F4F0;
-  --dark-muted: #9E9B95;
+  /* Medical clinical palette: Clean Slate Neutral + Deep Precision Medical Teal */
+  --bg: #F8FAFC;                 /* Slate-50: Crisp, clean, calm medical background */
+  --surface: #FFFFFF;            /* Pure White: Clinical surface for cards */
+  --surface-subtle: #F1F5F9;     /* Slate-100: Soft structured tint */
+  --surface-muted: #E2E8F0;      /* Slate-200: Input & divider tone */
+  
+  --ink: #0F172A;                /* Slate-900: High-contrast primary text (WCAG AAA 15+:1) */
+  --ink-secondary: #334155;      /* Slate-700: Body & secondary text (WCAG AA 7+:1) */
+  --ink-muted: #64748B;          /* Slate-500: Captions & labels >= 13px (WCAG AA 4.6+:1) */
+
+  --accent: #0F5E5D;             /* Deep Clinical Teal: Professional medical identity */
+  --accent-hover: #0B4746;       /* Darker hover state */
+  --accent-subtle: #E6F4F2;      /* Light teal tint for chips and badges */
+  --accent-contrast: #FFFFFF;    /* Crisp white text on accent */
+
+  --border: #E2E8F0;             /* Slate-200 clean border */
+  --border-subtle: #F1F5F9;      /* Slate-100 soft border */
+  --border-focus: #0F5E5D;       /* High-visibility focus ring */
+
+  /* 3 Semantic Radii (Strict 3-tier system) */
+  --radius-sm: 8px;              /* Small: badges, chips, tags */
+  --radius-md: 16px;             /* Medium: cards, inputs, buttons */
+  --radius-lg: 24px;             /* Large: hero block only */
 }
 
 body {
   background-color: var(--bg);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, .font-display {
-  font-family: var(--font-display), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-  letter-spacing: -0.025em;
+/* 3 Semantic Radii Utilities */
+.radius-sm { border-radius: var(--radius-sm); }
+.radius-md { border-radius: var(--radius-md); }
+.radius-lg { border-radius: var(--radius-lg); }
+
+/* Minimalist border-based elevation (no heavy skeuomorphic shadows) */
+.clinic-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
 }
 
-/* Apple iOS Frosted Glass & Squircle Utilities */
-.apple-glass {
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 10px 36px -6px rgba(28, 27, 26, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+.clinic-card-interactive {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+}
+.clinic-card-interactive:hover {
+  border-color: #CBD5E1;
+  background-color: #FAFCFD;
+}
+.clinic-card-interactive:active {
+  transform: scale(0.99);
 }
 
-.apple-glass:hover {
-  box-shadow: 0 14px 40px -6px rgba(28, 27, 26, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
-}
-
-.apple-glass-subtle {
-  background: rgba(255, 255, 255, 0.55);
+/* Opaque / dense header and bottom dock with zero content bleed */
+.header-bar {
+  background-color: rgba(248, 250, 252, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid var(--border);
 }
 
-.apple-glass-dock {
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: blur(36px);
-  -webkit-backdrop-filter: blur(36px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 20px 50px -10px rgba(28, 27, 26, 0.14), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+.bottom-dock {
+  background-color: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
 }
 
-.apple-glass-dark {
-  background: linear-gradient(145deg, rgba(27, 67, 50, 0.98), rgba(16, 42, 32, 0.98));
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 16px 44px -8px rgba(27, 67, 50, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+/* Safe area padding for mobile & Telegram */
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 12px), 12px);
+}
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 0px), 0px);
 }
 
-/* Apple Spring Feedback on Active Tap */
-.apple-press {
-  transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.16s ease;
-}
-.apple-press:active {
-  transform: scale(0.95);
-  opacity: 0.9;
+/* Interactive touch target & accessibility */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
 }
 
-/* Micro Animations */
-@keyframes shimmer {
-  0% { transform: translateX(-120%); }
-  100% { transform: translateX(250%); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
 }
 
-.shimmer-layer {
-  position: relative;
-  overflow: hidden;
-}
-
-.shimmer-layer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
-  animation: shimmer 3.5s infinite;
-  pointer-events: none;
-}
-
-@keyframes pulse-ring {
-  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(27, 67, 50, 0.5); }
-  70% { transform: scale(1.05); box-shadow: 0 0 0 7px rgba(27, 67, 50, 0); }
-  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(27, 67, 50, 0); }
-}
-
-.pulse-ring-emerald {
-  animation: pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.08); }
-}
-
-.pulse-glow {
-  animation: pulse-glow 2.5s ease-in-out infinite;
-}
-
-/* Custom smooth horizontal snapping */
-.scroll-snap-x {
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.snap-item {
-  scroll-snap-align: start;
-}
-
-/* Hide scrollbar for clean Apple look */
+/* Hide scrollbar */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-/* Safe area padding for Telegram & iOS Home Indicator */
-.pb-safe {
-  padding-bottom: env(safe-area-inset-bottom, 20px);
 }

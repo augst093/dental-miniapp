@@ -1,24 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Libre_Franklin, Source_Serif_4 } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 
-const displayFont = Libre_Franklin({
+const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const bodyFont = Source_Serif_4({
-  subsets: ["latin", "cyrillic"],
-  weight: ["400", "600"],
-  variable: "--font-body",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "DentaLux Tashkent — Цифровая Стоматология",
-  description: "Швейцарская эстетическая стоматология и имплантология в Ташкенте. Брекеты, элайнеры, виниры, имплантация.",
+  title: "DentaLux — Стоматологическая клиника в Ташкенте",
+  description: "Диагностика на 3D-томографе, терапия, ортодонтия и дентальная имплантация в Ташкенте. Фиксированный план лечения.",
 };
 
 export const viewport: Viewport = {
@@ -34,11 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${displayFont.variable} ${bodyFont.variable} h-full`}>
+    <html lang="ru" className={`${manrope.variable} h-full`}>
       <head>
         <script src="https://telegram.org/js/telegram-web-app.js" async></script>
       </head>
-      <body className="min-h-full bg-[#F6F4F0] text-[#1C1B1A] antialiased selection:bg-[#1B4332] selection:text-white">
+      <body className="min-h-full bg-[var(--bg)] text-[var(--ink)] font-sans antialiased selection:bg-[#0F5E5D] selection:text-white">
         {children}
       </body>
     </html>
