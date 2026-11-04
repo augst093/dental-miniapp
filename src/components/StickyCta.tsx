@@ -46,7 +46,9 @@ export const StickyCta: React.FC<StickyCtaProps> = ({
             className="shrink-0 bg-[var(--accent)] hover:bg-[var(--accent-hover)] active:scale-95 text-[var(--accent-contrast)] px-3.5 py-2.5 rounded-xl font-bold text-[13px] flex items-center gap-1.5 shadow-md transition-all touch-target"
           >
             <Calendar className="w-4 h-4" />
-            <span>{UI_TRANSLATIONS.hero.ctaBooking[lang]}</span>
+            <span>
+              {lang === 'uz' ? 'Yozilish' : lang === 'en' ? 'Book Now' : 'Записаться'}
+            </span>
             <ArrowRight className="w-3.5 h-3.5 hidden sm:inline" />
           </button>
         </div>

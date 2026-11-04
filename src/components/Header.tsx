@@ -25,21 +25,21 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
     <header className="sticky top-0 z-30 header-bar px-4 py-2.5 pt-safe transition-all duration-200">
       <div className="max-w-xl mx-auto flex items-center justify-between gap-3">
         {/* Brand & Status */}
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-[var(--accent)] text-[var(--accent-contrast)] flex items-center justify-center font-bold text-base shadow-sm shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-[var(--accent)] text-[var(--accent-contrast)] flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
             DL
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-[15px] tracking-tight text-[var(--ink)] truncate">
+              <span className="font-bold text-[15px] tracking-tight text-[var(--ink)] shrink-0">
                 {config.name[lang]}
               </span>
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--accent)] bg-[var(--accent-subtle)] px-2 py-0.5 rounded-full shrink-0">
+              <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-[var(--accent)] bg-[var(--accent-subtle)] px-1.5 py-0.5 rounded-full shrink-0">
                 <Sparkles className="w-2.5 h-2.5 text-[var(--accent)]" />
                 {config.city[lang]}
               </span>
             </div>
-            <div className="flex items-center gap-1 text-[12px] text-[var(--ink-muted)] truncate">
+            <div className="flex items-center gap-1 text-[11px] text-[var(--ink-muted)] truncate">
               <Clock className="w-3 h-3 shrink-0 text-emerald-600" />
               <span>{config.hours.weekdays}</span>
               <span className="text-[var(--border)]">·</span>

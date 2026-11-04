@@ -127,11 +127,11 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
           {/* Doctor Avatar Stack with clean overlapping borders */}
           <div className="flex items-center gap-3 pt-1">
-            <div className="flex -space-x-2.5 overflow-hidden">
+            <div className="flex -space-x-2 overflow-hidden py-0.5">
               {DOCTORS.map((doc) => (
                 <div
                   key={doc.id}
-                  className="inline-block w-8 h-8 rounded-full ring-2 ring-[var(--accent)] bg-emerald-800 text-emerald-100 text-[11px] font-bold flex items-center justify-center shrink-0 shadow-xs"
+                  className="inline-flex w-7 h-7 rounded-full ring-2 ring-white/50 bg-[#073635] text-white text-[10px] font-extrabold items-center justify-center shrink-0 shadow-xs"
                   title={doc.name[lang]}
                 >
                   {doc.initials}
