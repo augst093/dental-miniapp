@@ -1,142 +1,62 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #F6F4F0;
-  --surface: #ECE8E1;
-  --surface-alt: #E3DDD4;
-  --ink: #1C1B1A;
-  --muted: #6B6762;
+  --bg: #F7F6F2;
+  --surface: #FFFFFF;
+  --surface-secondary: #F0EEE9;
+  --ink: #111827;
+  --ink-secondary: #4B5563;
+  --ink-tertiary: #9CA3AF;
   --accent: #1B4332;
   --accent-hover: #143326;
-  --accent-ink: #FFFFFF;
-  --border: #DDD8CE;
-  --dark-ground: #161A1D;
-  --dark-surface: #20262B;
-  --dark-ink: #F6F4F0;
-  --dark-muted: #9E9B95;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-light: rgba(0, 0, 0, 0.04);
 }
 
 body {
   background-color: var(--bg);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, .font-display {
-  font-family: var(--font-display), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-  letter-spacing: -0.025em;
+/* iOS Inset Card Styling */
+.ios-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
 }
 
-/* Apple iOS Frosted Glass & Squircle Utilities */
-.apple-glass {
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 10px 36px -6px rgba(28, 27, 26, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+/* iOS Frosted Navigation Dock */
+.ios-tabbar {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.apple-glass:hover {
-  box-shadow: 0 14px 40px -6px rgba(28, 27, 26, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+/* Tactile Spring Press Feedback */
+.ios-press {
+  transition: transform 0.14s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.14s ease;
 }
 
-.apple-glass-subtle {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
+.ios-press:active {
+  transform: scale(0.97);
+  opacity: 0.85;
 }
 
-.apple-glass-dock {
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: blur(36px);
-  -webkit-backdrop-filter: blur(36px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 20px 50px -10px rgba(28, 27, 26, 0.14), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+/* Native iOS Tabular Numbers */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 
-.apple-glass-dark {
-  background: linear-gradient(145deg, rgba(27, 67, 50, 0.98), rgba(16, 42, 32, 0.98));
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 16px 44px -8px rgba(27, 67, 50, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
-}
-
-/* Apple Spring Feedback on Active Tap */
-.apple-press {
-  transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.16s ease;
-}
-.apple-press:active {
-  transform: scale(0.95);
-  opacity: 0.9;
-}
-
-/* Micro Animations */
-@keyframes shimmer {
-  0% { transform: translateX(-120%); }
-  100% { transform: translateX(250%); }
-}
-
-.shimmer-layer {
-  position: relative;
-  overflow: hidden;
-}
-
-.shimmer-layer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
-  animation: shimmer 3.5s infinite;
-  pointer-events: none;
-}
-
-@keyframes pulse-ring {
-  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(27, 67, 50, 0.5); }
-  70% { transform: scale(1.05); box-shadow: 0 0 0 7px rgba(27, 67, 50, 0); }
-  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(27, 67, 50, 0); }
-}
-
-.pulse-ring-emerald {
-  animation: pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.08); }
-}
-
-.pulse-glow {
-  animation: pulse-glow 2.5s ease-in-out infinite;
-}
-
-/* Custom smooth horizontal snapping */
-.scroll-snap-x {
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.snap-item {
-  scroll-snap-align: start;
-}
-
-/* Hide scrollbar for clean Apple look */
+/* Hide scrollbar for category pills */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-/* Safe area padding for Telegram & iOS Home Indicator */
-.pb-safe {
-  padding-bottom: env(safe-area-inset-bottom, 20px);
 }

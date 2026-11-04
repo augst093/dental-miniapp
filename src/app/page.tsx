@@ -10,21 +10,15 @@ import {
   Phone,
   Clock,
   ShieldCheck,
-  Award,
   ChevronRight,
   Check,
   X,
-  Sparkles,
   Plus,
   Minus,
-  Star,
   Search,
-  CheckCircle2,
   Calendar,
-  Zap,
-  Info,
-  CreditCard,
-  ArrowUpRight,
+  ExternalLink,
+  MessageCircle,
 } from 'lucide-react';
 import {
   SERVICES,
@@ -37,162 +31,123 @@ import {
 
 type TabType = 'home' | 'services' | 'calculator' | 'doctors' | 'contacts';
 
-interface TreatmentPlanOption {
+interface CalculatorPlan {
   id: string;
   name: Record<Language, string>;
+  category: string;
   basePriceUzs: number;
   basePriceUsd: number;
-  durationStr: Record<Language, string>;
-  guaranteeStr: Record<Language, string>;
-  defaultUnits: number;
   unitLabel: Record<Language, string>;
-  highlightBadge: Record<Language, string>;
+  note: Record<Language, string>;
 }
 
-const TREATMENT_OPTIONS: TreatmentPlanOption[] = [
+const CALCULATOR_PLANS: CalculatorPlan[] = [
   {
-    id: 'veneers',
+    id: 'straumann',
+    category: 'implants',
     name: {
-      ru: 'Виниры E.max',
-      uz: 'E.max Vinirlari',
-      en: 'E.max Veneers',
-    },
-    basePriceUzs: 3200000,
-    basePriceUsd: 250,
-    durationStr: {
-      ru: '3-5 дней, 2 визита',
-      uz: '3-5 kun, 2 tashrif',
-      en: '3-5 days, 2 visits',
-    },
-    guaranteeStr: {
-      ru: 'Паспорт Ivoclar Vivadent (10 лет)',
-      uz: 'Ivoclar Vivadent 10 yillik pasporti',
-      en: '10-yr Ivoclar Vivadent warranty',
-    },
-    defaultUnits: 6,
-    unitLabel: { ru: 'зубов', uz: 'tish', en: 'teeth' },
-    highlightBadge: { ru: 'Хит эстетики', uz: 'Top estetika', en: 'Aesthetics Hit' },
-  },
-  {
-    id: 'implants',
-    name: {
-      ru: 'Импланты Straumann',
-      uz: 'Straumann Implantlari',
-      en: 'Straumann Implants',
-    },
-    basePriceUzs: 7200000,
-    basePriceUsd: 580,
-    durationStr: {
-      ru: '45 минут операция, приживление 2 мес',
-      uz: "45 daqiqa jarrohlik, bitishi 2 oy",
-      en: '45-min surgery, 2-month healing',
-    },
-    guaranteeStr: {
-      ru: 'Пожизненный международный сертификат',
-      uz: 'Xalqaro umrbod kafolat hujjati',
-      en: 'Global lifetime warranty certificate',
-    },
-    defaultUnits: 1,
-    unitLabel: { ru: 'имплант', uz: 'implant', en: 'implant' },
-    highlightBadge: { ru: 'Швейцария 99.6%', uz: 'Shveytsariya 99.6%', en: 'Swiss 99.6%' },
-  },
-  {
-    id: 'brackets',
-    name: {
-      ru: 'Брекеты Damon Q2',
-      uz: 'Damon Q2 Breketlari',
-      en: 'Damon Q2 Braces',
+      ru: 'Имплант Straumann BLX (Швейцария)',
+      uz: 'Straumann BLX implantati (Shveytsariya)',
+      en: 'Straumann BLX Implant (Switzerland)',
     },
     basePriceUzs: 7500000,
     basePriceUsd: 600,
-    durationStr: {
-      ru: '12-16 месяцев',
-      uz: '12-16 oy',
-      en: '12-16 months',
+    unitLabel: { ru: 'имплант', uz: 'implant', en: 'implant' },
+    note: {
+      ru: 'Пожизненная международная гарантия Straumann Group.',
+      uz: 'Straumann Group umrbod xalqaro kafolati.',
+      en: 'Lifetime international warranty by Straumann Group.',
     },
-    guaranteeStr: {
-      ru: 'Сертификат Ormco USA, без удаления зубов',
-      uz: "Ormco USA sertifikati, tish sug'urmasdan",
-      en: 'Ormco USA protocol, no extractions',
-    },
-    defaultUnits: 2,
-    unitLabel: { ru: 'челюсти', uz: 'jag‘', en: 'jaws' },
-    highlightBadge: { ru: 'Без удаления', uz: "Sug'urmasdan", en: 'No extractions' },
   },
   {
-    id: 'aligners',
+    id: 'osstem',
+    category: 'implants',
     name: {
-      ru: 'Элайнеры Spark',
-      uz: 'Spark Elaynerlari',
-      en: 'Spark Aligners',
+      ru: 'Имплант Osstem TS III (Южная Корея)',
+      uz: 'Osstem TS III implantati (Janubiy Koreya)',
+      en: 'Osstem TS III Implant (South Korea)',
     },
-    basePriceUzs: 15000000,
-    basePriceUsd: 1200,
-    durationStr: {
-      ru: '8-14 месяцев',
-      uz: '8-14 oy',
-      en: '8-14 months',
+    basePriceUzs: 4200000,
+    basePriceUsd: 335,
+    unitLabel: { ru: 'имплант', uz: 'implant', en: 'implant' },
+    note: {
+      ru: 'Проверенная система с приживаемостью 98.8%.',
+      uz: '98.8% bitish ko‘rsatkichiga ega ishonchli tizim.',
+      en: 'Proven implant system with 98.8% success rate.',
     },
-    guaranteeStr: {
-      ru: '3D-моделирование улыбки до начала',
-      uz: '3D jilmayish yakuniy modeli',
-      en: '3D smile preview before treatment',
-    },
-    defaultUnits: 1,
-    unitLabel: { ru: 'курс', uz: 'kurs', en: 'course' },
-    highlightBadge: { ru: '100% невидимые', uz: '100% ko‘rinmas', en: 'Invisible' },
   },
   {
-    id: 'whitening',
+    id: 'damon-q2',
+    category: 'brackets',
     name: {
-      ru: 'Отбеливание Beyond',
-      uz: 'Beyond Oqartirish',
-      en: 'Beyond Whitening',
+      ru: 'Брекеты Damon Q2 металлические (США)',
+      uz: 'Damon Q2 metall breketlari (AQSh)',
+      en: 'Damon Q2 Metal Braces (USA)',
     },
-    basePriceUzs: 2400000,
-    basePriceUsd: 190,
-    durationStr: {
-      ru: '1 сеанс (60 минут)',
-      uz: '1 seans (60 daqiqa)',
-      en: '1 session (60 mins)',
+    basePriceUzs: 7500000,
+    basePriceUsd: 600,
+    unitLabel: { ru: 'челюсть', uz: 'jag‘', en: 'arch' },
+    note: {
+      ru: 'Самолигирующая система: лечение без удаления здоровых зубов.',
+      uz: 'O‘zi ligirlanuvchi tizim: tish sug‘urmasdan tekislash.',
+      en: 'Self-ligating system: fast correction without extractions.',
     },
-    guaranteeStr: {
-      ru: 'Осветление на 6-8 тонов, защита эмали',
-      uz: '6-8 tonga oqartirish, emal himoyasi',
-      en: '6-8 shades brighter, safe enamel',
+  },
+  {
+    id: 'emax',
+    category: 'veneers',
+    name: {
+      ru: 'Керамические виниры E.max (Германия)',
+      uz: 'E.max keramik vinirlari (Germaniya)',
+      en: 'E.max Ceramic Veneers (Germany)',
     },
-    defaultUnits: 1,
-    unitLabel: { ru: 'сеанс', uz: 'seans', en: 'session' },
-    highlightBadge: { ru: 'За 60 минут', uz: '60 daqiqada', en: 'In 60 mins' },
+    basePriceUzs: 3100000,
+    basePriceUsd: 250,
+    unitLabel: { ru: 'винир', uz: 'vinir', en: 'unit' },
+    note: {
+      ru: 'Прессованная керамика Ivoclar Vivadent с ручной эстетикой.',
+      uz: 'Ivoclar Vivadent presslangan keramikasi.',
+      en: 'Pressed Ivoclar Vivadent ceramic with natural translucency.',
+    },
+  },
+  {
+    id: 'caries',
+    category: 'therapy',
+    name: {
+      ru: 'Лечение кариеса под микроскопом',
+      uz: 'Kariesni mikroskop ostida davolash',
+      en: 'Microscopic Caries Treatment',
+    },
+    basePriceUzs: 550000,
+    basePriceUsd: 44,
+    unitLabel: { ru: 'зуб', uz: 'tish', en: 'tooth' },
+    note: {
+      ru: 'Японский нанокомпозит Tokuyama Estelite.',
+      uz: 'Tokuyama Estelite yapon nanokompoziti.',
+      en: 'Japanese nanohybrid composite Tokuyama Estelite.',
+    },
   },
 ];
 
-const TIME_SLOTS = ['10:00', '12:30', '14:30', '16:30', '18:30', '20:00'];
-const DATE_PRESETS = [
-  { id: 'today', label: { ru: 'Сегодня', uz: 'Bugun', en: 'Today' } },
-  { id: 'tomorrow', label: { ru: 'Завтра', uz: 'Ertaga', en: 'Tomorrow' } },
-  { id: 'weekend', label: { ru: 'В выходные', uz: 'Dam olishda', en: 'Weekend' } },
-];
-
-export default function MiniAppPage() {
+export default function DentalMiniApp() {
   const [lang, setLang] = useState<Language>('ru');
   const [activeTab, setActiveTab] = useState<TabType>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Calculator State
-  const [activePlanIdx, setActivePlanIdx] = useState<number>(0);
-  const [planUnits, setPlanUnits] = useState<number>(TREATMENT_OPTIONS[0].defaultUnits);
+  const [calcPlanIdx, setCalcPlanIdx] = useState<number>(0);
+  const [calcUnits, setCalcUnits] = useState<number>(1);
 
-  // Booking Modal State
+  // Booking Sheet State
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
-  const [bookingService, setBookingService] = useState<string>('Консультация главврача + 3D-снимок (КТ)');
-  const [bookingDoctor, setBookingDoctor] = useState<string>('Любой свободный специалист');
-  const [selectedDatePreset, setSelectedDatePreset] = useState<string>('today');
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('12:30');
+  const [bookingService, setBookingService] = useState<string>('Первичный осмотр + 3D-снимок (КТ)');
+  const [bookingDoctor, setBookingDoctor] = useState<string>('Д-р Сардор Каримов (Главврач)');
+  const [bookingDate, setBookingDate] = useState<string>('today');
+  const [bookingTime, setBookingTime] = useState<string>('12:30');
   const [clientName, setClientName] = useState<string>('');
   const [clientPhone, setClientPhone] = useState<string>('+998 ');
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
@@ -217,26 +172,20 @@ export default function MiniAppPage() {
   const switchTab = (tab: TabType) => {
     triggerHaptic('light');
     setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const currentPlan = TREATMENT_OPTIONS[activePlanIdx];
-  const calculatedTotalUzs = (currentPlan.basePriceUzs * planUnits).toLocaleString('ru-RU');
-  const calculatedTotalUsd = (currentPlan.basePriceUsd * planUnits).toLocaleString('en-US');
-
-  const openBookingFor = (serviceTitle: string, doctorTitle?: string) => {
+  const openBooking = (service: string, doctor?: string) => {
     triggerHaptic('medium');
-    setBookingService(serviceTitle);
-    if (doctorTitle) {
-      setBookingDoctor(doctorTitle);
-    }
+    setBookingService(service);
+    if (doctor) setBookingDoctor(doctor);
     setIsBookingOpen(true);
   };
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     triggerHaptic('heavy');
-    setIsSuccess(true);
+    setIsSubmitted(true);
 
     if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
       const tg = window.Telegram.WebApp;
@@ -244,389 +193,363 @@ export default function MiniAppPage() {
         tg.HapticFeedback.notificationOccurred('success');
       }
       try {
-        const fullDateStr = `${selectedDatePreset === 'today' ? 'Сегодня' : selectedDatePreset === 'tomorrow' ? 'Завтра' : 'Выходные'} в ${selectedTimeSlot}`;
+        const dateText = bookingDate === 'today' ? 'Сегодня' : bookingDate === 'tomorrow' ? 'Завтра' : 'Суббота';
         const payload = {
           name: clientName.trim() || 'Пациент',
           phone: clientPhone.trim() || 'Не указан',
           service: bookingService,
           doctor: bookingDoctor,
-          date: fullDateStr,
-          source: 'Mini App (Apple Glass UI)',
+          date: `${dateText} в ${bookingTime}`,
+          lang: lang,
         };
         tg.sendData(JSON.stringify(payload));
-      } catch {
-        // Fallback for browser tests
+      } catch (err) {
+        console.log('TG sendData skipped:', err);
       }
     }
   };
 
+  // Filtered Services
   const filteredServices = SERVICES.filter((s) => {
-    const matchesCategory = selectedCategory === 'all' || s.category === selectedCategory;
-    const matchesSearch = searchQuery.trim() === '' || 
+    const matchesCat = selectedCategory === 'all' || s.category === selectedCategory;
+    const matchesQuery =
       s.name[lang].toLowerCase().includes(searchQuery.toLowerCase()) ||
       s.description[lang].toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesCat && matchesQuery;
   });
 
+  const selectedPlan = CALCULATOR_PLANS[calcPlanIdx];
+  const totalPriceUzs = selectedPlan.basePriceUzs * calcUnits;
+  const totalPriceUsd = selectedPlan.basePriceUsd * calcUnits;
+  const monthlyInstallmentUzs = Math.round(totalPriceUzs / 12);
+
   return (
-    <div className="min-h-[100dvh] bg-[#F6F4F0] text-[#1C1B1A] flex flex-col font-sans selection:bg-[#1B4332] selection:text-white pb-32">
+    <div className="min-h-screen bg-[#F7F6F2] text-[#111827] flex flex-col font-sans selection:bg-[#1B4332] selection:text-white pb-28">
       
-      {/* 1. FLOATING APPLE GLASS ISLAND HEADER (Zero sharp edges, Micro-Indicators) */}
-      <header className="sticky top-2 z-30 px-3 max-w-xl mx-auto w-full">
-        <div className="apple-glass rounded-full px-4 sm:px-5 py-2.5 flex items-center justify-between shadow-sm">
-          
-          {/* Logo & Live Status */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-[#1B4332] text-white flex items-center justify-center font-black text-xs shadow-sm">
-              D
+      {/* ========================================================
+          1. APPLE TOP NAVIGATION BAR (Clean, quiet, confident)
+         ======================================================== */}
+      <header className="sticky top-0 z-30 bg-[#F7F6F2]/90 backdrop-blur-xl border-b border-black/[0.06] px-4 py-3">
+        <div className="max-w-md mx-auto flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-[17px] tracking-tight text-[#111827]">DentaLux</span>
+              <span className="text-[11px] text-[#1B4332] font-semibold bg-[#1B4332]/10 px-2 py-0.5 rounded-full">
+                09:00—21:00
+              </span>
             </div>
-            <div>
-              <div className="font-display font-black text-[15px] tracking-tight text-[#1C1B1A] leading-none flex items-center gap-1.5">
-                DENTALUX
-                <span className="flex h-2 w-2 relative">
-                  <span className="pulse-ring-emerald absolute inline-flex h-full w-full rounded-full bg-[#1B4332] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1B4332]"></span>
-                </span>
-              </div>
-              <div className="text-[10px] text-[#6B6762] font-semibold flex items-center gap-1 mt-0.5">
-                <span>09:00—21:00</span>
-                <span>·</span>
-                <span className="text-[#1B4332] font-bold">Ойбек</span>
-              </div>
-            </div>
+            <p className="text-[12px] text-[#6B7280]">
+              {lang === 'ru' && 'Ташкент · м. Ойбек'}
+              {lang === 'uz' && 'Toshkent · Oybek m.'}
+              {lang === 'en' && 'Tashkent · Oybek Metro'}
+            </p>
           </div>
 
-          {/* Rating Pill + Language Segmented Control */}
-          <div className="flex items-center gap-1.5">
-            <div className="hidden sm:flex items-center gap-1 bg-white/80 px-2.5 py-1 rounded-full text-[11px] font-bold text-[#1C1B1A] border border-white/90 shadow-xs">
-              <Star className="w-3 h-3 fill-[#E6A117] text-[#E6A117]" />
-              <span>4.98</span>
-            </div>
-
-            <div className="flex items-center gap-0.5 bg-[#ECE8E1]/90 p-0.5 rounded-full text-xs font-bold">
-              {(['ru', 'uz', 'en'] as Language[]).map((l) => (
-                <button
-                  key={l}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    setLang(l);
-                  }}
-                  className={`px-2.5 py-1 rounded-full transition-all duration-200 text-[10px] apple-press ${
-                    lang === l
-                      ? 'bg-white text-[#1C1B1A] shadow-sm font-extrabold'
-                      : 'text-[#6B6762] hover:text-[#1C1B1A]'
-                  }`}
-                >
-                  {l === 'ru' ? 'РУС' : l === 'uz' ? 'O‘ZB' : 'ENG'}
-                </button>
-              ))}
-            </div>
+          {/* iOS Segmented Language Switcher */}
+          <div className="flex bg-black/[0.06] p-0.5 rounded-lg text-[11px] font-semibold">
+            {(['ru', 'uz', 'en'] as Language[]).map((l) => (
+              <button
+                key={l}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setLang(l);
+                }}
+                className={`px-2.5 py-1 rounded-[6px] transition-all ios-press ${
+                  lang === l
+                    ? 'bg-white text-[#111827] shadow-xs font-bold'
+                    : 'text-[#6B7280] hover:text-[#111827]'
+                }`}
+              >
+                {l === 'ru' ? 'RU' : l === 'uz' ? 'UZ' : 'EN'}
+              </button>
+            ))}
           </div>
-
         </div>
       </header>
 
-      {/* 2. TAB CONTENT VIEWS */}
-      <main className="flex-1 px-3 pt-3 pb-32 max-w-xl mx-auto w-full">
+      {/* ========================================================
+          2. MAIN TAB CONTENT
+         ======================================================== */}
+      <main className="flex-1 px-4 pt-4 max-w-md mx-auto w-full space-y-5">
         
         {/* ========================================================
-            TAB 1: ГЛАВНАЯ (HOME / DASHBOARD)
+            TAB 1: ГЛАВНАЯ (PATIENT DASHBOARD / TODAY)
            ======================================================== */}
         {activeTab === 'home' && (
-          <div className="space-y-4 animate-in fade-in duration-300">
+          <div className="space-y-5 animate-in fade-in duration-200">
             
-            {/* Hero Apple Glass Dark Card with Shimmering Sheen */}
-            <div className="apple-glass-dark shimmer-layer rounded-[32px] p-6 sm:p-7 text-white relative overflow-hidden">
-              <div className="relative z-10">
-                
-                {/* Top Badge with Live Pulsing Dot */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 text-[11px] font-semibold tracking-wide mb-3 backdrop-blur-md border border-white/20">
-                  <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                  </span>
-                  <span>
-                    {lang === 'ru' && 'Бесплатный 3D-снимок (КТ) при записи'}
-                    {lang === 'uz' && 'Birinchi ko‘rikda bepul 3D KT rentgen'}
-                    {lang === 'en' && 'Free 3D CT scan with initial exam'}
-                  </span>
-                </div>
-
-                <h1 className="font-display font-extrabold text-[24px] sm:text-[29px] leading-[1.12] mb-2.5">
-                  {lang === 'ru' && 'Швейцарская точность и эстетика улыбки'}
-                  {lang === 'uz' && 'Toshkent markazida Shveytsariya aniqligi'}
-                  {lang === 'en' && 'Swiss precision dentistry in Tashkent'}
-                </h1>
-
-                <p className="text-white/85 text-[13px] sm:text-[14px] leading-relaxed mb-5 font-normal">
-                  {lang === 'ru' && 'Официальные протоколы Straumann и Damon. Бережное лечение под микроскопом и фиксированная прозрачная смета без доплат.'}
-                  {lang === 'uz' && 'Straumann va Damon rasmiy protokollari. Mikroskop ostida og‘riqsiz davolash va aniq narx rejasi.'}
-                  {lang === 'en' && 'Official Straumann & Damon protocols. Gentle microscope care with 100% transparent pricing.'}
-                </p>
-
-                {/* Micro-Social Proof / Doctor Avatar Stack */}
-                <div className="flex items-center gap-3 mb-6 bg-white/10 backdrop-blur-md px-3.5 py-2 rounded-full w-fit border border-white/15">
-                  <div className="flex -space-x-1.5 items-center">
-                    <span className="w-6 h-6 rounded-full bg-[#ECE8E1] text-[#1B4332] text-[9px] font-bold flex items-center justify-center ring-2 ring-[#1B4332] shadow-xs">АК</span>
-                    <span className="w-6 h-6 rounded-full bg-[#E2DDD4] text-[#1B4332] text-[9px] font-bold flex items-center justify-center ring-2 ring-[#1B4332] shadow-xs">МУ</span>
-                    <span className="w-6 h-6 rounded-full bg-[#D8D2C7] text-[#1B4332] text-[9px] font-bold flex items-center justify-center ring-2 ring-[#1B4332] shadow-xs">СР</span>
-                  </div>
-                  <span className="text-[11px] text-white/90 font-medium">
-                    {lang === 'ru' && '4 ведущих врача на смене сегодня'}
-                    {lang === 'uz' && 'Bugun 4 nafar yetakchi shifokor qabulda'}
-                    {lang === 'en' && '4 senior doctors on duty today'}
-                  </span>
-                </div>
-
-                {/* Apple Buttons */}
-                <div className="flex flex-col sm:flex-row gap-2.5">
-                  <button
-                    onClick={() => openBookingFor(
-                      lang === 'ru' ? 'Консультация главврача + 3D-снимок (0 сум)' : 'Bosh shifokor ko‘rigi + 3D KT (0 so‘m)'
-                    )}
-                    className="font-bold text-xs bg-white text-[#1B4332] px-6 py-3.5 rounded-full hover:bg-white/95 transition-all text-center shadow-lg active:scale-95 apple-press flex items-center justify-center gap-1.5"
-                  >
-                    <span>{lang === 'ru' ? 'Записаться на 3D-осмотр (0 сум)' : lang === 'uz' ? '3D-ko‘rikka yozilish (0 so‘m)' : 'Book Free 3D Exam ($0)'}</span>
-                    <ArrowUpRight className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onClick={() => switchTab('calculator')}
-                    className="font-semibold text-xs bg-white/15 hover:bg-white/25 text-white px-5 py-3.5 rounded-full backdrop-blur-md transition-all text-center active:scale-95 apple-press"
-                  >
-                    {lang === 'ru' && 'Калькулятор сметы'}
-                    {lang === 'uz' && 'Narx kalkulyatori'}
-                    {lang === 'en' && 'Cost calculator'}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Apple Quick-Access Rounded Grid with Live Tags */}
-            <div className="grid grid-cols-2 gap-3">
-              <div
-                onClick={() => switchTab('services')}
-                className="apple-glass rounded-[28px] p-5 cursor-pointer hover:bg-white/95 transition-all apple-press flex flex-col justify-between group"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] shadow-xs group-hover:scale-105 transition-transform">
-                    <Layers className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-bold text-[#1B4332] bg-[#1B4332]/10 px-2 py-0.5 rounded-full">
-                    Прайс 2026
-                  </span>
-                </div>
-                <div>
-                  <div className="font-display font-extrabold text-[15px] text-[#1C1B1A] flex items-center justify-between">
-                    {lang === 'ru' && 'Каталог услуг'}
-                    {lang === 'uz' && 'Xizmatlar'}
-                    {lang === 'en' && 'Services'}
-                    <ChevronRight className="w-4 h-4 text-[#6B6762] group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                  <div className="text-[11px] text-[#6B6762] font-medium mt-0.5">
-                    {lang === 'ru' && '7 категорий и цены'}
-                    {lang === 'uz' && '7 yo‘nalish va narxlar'}
-                    {lang === 'en' && '7 categories & rates'}
-                  </div>
-                </div>
+            {/* Primary Action: Consultation Pass (High utility, zero slop) */}
+            <div className="ios-card rounded-2xl p-5 border border-black/[0.08] relative overflow-hidden bg-white">
+              <div className="flex items-start justify-between mb-3">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B4332] bg-[#1B4332]/10 px-2.5 py-1 rounded-md">
+                  {lang === 'ru' && 'Первичный приём'}
+                  {lang === 'uz' && 'Birlamchi qabul'}
+                  {lang === 'en' && 'Initial Consultation'}
+                </span>
+                <span className="text-[12px] font-semibold text-[#6B7280]">
+                  45 {lang === 'ru' ? 'мин' : lang === 'uz' ? 'daq' : 'min'}
+                </span>
               </div>
 
-              <div
-                onClick={() => switchTab('calculator')}
-                className="apple-glass rounded-[28px] p-5 cursor-pointer hover:bg-white/95 transition-all apple-press flex flex-col justify-between group"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] shadow-xs group-hover:scale-105 transition-transform">
-                    <Calculator className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-bold text-[#E6A117] bg-[#E6A117]/10 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-                    <Zap className="w-2.5 h-2.5 fill-current" />
-                    3D Смета
-                  </span>
-                </div>
-                <div>
-                  <div className="font-display font-extrabold text-[15px] text-[#1C1B1A] flex items-center justify-between">
-                    {lang === 'ru' && 'Калькулятор'}
-                    {lang === 'uz' && 'Kalkulyator'}
-                    {lang === 'en' && 'Calculator'}
-                    <ChevronRight className="w-4 h-4 text-[#6B6762] group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                  <div className="text-[11px] text-[#6B6762] font-medium mt-0.5">
-                    {lang === 'ru' && 'Точный расчёт в суммах'}
-                    {lang === 'uz' && 'Aniq hisob-kitob'}
-                    {lang === 'en' && 'Instant estimate'}
-                  </div>
-                </div>
-              </div>
+              <h1 className="text-[19px] font-bold leading-snug text-[#111827] mb-2">
+                {lang === 'ru' && 'Осмотр главврача и 3D-томография (КТ)'}
+                {lang === 'uz' && 'Bosh shifokor ko‘rigi va 3D-tomografiya (KT)'}
+                {lang === 'en' && 'Chief Doctor Exam & 3D CT Scan'}
+              </h1>
 
-              <div
-                onClick={() => switchTab('doctors')}
-                className="apple-glass rounded-[28px] p-5 cursor-pointer hover:bg-white/95 transition-all apple-press flex flex-col justify-between group"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] shadow-xs group-hover:scale-105 transition-transform">
-                    <Users className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-bold text-[#1B4332] bg-[#1B4332]/10 px-2 py-0.5 rounded-full">
-                    9–16 лет
-                  </span>
-                </div>
-                <div>
-                  <div className="font-display font-extrabold text-[15px] text-[#1C1B1A] flex items-center justify-between">
-                    {lang === 'ru' && 'Врачи клиники'}
-                    {lang === 'uz' && 'Shifokorlar'}
-                    {lang === 'en' && 'Doctors'}
-                    <ChevronRight className="w-4 h-4 text-[#6B6762] group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                  <div className="text-[11px] text-[#6B6762] font-medium mt-0.5">
-                    {lang === 'ru' && 'Хирурги и ортодонты'}
-                    {lang === 'uz' && 'Xirurg va ortodontlar'}
-                    {lang === 'en' && 'Surgeons & specialists'}
-                  </div>
-                </div>
-              </div>
+              <p className="text-[13px] text-[#4B5563] leading-relaxed mb-4">
+                {lang === 'ru' && 'Компьютерная томография обеих челюстей на аппарате Vatech, детальный осмотр полости рта и прозрачный план лечения.'}
+                {lang === 'uz' && 'Vatech apparatida butun jag‘ 3D-tomografiyasi va shifokorlar bilan aniq davolash rejasi.'}
+                {lang === 'en' && 'Full jaw 3D CT scan using Vatech scanner + comprehensive consultation with treatment roadmap.'}
+              </p>
 
-              <div
-                onClick={() => switchTab('contacts')}
-                className="apple-glass rounded-[28px] p-5 cursor-pointer hover:bg-white/95 transition-all apple-press flex flex-col justify-between group"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#ECE8E1] flex items-center justify-center text-[#1B4332] shadow-xs group-hover:scale-105 transition-transform">
-                    <MapPin className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-bold text-[#1C1B1A] bg-white px-2 py-0.5 rounded-full border border-black/5">
-                    Парковка
-                  </span>
-                </div>
+              <div className="flex items-center justify-between pt-2 border-t border-black/[0.06]">
                 <div>
-                  <div className="font-display font-extrabold text-[15px] text-[#1C1B1A] flex items-center justify-between">
-                    {lang === 'ru' && 'Адрес и часы'}
-                    {lang === 'uz' && 'Manzil va vaqt'}
-                    {lang === 'en' && 'Location'}
-                    <ChevronRight className="w-4 h-4 text-[#6B6762] group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                  <div className="text-[11px] text-[#6B6762] font-medium mt-0.5">
-                    {lang === 'ru' && 'Метро Ойбек, 09-21'}
-                    {lang === 'uz' && 'Oybek metrosi, 09-21'}
-                    {lang === 'en' && 'Oybek metro, 9-21'}
+                  <div className="text-[11px] text-[#6B7280]">{lang === 'ru' ? 'Стоимость' : lang === 'uz' ? 'Narxi' : 'Cost'}</div>
+                  <div className="text-[16px] font-bold text-[#1B4332]">
+                    0 сум <span className="text-[12px] line-through font-normal text-[#9CA3AF]">350 000 сум</span>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Flagship Carousel with Quality Micro-Badges */}
-            <div className="apple-glass rounded-[32px] p-5 sm:p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <div className="font-display font-black text-base text-[#1C1B1A]">
-                    {lang === 'ru' && 'Флагманские направления'}
-                    {lang === 'uz' && 'Asosiy xizmatlar'}
-                    {lang === 'en' && 'Featured Treatments'}
-                  </div>
-                  <div className="text-[11px] text-[#6B6762]">
-                    {lang === 'ru' && 'Швейцарские и американские протоколы'}
-                    {lang === 'uz' && 'Shveytsariya va AQSh protokollari'}
-                    {lang === 'en' && 'Swiss & USA protocols'}
-                  </div>
-                </div>
                 <button
-                  onClick={() => switchTab('services')}
-                  className="text-xs font-bold text-[#1B4332] flex items-center gap-0.5 bg-[#1B4332]/10 px-3 py-1.5 rounded-full apple-press"
+                  onClick={() => openBooking(
+                    lang === 'ru' ? 'Осмотр главврача + 3D-снимок (КТ) — 0 сум' : 'Bosh shifokor ko‘rigi + 3D-KT (0 so‘m)'
+                  )}
+                  className="bg-[#1B4332] text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl hover:bg-[#143326] ios-press transition-colors shadow-xs"
                 >
-                  {lang === 'ru' && 'Все'}
-                  {lang === 'uz' && 'Barchasi'}
-                  {lang === 'en' && 'All'}
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  {lang === 'ru' && 'Записаться'}
+                  {lang === 'uz' && 'Yozilish'}
+                  {lang === 'en' && 'Book Appointment'}
                 </button>
               </div>
+            </div>
 
-              <div className="flex gap-3 overflow-x-auto pb-2 scroll-snap-x no-scrollbar">
-                {[
-                  {
-                    title: lang === 'ru' ? 'Виниры E.max' : 'E.max Vinirlari',
-                    maker: 'Ivoclar (Германия)',
-                    badge: '10 лет гарантии',
-                    price: '3 200 000 сум',
-                    usd: '$250',
-                    note: lang === 'ru' ? '3-5 дней, 2 визита' : '3-5 kun, 2 tashrif',
-                  },
-                  {
-                    title: lang === 'ru' ? 'Импланты Straumann' : 'Straumann Implantlari',
-                    maker: 'Straumann SLA (Швейцария)',
-                    badge: '99.6% приживление',
-                    price: '7 200 000 сум',
-                    usd: '$580',
-                    note: lang === 'ru' ? 'Пожизненный паспорт' : 'Umrbod pasport',
-                  },
-                  {
-                    title: lang === 'ru' ? 'Брекеты Damon Q2' : 'Damon Q2 Breketlari',
-                    maker: 'Ormco (США)',
-                    badge: 'Без удаления',
-                    price: '7 500 000 сум',
-                    usd: '$600',
-                    note: lang === 'ru' ? 'Быстрое исправление' : "Tezkor tekislash",
-                  },
-                  {
-                    title: lang === 'ru' ? 'Элайнеры Spark' : 'Spark Elaynerlari',
-                    maker: 'TruGEN (США)',
-                    badge: '100% невидимо',
-                    price: '15 000 000 сум',
-                    usd: '$1 200',
-                    note: lang === 'ru' ? 'Комфортно есть и говорить' : 'Mutlaqo sezilmaydi',
-                  },
-                ].map((specimen, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => openBookingFor(specimen.title)}
-                    className="snap-item min-w-[215px] bg-[#ECE8E1]/65 hover:bg-[#ECE8E1] transition-all rounded-[24px] p-5 flex flex-col justify-between cursor-pointer border border-white/80 active:scale-97 apple-press"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-[10px] font-bold text-[#6B6762] uppercase tracking-wider">
-                          {specimen.maker}
-                        </span>
-                        <span className="text-[9px] font-bold text-[#1B4332] bg-white/80 px-2 py-0.5 rounded-full">
-                          {specimen.badge}
-                        </span>
-                      </div>
-                      <div className="font-display font-bold text-[15px] text-[#1C1B1A] leading-snug mb-1">
-                        {specimen.title}
-                      </div>
-                      <div className="text-[12px] text-[#524F4B] mb-3">
-                        {specimen.note}
-                      </div>
+            {/* Quick Navigation Inset Group */}
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] px-1 mb-2">
+                {lang === 'ru' && 'Разделы клиники'}
+                {lang === 'uz' && 'Klinika bo‘limlari'}
+                {lang === 'en' && 'Sections'}
+              </div>
+
+              <div className="ios-card rounded-2xl divide-y divide-black/[0.06] overflow-hidden">
+                <button
+                  onClick={() => switchTab('services')}
+                  className="w-full flex items-center justify-between p-3.5 hover:bg-black/[0.02] text-left transition-colors ios-press"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#F0EEE9] flex items-center justify-center text-[#1B4332]">
+                      <Layers className="w-4 h-4" />
                     </div>
-                    <div className="pt-2.5 border-t border-[#DDD8CE]/60 flex items-baseline justify-between">
-                      <span className="font-extrabold text-sm text-[#1B4332]">{specimen.price}</span>
-                      <span className="text-xs font-semibold text-[#6B6762]">{specimen.usd}</span>
+                    <div>
+                      <div className="text-[14px] font-semibold text-[#111827]">
+                        {lang === 'ru' && 'Прейскурант и услуги'}
+                        {lang === 'uz' && 'Xizmatlar va narxlar'}
+                        {lang === 'en' && 'Services & Pricing'}
+                      </div>
+                      <div className="text-[12px] text-[#6B7280]">
+                        {lang === 'ru' && '30+ процедур с прозрачной стоимостью'}
+                        {lang === 'uz' && '30 dan ortiq davolash turlari'}
+                        {lang === 'en' && '30+ transparent medical procedures'}
+                      </div>
                     </div>
                   </div>
-                ))}
+                  <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+                </button>
+
+                <button
+                  onClick={() => switchTab('calculator')}
+                  className="w-full flex items-center justify-between p-3.5 hover:bg-black/[0.02] text-left transition-colors ios-press"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#F0EEE9] flex items-center justify-center text-[#1B4332]">
+                      <Calculator className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[14px] font-semibold text-[#111827]">
+                        {lang === 'ru' && 'Калькулятор сметы'}
+                        {lang === 'uz' && 'Narx kalkulyatori'}
+                        {lang === 'en' && 'Cost Calculator'}
+                      </div>
+                      <div className="text-[12px] text-[#6B7280]">
+                        {lang === 'ru' && 'Расчёт имплантации, брекетов и виниров'}
+                        {lang === 'uz' && 'Implant, breket va vinirlar hisobi'}
+                        {lang === 'en' && 'Estimate implants, braces & veneers'}
+                      </div>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+                </button>
+
+                <button
+                  onClick={() => switchTab('doctors')}
+                  className="w-full flex items-center justify-between p-3.5 hover:bg-black/[0.02] text-left transition-colors ios-press"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#F0EEE9] flex items-center justify-center text-[#1B4332]">
+                      <Users className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[14px] font-semibold text-[#111827]">
+                        {lang === 'ru' && 'Врачи клиники'}
+                        {lang === 'uz' && 'Shifokorlar jamoasi'}
+                        {lang === 'en' && 'Medical Specialists'}
+                      </div>
+                      <div className="text-[12px] text-[#6B7280]">
+                        {lang === 'ru' && 'Хирурги, ортодонты и терапевты (стаж 8–16 лет)'}
+                        {lang === 'uz' && 'Xirurglar va ortodontlar (8-16 yil tajriba)'}
+                        {lang === 'en' && 'Senior surgeons & orthodontists'}
+                      </div>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+                </button>
               </div>
             </div>
 
-            {/* Quality Standard Pills */}
-            <div className="grid grid-cols-3 gap-2.5 text-center">
-              <div className="apple-glass rounded-3xl p-4">
-                <div className="w-8 h-8 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center mx-auto mb-1.5 shadow-xs">
-                  <ShieldCheck className="w-4 h-4" />
-                </div>
-                <div className="text-xs font-extrabold text-[#1C1B1A]">100% стерильно</div>
-                <div className="text-[10px] text-[#6B6762]">Автоклавы B</div>
+            {/* Inset Group: Key Clinical Protocols */}
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] px-1 mb-2">
+                {lang === 'ru' && 'Основные направления'}
+                {lang === 'uz' && 'Asosiy yo‘nalishlar'}
+                {lang === 'en' && 'Key Treatments'}
               </div>
-              <div className="apple-glass rounded-3xl p-4">
-                <div className="w-8 h-8 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center mx-auto mb-1.5 shadow-xs">
-                  <Award className="w-4 h-4" />
+
+              <div className="ios-card rounded-2xl divide-y divide-black/[0.06] overflow-hidden">
+                <div
+                  onClick={() => openBooking('Имплантация Straumann BLX')}
+                  className="p-3.5 flex items-center justify-between cursor-pointer hover:bg-black/[0.02] transition-colors ios-press"
+                >
+                  <div className="pr-3">
+                    <div className="text-[14px] font-semibold text-[#111827]">
+                      {lang === 'ru' && 'Имплантация Straumann (Швейцария)'}
+                      {lang === 'uz' && 'Straumann implantatsiyasi (Shveytsariya)'}
+                      {lang === 'en' && 'Straumann Implant (Switzerland)'}
+                    </div>
+                    <div className="text-[12px] text-[#6B7280]">
+                      {lang === 'ru' && 'Пожизненная международная гарантия'}
+                      {lang === 'uz' && 'Umrbod xalqaro kafolat'}
+                      {lang === 'en' && 'Lifetime international warranty'}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-[13px] font-bold text-[#111827] tabular">от 7 500 000 сум</div>
+                    <div className="text-[11px] text-[#6B7280]">$600</div>
+                  </div>
                 </div>
-                <div className="text-xs font-extrabold text-[#1C1B1A]">Швейцария</div>
-                <div className="text-[10px] text-[#6B6762]">Сертификаты</div>
+
+                <div
+                  onClick={() => openBooking('Брекеты Damon Q2')}
+                  className="p-3.5 flex items-center justify-between cursor-pointer hover:bg-black/[0.02] transition-colors ios-press"
+                >
+                  <div className="pr-3">
+                    <div className="text-[14px] font-semibold text-[#111827]">
+                      {lang === 'ru' && 'Брекеты Damon Q2 (США)'}
+                      {lang === 'uz' && 'Damon Q2 breketlari (AQSh)'}
+                      {lang === 'en' && 'Damon Q2 Braces (USA)'}
+                    </div>
+                    <div className="text-[12px] text-[#6B7280]">
+                      {lang === 'ru' && 'Выравнивание без удаления зубов'}
+                      {lang === 'uz' && 'Tish sug‘urmasdan tekislash'}
+                      {lang === 'en' && 'Non-extraction self-ligating'}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-[13px] font-bold text-[#111827] tabular">от 7 500 000 сум</div>
+                    <div className="text-[11px] text-[#6B7280]">$600 / челюсть</div>
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => openBooking('Керамические виниры E.max')}
+                  className="p-3.5 flex items-center justify-between cursor-pointer hover:bg-black/[0.02] transition-colors ios-press"
+                >
+                  <div className="pr-3">
+                    <div className="text-[14px] font-semibold text-[#111827]">
+                      {lang === 'ru' && 'Керамические виниры E.max'}
+                      {lang === 'uz' && 'E.max keramik vinirlari'}
+                      {lang === 'en' && 'E.max Ceramic Veneers'}
+                    </div>
+                    <div className="text-[12px] text-[#6B7280]">
+                      {lang === 'ru' && 'Прессованная немецкая керамика Ivoclar'}
+                      {lang === 'uz' && 'Ivoclar presslangan nemis keramikasi'}
+                      {lang === 'en' && 'German Ivoclar pressed ceramic'}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-[13px] font-bold text-[#111827] tabular">от 3 100 000 сум</div>
+                    <div className="text-[11px] text-[#6B7280]">$250 / ед.</div>
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => openBooking('Профессиональная гигиена AirFlow')}
+                  className="p-3.5 flex items-center justify-between cursor-pointer hover:bg-black/[0.02] transition-colors ios-press"
+                >
+                  <div className="pr-3">
+                    <div className="text-[14px] font-semibold text-[#111827]">
+                      {lang === 'ru' && 'Профессиональная гигиена AirFlow'}
+                      {lang === 'uz' && 'AirFlow professional tozalash'}
+                      {lang === 'en' && 'AirFlow Prophylaxis'}
+                    </div>
+                    <div className="text-[12px] text-[#6B7280]">
+                      {lang === 'ru' && 'Швейцарский протокол снятия налёта'}
+                      {lang === 'uz' && 'Og‘riqsiz tish toshlarini tozalash'}
+                      {lang === 'en' && 'Gentle biofilm and calculus removal'}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-[13px] font-bold text-[#111827] tabular">650 000 сум</div>
+                    <div className="text-[11px] text-[#6B7280]">$50</div>
+                  </div>
+                </div>
               </div>
-              <div className="apple-glass rounded-3xl p-4">
-                <div className="w-8 h-8 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center mx-auto mb-1.5 shadow-xs">
-                  <Clock className="w-4 h-4" />
+            </div>
+
+            {/* Inset Group: Standards & Financial Options */}
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] px-1 mb-2">
+                {lang === 'ru' && 'Стандарты и гарантии'}
+                {lang === 'uz' && 'Kafolat va qulayliklar'}
+                {lang === 'en' && 'Standards & Terms'}
+              </div>
+
+              <div className="ios-card rounded-2xl p-4 space-y-3">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="w-5 h-5 text-[#1B4332] shrink-0 mt-0.5" />
+                  <div>
+                    <div className="text-[13px] font-semibold text-[#111827]">
+                      {lang === 'ru' && 'Официальный договор и гарантия'}
+                      {lang === 'uz' && 'Rasmiy shartnoma va kafolat'}
+                      {lang === 'en' && 'Official Contract & Warranty'}
+                    </div>
+                    <p className="text-[12px] text-[#6B7280] leading-relaxed">
+                      {lang === 'ru' && 'Фиксируем смету в договоре до начала лечения. Никаких скрытых платежей.'}
+                      {lang === 'uz' && 'Davolash narxi boshlanishidan oldin shartnomada qat’iy belgilanadi.'}
+                      {lang === 'en' && 'Fixed pricing agreed upon before treatment starts with no hidden fees.'}
+                    </p>
+                  </div>
                 </div>
-                <div className="text-xs font-extrabold text-[#1C1B1A]">09:00 — 21:00</div>
-                <div className="text-[10px] text-[#6B6762]">Без выходных</div>
+
+                <div className="h-px bg-black/[0.06]" />
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-md bg-[#1B4332]/10 flex items-center justify-center text-[#1B4332] shrink-0 mt-0.5 font-bold text-[10px]">
+                    0%
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-semibold text-[#111827]">
+                      {lang === 'ru' && 'Рассрочка без процентов до 12 месяцев'}
+                      {lang === 'uz' && '12 oygacha foizsiz muddatli to‘lov'}
+                      {lang === 'en' && '0% Interest Installments up to 12 mo.'}
+                    </div>
+                    <p className="text-[12px] text-[#6B7280] leading-relaxed">
+                      {lang === 'ru' && 'Партнёрство с Uzum Nasiya, Anorbank и Paymart. Оформление за 2 минуты в клинике.'}
+                      {lang === 'uz' && 'Uzum Nasiya, Anorbank va Paymart orqali 2 daqiqada rasmiylashtirish.'}
+                      {lang === 'en' && 'Available via Uzum Nasiya and local banks right at the reception.'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -634,46 +557,35 @@ export default function MiniAppPage() {
         )}
 
         {/* ========================================================
-            TAB 2: УСЛУГИ (SERVICES & PRICING WITH SEARCH)
+            TAB 2: УСЛУГИ И ЦЕНЫ (SERVICES CATALOG)
            ======================================================== */}
         {activeTab === 'services' && (
-          <div className="space-y-4 animate-in fade-in duration-300">
+          <div className="space-y-4 animate-in fade-in duration-200">
             
-            <div className="px-1">
-              <h2 className="font-display font-extrabold text-2xl text-[#1C1B1A]">
-                {lang === 'ru' && 'Каталог услуг и цены'}
-                {lang === 'uz' && 'Xizmatlar katalogi va narxlar'}
-                {lang === 'en' && 'Services & Transparent Pricing'}
-              </h2>
-              <p className="text-xs text-[#6B6762] mt-0.5">
-                {lang === 'ru' && 'Анестезия, 3D-контроль и расходные материалы включены в стоимость.'}
-                {lang === 'uz' && 'Anesteziya va sarf materiallari narx ichiga kiritilgan.'}
-                {lang === 'en' && 'All anesthesia, 3D controls and disposables are fully included.'}
-              </p>
-            </div>
-
             {/* Apple Search Bar */}
             <div className="relative">
-              <Search className="w-4 h-4 text-[#6B6762] absolute left-4 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={lang === 'ru' ? 'Поиск услуги (виниры, импланты, чистка)...' : 'Xizmatni qidiring...'}
-                className="w-full pl-10 pr-10 py-3 bg-white/80 rounded-full border border-white/90 apple-glass text-xs text-[#1C1B1A] placeholder-[#6B6762] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20"
+                placeholder={
+                  lang === 'ru' ? 'Поиск услуги или процедуры...' : lang === 'uz' ? 'Xizmat yoki davolashni qidirish...' : 'Search procedure...'
+                }
+                className="w-full pl-9 pr-8 py-2.5 bg-black/[0.05] rounded-xl text-[14px] text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#1B4332]"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="w-5 h-5 rounded-full bg-[#ECE8E1] text-[#6B6762] absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center text-xs"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#9CA3AF] hover:text-[#111827]"
                 >
-                  ✕
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
 
-            {/* Apple Pill Category Scroller (Rounded Full) */}
-            <div className="flex gap-2 overflow-x-auto pb-1.5 no-scrollbar">
+            {/* Category Filter Pills (No Scrollbar) */}
+            <div className="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat.id}
@@ -681,10 +593,10 @@ export default function MiniAppPage() {
                     triggerHaptic('light');
                     setSelectedCategory(cat.id);
                   }}
-                  className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 apple-press ${
+                  className={`px-3 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap transition-colors ios-press ${
                     selectedCategory === cat.id
-                      ? 'bg-[#1B4332] text-white shadow-md'
-                      : 'apple-glass text-[#6B6762] hover:text-[#1C1B1A]'
+                      ? 'bg-[#1B4332] text-white shadow-xs'
+                      : 'bg-black/[0.05] text-[#4B5563] hover:text-[#111827]'
                   }`}
                 >
                   {cat.label[lang]}
@@ -692,526 +604,475 @@ export default function MiniAppPage() {
               ))}
             </div>
 
-            {/* Installment Banner Card */}
-            <div className="apple-glass rounded-2xl p-3 flex items-center justify-between text-xs font-medium text-[#1B4332] bg-[#1B4332]/5 border border-[#1B4332]/10">
-              <div className="flex items-center gap-2">
-                <CreditCard className="w-4 h-4" />
-                <span>{lang === 'ru' ? 'Рассрочка 0% до 12 месяцев (Uzum Nasiya, Anorbank)' : '12 oygacha 0% muddatli to‘lov mavjud'}</span>
-              </div>
-              <span className="font-bold text-[11px] bg-white px-2 py-0.5 rounded-full shadow-2xs">0-0-12</span>
-            </div>
-
-            {/* Services Cards (Rounded 30px) */}
-            <div className="space-y-3.5">
+            {/* Services Inset List */}
+            <div className="ios-card rounded-2xl divide-y divide-black/[0.06] overflow-hidden">
               {filteredServices.length === 0 ? (
-                <div className="text-center py-10 apple-glass rounded-[30px] p-6 text-[#6B6762] text-xs">
-                  {lang === 'ru' && 'По вашему запросу ничего не найдено. Напишите нам в чат!'}
-                  {lang === 'uz' && 'Xizmat topilmadi.'}
-                  {lang === 'en' && 'No services matched your query.'}
+                <div className="p-8 text-center text-[#6B7280] text-[13px]">
+                  {lang === 'ru' && 'По вашему запросу ничего не найдено.'}
+                  {lang === 'uz' && 'Hech narsa topilmadi.'}
+                  {lang === 'en' && 'No procedures match your search.'}
                 </div>
               ) : (
-                filteredServices.map((svc) => (
+                filteredServices.map((service) => (
                   <div
-                    key={svc.id}
-                    className="apple-glass rounded-[30px] p-5 sm:p-6 flex flex-col justify-between gap-3.5 hover:bg-white/95 transition-all shadow-sm"
+                    key={service.id}
+                    className="p-3.5 hover:bg-black/[0.01] transition-colors flex flex-col justify-between gap-2.5"
                   >
-                    <div>
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <div className="font-display font-extrabold text-base text-[#1C1B1A] leading-snug">
-                          {svc.name[lang]}
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-[14px] font-semibold text-[#111827] leading-snug">
+                          {service.name[lang]}
                         </div>
-                        <span className="text-[11px] font-bold text-[#6B6762] whitespace-nowrap bg-[#ECE8E1] px-3 py-1 rounded-full">
-                          {svc.duration}
-                        </span>
+                        <p className="text-[12px] text-[#6B7280] mt-1 leading-relaxed">
+                          {service.description[lang]}
+                        </p>
                       </div>
 
-                      <p className="text-xs text-[#524F4B] leading-relaxed mb-1">
-                        {svc.description[lang]}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-[#DDD8CE]/50 flex items-center justify-between">
-                      <div>
-                        <div className="font-extrabold text-base text-[#1B4332]">
-                          {svc.priceUzs}
+                      <div className="text-right shrink-0">
+                        <div className="text-[13px] font-bold text-[#111827] tabular">
+                          {service.priceUzs}
                         </div>
-                        {svc.priceUsd && (
-                          <div className="text-[11px] font-semibold text-[#6B6762]">
-                            ≈ {svc.priceUsd}
-                          </div>
+                        {service.priceUsd && (
+                          <div className="text-[11px] text-[#6B7280]">{service.priceUsd}</div>
                         )}
                       </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-[11px] text-[#9CA3AF] font-medium flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {service.duration}
+                      </span>
 
                       <button
-                        onClick={() => openBookingFor(svc.name[lang])}
-                        className="text-xs font-bold bg-[#1C1B1A] text-white px-5 py-2.5 rounded-full hover:bg-[#1B4332] transition-colors apple-press shadow-sm"
+                        onClick={() => openBooking(service.name[lang])}
+                        className="text-[12px] font-semibold text-[#1B4332] bg-[#1B4332]/10 hover:bg-[#1B4332]/15 px-3 py-1.5 rounded-lg transition-colors ios-press"
                       >
-                        {lang === 'ru' && 'Записаться'}
-                        {lang === 'uz' && 'Yozilish'}
-                        {lang === 'en' && 'Book'}
+                        {lang === 'ru' && 'Выбрать время'}
+                        {lang === 'uz' && 'Vaqt tanlash'}
+                        {lang === 'en' && 'Select Time'}
                       </button>
                     </div>
                   </div>
                 ))
               )}
             </div>
+
           </div>
         )}
 
         {/* ========================================================
-            TAB 3: КАЛЬКУЛЯТОР (CALCULATOR ESTIMATOR)
+            TAB 3: КАЛЬКУЛЯТОР СМЕТЫ (ACCURATE COST CALCULATOR)
            ======================================================== */}
         {activeTab === 'calculator' && (
-          <div className="space-y-4 animate-in fade-in duration-300">
-            <div className="px-1">
-              <h2 className="font-display font-extrabold text-2xl text-[#1C1B1A]">
-                {lang === 'ru' && 'Калькулятор сметы'}
-                {lang === 'uz' && 'Narx va muddat kalkulyatori'}
-                {lang === 'en' && 'Treatment Cost Estimator'}
-              </h2>
-              <p className="text-xs text-[#6B6762] mt-0.5">
-                {lang === 'ru' && 'Рассчитайте точную смету, длительность и гарантию в пару кликов.'}
-                {lang === 'uz' && 'Muolajani tanlang, muddat va kafolatni darhol bilib oling.'}
-                {lang === 'en' && 'Select treatment and scope to view guaranteed timeline and cost.'}
-              </p>
+          <div className="space-y-4 animate-in fade-in duration-200">
+            
+            <div className="ios-card rounded-2xl p-4">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] mb-2">
+                {lang === 'ru' && '1. Выберите протокол лечения'}
+                {lang === 'uz' && '1. Davolash turini tanlang'}
+                {lang === 'en' && '1. Select Treatment'}
+              </div>
+
+              <div className="space-y-1.5">
+                {CALCULATOR_PLANS.map((plan, idx) => (
+                  <div
+                    key={plan.id}
+                    onClick={() => {
+                      triggerHaptic('light');
+                      setCalcPlanIdx(idx);
+                    }}
+                    className={`p-3 rounded-xl border cursor-pointer transition-all ios-press ${
+                      calcPlanIdx === idx
+                        ? 'border-[#1B4332] bg-[#1B4332]/5'
+                        : 'border-black/[0.06] hover:bg-black/[0.02]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[13px] font-semibold text-[#111827]">
+                        {plan.name[lang]}
+                      </span>
+                      <span className="text-[13px] font-bold text-[#1B4332] tabular">
+                        {plan.basePriceUzs.toLocaleString('ru-RU')} сум
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#6B7280] mt-0.5">
+                      {plan.note[lang]}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Treatment Selector Pills (Rounded 24px) */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-              {TREATMENT_OPTIONS.map((opt, idx) => (
+            {/* Units Stepper Card */}
+            <div className="ios-card rounded-2xl p-4 flex items-center justify-between">
+              <div>
+                <div className="text-[13px] font-semibold text-[#111827]">
+                  {lang === 'ru' && 'Количество:'}
+                  {lang === 'uz' && 'Soni:'}
+                  {lang === 'en' && 'Quantity:'}
+                </div>
+                <div className="text-[12px] text-[#6B7280]">
+                  {selectedPlan.unitLabel[lang]}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
                 <button
-                  key={opt.id}
                   onClick={() => {
-                    triggerHaptic('light');
-                    setActivePlanIdx(idx);
-                    setPlanUnits(opt.defaultUnits);
+                    if (calcUnits > 1) {
+                      triggerHaptic('light');
+                      setCalcUnits(calcUnits - 1);
+                    }
                   }}
-                  className={`p-4 rounded-[24px] text-left transition-all duration-200 text-xs font-bold apple-press relative overflow-hidden ${
-                    activePlanIdx === idx
-                      ? 'bg-[#1B4332] text-white shadow-lg'
-                      : 'apple-glass text-[#1C1B1A] hover:bg-white/95'
-                  }`}
+                  disabled={calcUnits <= 1}
+                  className="w-9 h-9 rounded-xl bg-black/[0.05] disabled:opacity-40 flex items-center justify-center text-[#111827] font-bold ios-press"
                 >
-                  <div className="text-[10px] opacity-80 mb-1">{opt.highlightBadge[lang]}</div>
-                  <div className="text-sm font-extrabold">{opt.name[lang]}</div>
+                  <Minus className="w-4 h-4" />
                 </button>
-              ))}
-            </div>
 
-            {/* Apple Glass Calculation Panel (Rounded 32px) */}
-            <div className="apple-glass rounded-[32px] p-6 space-y-5 shadow-md">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-[10px] text-[#6B6762] uppercase tracking-wider font-bold">
-                    {lang === 'ru' && 'Выбранная процедура'}
-                    {lang === 'uz' && 'Tanlangan muolaja'}
-                    {lang === 'en' && 'Selected procedure'}
-                  </div>
-                  <div className="font-display font-black text-lg text-[#1C1B1A] mt-0.5">
-                    {currentPlan.name[lang]}
-                  </div>
-                </div>
-
-                {/* Apple Stepper Pill (Rounded Full) */}
-                <div className="flex items-center gap-2 bg-[#ECE8E1] p-1.5 rounded-full shadow-inner">
-                  <button
-                    onClick={() => {
-                      triggerHaptic('light');
-                      if (planUnits > 1) setPlanUnits(planUnits - 1);
-                    }}
-                    className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#1C1B1A] shadow-sm font-bold text-sm active:scale-90"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="font-extrabold text-sm min-w-[28px] text-center">
-                    {planUnits}
-                  </span>
-                  <button
-                    onClick={() => {
-                      triggerHaptic('light');
-                      if (planUnits < 16) setPlanUnits(planUnits + 1);
-                    }}
-                    className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#1C1B1A] shadow-sm font-bold text-sm active:scale-90"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Scope Detail (Rounded 24px) */}
-              <div className="bg-[#ECE8E1]/60 rounded-[24px] p-4 text-xs text-[#524F4B] space-y-2.5">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-[#1B4332] shadow-xs">
-                    <Clock className="w-3.5 h-3.5" />
-                  </div>
-                  <span><b>{lang === 'ru' ? 'Срок:' : 'Muddat:'}</b> {currentPlan.durationStr[lang]}</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-[#1B4332] shadow-xs">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                  </div>
-                  <span><b>{lang === 'ru' ? 'Гарантия:' : 'Kafolat:'}</b> {currentPlan.guaranteeStr[lang]}</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-[#1B4332] shadow-xs">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                  </div>
-                  <span>{lang === 'ru' ? 'Компьютерная томография (КТ 3D) входит бесплатно' : '3D KT rentgen bepul'}</span>
-                </div>
-              </div>
-
-              {/* Total Price & Pill CTA */}
-              <div className="pt-3 border-t border-[#DDD8CE]/60 flex items-center justify-between">
-                <div>
-                  <div className="text-[10px] text-[#6B6762] uppercase tracking-wider font-bold">
-                    {lang === 'ru' && 'Итоговая стоимость'}
-                    {lang === 'uz' && 'Jami qiymat'}
-                    {lang === 'en' && 'Total estimate'}
-                  </div>
-                  <div className="font-display font-black text-2xl text-[#1B4332]">
-                    {calculatedTotalUzs} сум
-                  </div>
-                  <div className="text-xs font-semibold text-[#6B6762]">
-                    ≈ ${calculatedTotalUsd} USD
-                  </div>
-                </div>
+                <span className="text-[16px] font-bold tabular w-6 text-center">
+                  {calcUnits}
+                </span>
 
                 <button
-                  onClick={() => openBookingFor(
-                    `${currentPlan.name[lang]} (${planUnits} ${currentPlan.unitLabel[lang]})`
-                  )}
-                  className="font-bold text-xs bg-[#1B4332] text-white px-6 py-3.5 rounded-full hover:bg-[#143326] transition-all shadow-md active:scale-95 apple-press flex items-center gap-1.5"
+                  onClick={() => {
+                    if (calcUnits < 28) {
+                      triggerHaptic('light');
+                      setCalcUnits(calcUnits + 1);
+                    }
+                  }}
+                  className="w-9 h-9 rounded-xl bg-black/[0.05] flex items-center justify-center text-[#111827] font-bold ios-press"
                 >
-                  <span>{lang === 'ru' ? 'Зафиксировать расчёт' : lang === 'uz' ? 'Hisobni tasdiqlash' : 'Lock estimate'}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  <Plus className="w-4 h-4" />
                 </button>
               </div>
             </div>
+
+            {/* Total Estimate Breakdown Card */}
+            <div className="ios-card rounded-2xl p-4 bg-[#1B4332] text-white">
+              <div className="text-[11px] uppercase tracking-wider text-white/70 font-semibold mb-1">
+                {lang === 'ru' && 'Предварительная смета'}
+                {lang === 'uz' && 'Taxminiy hisob-kitob'}
+                {lang === 'en' && 'Total Treatment Estimate'}
+              </div>
+
+              <div className="text-[24px] font-bold tabular mb-1">
+                {totalPriceUzs.toLocaleString('ru-RU')} сум
+              </div>
+
+              <div className="text-[12px] text-white/80 tabular mb-4">
+                ≈ ${totalPriceUsd.toLocaleString('en-US')}
+              </div>
+
+              <div className="pt-3 border-t border-white/15 flex items-center justify-between text-[12px]">
+                <span className="text-white/80">
+                  {lang === 'ru' && 'В рассрочку на 12 мес:'}
+                  {lang === 'uz' && '12 oyga bo‘lib to‘lash:'}
+                  {lang === 'en' && '12 months installment:'}
+                </span>
+                <span className="font-bold tabular">
+                  {monthlyInstallmentUzs.toLocaleString('ru-RU')} сум / мес
+                </span>
+              </div>
+
+              <button
+                onClick={() => openBooking(
+                  `${selectedPlan.name[lang]} (${calcUnits} ${selectedPlan.unitLabel[lang]}) — ${totalPriceUzs.toLocaleString('ru-RU')} сум`
+                )}
+                className="w-full mt-4 bg-white text-[#1B4332] font-semibold text-[13px] py-3 rounded-xl hover:bg-white/95 transition-colors ios-press shadow-sm"
+              >
+                {lang === 'ru' && 'Зафиксировать смету и записаться'}
+                {lang === 'uz' && 'Narxni saqlab qabulga yozilish'}
+                {lang === 'en' && 'Lock this price & book'}
+              </button>
+            </div>
+
           </div>
         )}
 
         {/* ========================================================
-            TAB 4: ВРАЧИ (DOCTORS & CLINICAL TEAM)
+            TAB 4: ВРАЧИ КЛИНИКИ (DOCTORS DIRECTORY)
            ======================================================== */}
         {activeTab === 'doctors' && (
-          <div className="space-y-4 animate-in fade-in duration-300">
-            <div className="px-1">
-              <h2 className="font-display font-extrabold text-2xl text-[#1C1B1A]">
-                {lang === 'ru' && 'Врачи клиники'}
-                {lang === 'uz' && 'Yetakchi mutaxassislar'}
-                {lang === 'en' && 'Medical Specialists'}
-              </h2>
-              <p className="text-xs text-[#6B6762] mt-0.5">
-                {lang === 'ru' && 'Опыт работы от 8 до 16 лет. Стажировки в Швейцарии, Германии и США.'}
-                {lang === 'uz' && 'Shveytsariya va Germaniyada malaka oshirgan oliy toifali mutaxassislar.'}
-                {lang === 'en' && '8 to 16 years of clinical excellence with training in Zurich and Munich.'}
-              </p>
+          <div className="space-y-4 animate-in fade-in duration-200">
+            
+            <div className="text-[12px] text-[#6B7280] px-1">
+              {lang === 'ru' && 'Все специалисты клиники проходят регулярную сертификацию в Швейцарии и Германии.'}
+              {lang === 'uz' && 'Barcha shifokorlar Shveytsariya va Germaniyada malaka oshirgan.'}
+              {lang === 'en' && 'All our specialists are certified by European dental associations.'}
             </div>
 
-            <div className="space-y-3.5">
+            <div className="space-y-3">
               {DOCTORS.map((doc) => (
-                <div
-                  key={doc.id}
-                  className="apple-glass rounded-[32px] p-6 hover:bg-white/95 transition-all flex flex-col justify-between shadow-sm relative overflow-hidden"
-                >
-                  {/* Status Indicator */}
-                  <div className="flex items-start justify-between mb-3.5">
-                    <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-[#1B4332] text-white flex items-center justify-center font-black text-base tracking-wider shrink-0 shadow-md">
-                        {doc.initials}
-                      </div>
-                      <div>
-                        <div className="font-display font-extrabold text-base sm:text-lg text-[#1C1B1A] flex items-center gap-1.5">
-                          {doc.name[lang]}
-                          <CheckCircle2 className="w-4 h-4 text-[#1B4332] inline" />
-                        </div>
-                        <div className="text-xs font-bold text-[#1B4332] mt-0.5">
-                          {doc.role[lang]}
-                        </div>
-                        <div className="text-[11px] font-semibold text-[#6B6762] mt-0.5 flex items-center gap-2">
-                          <span>{lang === 'ru' ? `Стаж ${doc.experienceYears} лет` : `${doc.experienceYears} yil tajriba`}</span>
-                          <span>·</span>
-                          <span className="flex items-center text-[#E6A117] font-bold">
-                            <Star className="w-3 h-3 fill-current inline mr-0.5" /> 4.99
-                          </span>
-                        </div>
-                      </div>
+                <div key={doc.id} className="ios-card rounded-2xl p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-11 h-11 rounded-xl bg-[#1B4332] text-white flex items-center justify-center font-bold text-[14px] shrink-0">
+                      {doc.initials}
                     </div>
 
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#1B4332]/10 text-[#1B4332]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#1B4332] inline-block animate-pulse"></span>
-                      Приём
-                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[15px] font-bold text-[#111827]">
+                        {doc.name[lang]}
+                      </div>
+                      <div className="text-[12px] text-[#1B4332] font-medium leading-snug mt-0.5">
+                        {doc.role[lang]}
+                      </div>
+                      <div className="text-[11px] text-[#6B7280] mt-0.5">
+                        {lang === 'ru' && `Стаж практики: ${doc.experienceYears} лет`}
+                        {lang === 'uz' && `Ish staji: ${doc.experienceYears} yil`}
+                        {lang === 'en' && `Experience: ${doc.experienceYears} years`}
+                      </div>
+                    </div>
                   </div>
 
-                  <p className="text-xs text-[#524F4B] leading-relaxed mb-4 bg-[#ECE8E1]/60 p-4 rounded-2xl">
+                  <p className="text-[12px] text-[#4B5563] leading-relaxed bg-black/[0.02] p-2.5 rounded-xl border border-black/[0.04]">
                     {doc.credentials[lang]}
                   </p>
 
                   <button
-                    onClick={() => openBookingFor('Консультация', doc.name[lang])}
-                    className="w-full text-xs font-bold py-3 rounded-full bg-[#1C1B1A] text-white hover:bg-[#1B4332] transition-colors text-center active:scale-97 apple-press shadow-sm flex items-center justify-center gap-1.5"
+                    onClick={() => openBooking(
+                      lang === 'ru' ? `Консультация: ${doc.name[lang]}` : `Qabul: ${doc.name[lang]}`,
+                      doc.name[lang]
+                    )}
+                    className="w-full text-center py-2.5 text-[12px] font-semibold text-[#1B4332] bg-[#1B4332]/10 hover:bg-[#1B4332]/15 rounded-xl transition-colors ios-press"
                   >
-                    <span>{lang === 'ru' ? 'Записаться к доктору' : lang === 'uz' ? 'Qabuliga yozilish' : 'Book with doctor'}</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
+                    {lang === 'ru' && 'Записаться к доктору'}
+                    {lang === 'uz' && 'Shifokor qabuliga yozilish'}
+                    {lang === 'en' && 'Book with this doctor'}
                   </button>
                 </div>
               ))}
             </div>
+
           </div>
         )}
 
         {/* ========================================================
-            TAB 5: КЛИНИКА / КОНТАКТЫ (CLINIC & CONTACTS)
+            TAB 5: КЛИНИКА И КОНТАКТЫ (CLINIC & ADDRESS)
            ======================================================== */}
         {activeTab === 'contacts' && (
-          <div className="space-y-4 animate-in fade-in duration-300">
-            <div className="px-1">
-              <h2 className="font-display font-extrabold text-2xl text-[#1C1B1A]">
-                {lang === 'ru' && 'Адрес и контакты'}
-                {lang === 'uz' && 'Manzil va aloqa'}
-                {lang === 'en' && 'Clinic Location & Hours'}
-              </h2>
-              <p className="text-xs text-[#6B6762] mt-0.5">
-                {lang === 'ru' && 'Удобное расположение в центре Ташкента с бесплатной охраняемой парковкой.'}
-                {lang === 'uz' && 'Toshkent markazida qulay joylashuv va bepul avtoturargoh.'}
-                {lang === 'en' && 'Prime location in central Tashkent with dedicated guest parking.'}
-              </p>
-            </div>
-
-            {/* Address Card (Rounded 32px) */}
-            <div className="apple-glass rounded-[32px] p-6 space-y-4 shadow-sm">
-              <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1B4332] bg-[#1B4332]/10 px-3 py-1 rounded-full inline-block mb-2">
-                  DentaLux Aesthetic Clinic
-                </span>
-                <div className="font-display font-extrabold text-base text-[#1C1B1A] mb-1">
-                  {lang === 'ru' && 'г. Ташкент, Яккасарайский р-н, ул. Шота Руставели, 54'}
-                  {lang === 'uz' && 'Toshkent sh., Yakkasaroy t., Shota Rustaveli ko‘chasi, 54'}
-                  {lang === 'en' && '54 Shota Rustaveli st., Yakkasaray district, Tashkent'}
-                </div>
-                <div className="text-xs text-[#6B6762]">
-                  {lang === 'ru' && 'Ориентир: метро Ойбек / гранд-отель'}
-                  {lang === 'uz' && 'Mo‘ljal: Oybek metrosi'}
-                  {lang === 'en' && 'Landmark: Oybek metro station'}
+          <div className="space-y-4 animate-in fade-in duration-200">
+            
+            <div className="ios-card rounded-2xl p-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-[#1B4332] shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-[14px] font-bold text-[#111827]">
+                    {lang === 'ru' && 'Адрес клиники'}
+                    {lang === 'uz' && 'Klinika manzili'}
+                    {lang === 'en' && 'Clinic Location'}
+                  </div>
+                  <div className="text-[13px] text-[#4B5563] mt-0.5 leading-snug">
+                    {lang === 'ru' && 'г. Ташкент, Мирабадский район, ул. Мирабад, д. 21'}
+                    {lang === 'uz' && 'Toshkent sh., Mirobod tumani, Mirobod ko‘chasi, 21-uy'}
+                    {lang === 'en' && '21 Mirabad Street, Mirabad District, Tashkent'}
+                  </div>
+                  <div className="text-[11px] text-[#6B7280] mt-1">
+                    {lang === 'ru' && 'Ориентир: метро Ойбек, отель Grand Mir. Собственная парковка для пациентов.'}
+                    {lang === 'uz' && 'Mo‘ljal: Oybek metrosi, Grand Mir mehmonxonasi. Bemorlar uchun bepul avtoturargoh.'}
+                    {lang === 'en' && 'Landmark: Oybek Metro, Grand Mir Hotel. Dedicated patient parking.'}
+                  </div>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
-                <a
-                  href="https://yandex.uz/maps/-/CDuWjF8A"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex-1 text-center font-bold text-xs py-3.5 rounded-full bg-[#1B4332] text-white hover:bg-[#143326] transition-colors flex items-center justify-center gap-1.5 active:scale-97 apple-press shadow-sm"
-                >
-                  <MapPin className="w-4 h-4" />
-                  {lang === 'ru' && 'Маршрут на Яндекс.Картах'}
-                  {lang === 'uz' && 'Yandex Xaritada ochish'}
-                  {lang === 'en' && 'Yandex Maps route'}
-                </a>
+              <div className="h-px bg-black/[0.06]" />
 
-                <a
-                  href="tel:+998712000000"
-                  className="flex-1 text-center font-bold text-xs py-3.5 rounded-full apple-glass text-[#1C1B1A] hover:bg-white transition-colors flex items-center justify-center gap-1.5 active:scale-97 apple-press shadow-xs"
-                >
-                  <Phone className="w-4 h-4" />
-                  +998 (71) 200-00-00
-                </a>
+              <div className="flex items-start gap-3">
+                <Clock className="w-5 h-5 text-[#1B4332] shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-[14px] font-bold text-[#111827]">
+                    {lang === 'ru' && 'Режим работы'}
+                    {lang === 'uz' && 'Ish vaqti'}
+                    {lang === 'en' && 'Working Hours'}
+                  </div>
+                  <div className="text-[13px] text-[#4B5563] mt-0.5">
+                    {lang === 'ru' && 'Понедельник — Воскресенье: с 09:00 до 21:00'}
+                    {lang === 'uz' && 'Dushanba — Yakshanba: 09:00 dan 21:00 gacha'}
+                    {lang === 'en' && 'Monday — Sunday: 09:00 — 21:00'}
+                  </div>
+                  <div className="text-[11px] text-[#1B4332] font-semibold mt-0.5">
+                    {lang === 'ru' && 'Без выходных и перерывов'}
+                    {lang === 'uz' && 'Dam olish kunlarisiz'}
+                    {lang === 'en' && 'Open 7 days a week'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="h-px bg-black/[0.06]" />
+
+              <div className="flex items-start gap-3">
+                <Phone className="w-5 h-5 text-[#1B4332] shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-[14px] font-bold text-[#111827]">
+                    {lang === 'ru' && 'Служба заботы'}
+                    {lang === 'uz' && 'Bog‘lanish'}
+                    {lang === 'en' && 'Direct Line'}
+                  </div>
+                  <div className="text-[13px] text-[#4B5563] mt-0.5 tabular">
+                    +998 (71) 200-00-00 · +998 (90) 123-45-67
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Operating Hours Card (Rounded 32px) */}
-            <div className="apple-glass rounded-[32px] p-6 space-y-3.5 shadow-sm">
-              <div className="font-display font-extrabold text-base text-[#1C1B1A]">
-                {lang === 'ru' && 'График приёма'}
-                {lang === 'uz' && 'Qabul grafigi'}
-                {lang === 'en' && 'Operating Hours'}
-              </div>
-              <div className="flex justify-between items-center text-xs py-1.5 border-b border-[#DDD8CE]/40">
-                <span className="text-[#6B6762]">
-                  {lang === 'ru' ? 'Понедельник — Пятница' : 'Dushanba — Juma'}
-                </span>
-                <span className="font-extrabold text-[#1C1B1A]">09:00 — 21:00</span>
-              </div>
-              <div className="flex justify-between items-center text-xs py-1.5 border-b border-[#DDD8CE]/40">
-                <span className="text-[#6B6762]">
-                  {lang === 'ru' ? 'Суббота' : 'Shanba'}
-                </span>
-                <span className="font-extrabold text-[#1C1B1A]">09:00 — 20:00</span>
-              </div>
-              <div className="flex justify-between items-center text-xs py-1.5">
-                <span className="text-[#6B6762]">
-                  {lang === 'ru' ? 'Воскресенье' : 'Yakshanba'}
-                </span>
-                <span className="font-extrabold text-[#1C1B1A]">10:00 — 18:00</span>
-              </div>
+            {/* Action Buttons */}
+            <div className="space-y-2">
+              <a
+                href="https://yandex.com/maps"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full flex items-center justify-center gap-2 p-3.5 rounded-xl bg-white border border-black/[0.08] text-[13px] font-semibold text-[#111827] hover:bg-black/[0.02] transition-colors ios-press shadow-xs"
+              >
+                <MapPin className="w-4 h-4 text-[#1B4332]" />
+                <span>{lang === 'ru' ? 'Маршрут в Яндекс Картах' : lang === 'uz' ? 'Yandex Xaritada ko‘rish' : 'Open in Yandex Maps'}</span>
+                <ExternalLink className="w-3.5 h-3.5 text-[#9CA3AF]" />
+              </a>
+
+              <a
+                href="tel:+998712000000"
+                className="w-full flex items-center justify-center gap-2 p-3.5 rounded-xl bg-[#1B4332] text-white text-[13px] font-semibold hover:bg-[#143326] transition-colors ios-press shadow-xs"
+              >
+                <Phone className="w-4 h-4" />
+                <span>{lang === 'ru' ? 'Позвонить в регистратуру' : lang === 'uz' ? 'Qo‘ng‘iroq qilish' : 'Call Reception'}</span>
+              </a>
             </div>
 
-            <div className="text-center text-[11px] text-[#6B6762] pt-3">
-              Лицензия Минздрава РУз №008412 · Официальный партнёр Straumann (Базель)
-            </div>
           </div>
         )}
 
       </main>
 
       {/* ========================================================
-          3. FLOATING APPLE GLASS DOCK (Нижняя панель управления без острых краёв)
+          3. AUTHENTIC APPLE TAB BAR (Fixed bottom dock)
          ======================================================== */}
-      <nav className="fixed bottom-4 left-3 right-3 z-40 max-w-md mx-auto apple-glass-dock rounded-full py-2 px-3 flex items-center justify-around shadow-2xl">
-        
-        {/* Tab 1: Home */}
-        <button
-          onClick={() => switchTab('home')}
-          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 apple-press ${
-            activeTab === 'home'
-              ? 'text-[#1B4332] scale-105'
-              : 'text-[#6B6762] hover:text-[#1C1B1A]'
-          }`}
-        >
-          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'home' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
-            <Home className="w-5 h-5" />
-          </div>
-          <span className="text-[10px] font-bold mt-0.5">
-            {lang === 'ru' ? 'Главная' : lang === 'uz' ? 'Asosiy' : 'Home'}
-          </span>
-        </button>
+      <nav className="fixed bottom-0 left-0 right-0 z-40 ios-tabbar pb-safe">
+        <div className="max-w-md mx-auto px-2 py-1.5 flex items-center justify-around">
+          
+          <button
+            onClick={() => switchTab('home')}
+            className={`flex flex-col items-center justify-center py-1 px-3 transition-colors ios-press ${
+              activeTab === 'home' ? 'text-[#1B4332]' : 'text-[#8E8E93]'
+            }`}
+          >
+            <Home className="w-5 h-5 stroke-[2.2]" />
+            <span className="text-[10px] font-semibold mt-1">
+              {lang === 'ru' ? 'Главная' : lang === 'uz' ? 'Asosiy' : 'Home'}
+            </span>
+          </button>
 
-        {/* Tab 2: Services */}
-        <button
-          onClick={() => switchTab('services')}
-          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 apple-press ${
-            activeTab === 'services'
-              ? 'text-[#1B4332] scale-105'
-              : 'text-[#6B6762] hover:text-[#1C1B1A]'
-          }`}
-        >
-          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'services' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
-            <Layers className="w-5 h-5" />
-          </div>
-          <span className="text-[10px] font-bold mt-0.5">
-            {lang === 'ru' ? 'Услуги' : lang === 'uz' ? 'Xizmat' : 'Services'}
-          </span>
-        </button>
+          <button
+            onClick={() => switchTab('services')}
+            className={`flex flex-col items-center justify-center py-1 px-3 transition-colors ios-press ${
+              activeTab === 'services' ? 'text-[#1B4332]' : 'text-[#8E8E93]'
+            }`}
+          >
+            <Layers className="w-5 h-5 stroke-[2.2]" />
+            <span className="text-[10px] font-semibold mt-1">
+              {lang === 'ru' ? 'Услуги' : lang === 'uz' ? 'Xizmatlar' : 'Services'}
+            </span>
+          </button>
 
-        {/* Tab 3: Calculator */}
-        <button
-          onClick={() => switchTab('calculator')}
-          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 apple-press ${
-            activeTab === 'calculator'
-              ? 'text-[#1B4332] scale-105'
-              : 'text-[#6B6762] hover:text-[#1C1B1A]'
-          }`}
-        >
-          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'calculator' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
-            <Calculator className="w-5 h-5" />
-          </div>
-          <span className="text-[10px] font-bold mt-0.5">
-            {lang === 'ru' ? 'Расчёт' : lang === 'uz' ? 'Hisob' : 'Estimate'}
-          </span>
-        </button>
+          <button
+            onClick={() => switchTab('calculator')}
+            className={`flex flex-col items-center justify-center py-1 px-3 transition-colors ios-press ${
+              activeTab === 'calculator' ? 'text-[#1B4332]' : 'text-[#8E8E93]'
+            }`}
+          >
+            <Calculator className="w-5 h-5 stroke-[2.2]" />
+            <span className="text-[10px] font-semibold mt-1">
+              {lang === 'ru' ? 'Расчёт' : lang === 'uz' ? 'Hisob' : 'Estimate'}
+            </span>
+          </button>
 
-        {/* Tab 4: Doctors */}
-        <button
-          onClick={() => switchTab('doctors')}
-          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 apple-press ${
-            activeTab === 'doctors'
-              ? 'text-[#1B4332] scale-105'
-              : 'text-[#6B6762] hover:text-[#1C1B1A]'
-          }`}
-        >
-          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'doctors' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
-            <Users className="w-5 h-5" />
-          </div>
-          <span className="text-[10px] font-bold mt-0.5">
-            {lang === 'ru' ? 'Врачи' : lang === 'uz' ? 'Shifokor' : 'Doctors'}
-          </span>
-        </button>
+          <button
+            onClick={() => switchTab('doctors')}
+            className={`flex flex-col items-center justify-center py-1 px-3 transition-colors ios-press ${
+              activeTab === 'doctors' ? 'text-[#1B4332]' : 'text-[#8E8E93]'
+            }`}
+          >
+            <Users className="w-5 h-5 stroke-[2.2]" />
+            <span className="text-[10px] font-semibold mt-1">
+              {lang === 'ru' ? 'Врачи' : lang === 'uz' ? 'Shifokor' : 'Doctors'}
+            </span>
+          </button>
 
-        {/* Tab 5: Contacts */}
-        <button
-          onClick={() => switchTab('contacts')}
-          className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-full transition-all duration-200 apple-press ${
-            activeTab === 'contacts'
-              ? 'text-[#1B4332] scale-105'
-              : 'text-[#6B6762] hover:text-[#1C1B1A]'
-          }`}
-        >
-          <div className={`p-1.5 rounded-full transition-colors ${activeTab === 'contacts' ? 'bg-[#1B4332]/10 text-[#1B4332]' : ''}`}>
-            <MapPin className="w-5 h-5" />
-          </div>
-          <span className="text-[10px] font-bold mt-0.5">
-            {lang === 'ru' ? 'Клиника' : lang === 'uz' ? 'Klinika' : 'Clinic'}
-          </span>
-        </button>
+          <button
+            onClick={() => switchTab('contacts')}
+            className={`flex flex-col items-center justify-center py-1 px-3 transition-colors ios-press ${
+              activeTab === 'contacts' ? 'text-[#1B4332]' : 'text-[#8E8E93]'
+            }`}
+          >
+            <MapPin className="w-5 h-5 stroke-[2.2]" />
+            <span className="text-[10px] font-semibold mt-1">
+              {lang === 'ru' ? 'Клиника' : lang === 'uz' ? 'Klinika' : 'Clinic'}
+            </span>
+          </button>
 
+        </div>
       </nav>
 
       {/* ========================================================
-          4. APPLE ROUNDED BOTTOM SHEET (Interactive Slots & Pills)
+          4. APPLE BOTTOM SHEET MODAL (Booking)
          ======================================================== */}
       {isBookingOpen && (
-        <div className="fixed inset-0 z-50 bg-black/45 backdrop-blur-md flex items-end justify-center p-0 sm:p-4 animate-in fade-in duration-200">
-          <div className="w-full sm:max-w-md bg-[#F6F4F0] p-6 max-h-[90vh] overflow-y-auto rounded-t-[36px] sm:rounded-[36px] shadow-2xl border-t sm:border border-white/90 animate-in slide-in-from-bottom duration-250">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end justify-center animate-in fade-in duration-150">
+          <div className="w-full max-w-md bg-white rounded-t-[28px] p-5 max-h-[92vh] overflow-y-auto shadow-2xl border-t border-black/[0.08] animate-in slide-in-from-bottom duration-200">
             
-            {/* Apple Drag Handle Pill */}
-            <div className="w-12 h-1.5 bg-[#DDD8CE] rounded-full mx-auto mb-4" />
+            {/* Grab handle */}
+            <div className="w-10 h-1 bg-black/15 rounded-full mx-auto mb-4" />
 
-            {isSuccess ? (
-              <div className="text-center py-6 animate-in zoom-in-95 duration-200">
-                <div className="w-16 h-16 rounded-full bg-[#1B4332] text-white flex items-center justify-center mx-auto mb-3 shadow-lg pulse-glow">
-                  <Check className="w-8 h-8" />
+            {isSubmitted ? (
+              <div className="text-center py-8">
+                <div className="w-12 h-12 rounded-full bg-[#1B4332] text-white flex items-center justify-center mx-auto mb-3">
+                  <Check className="w-6 h-6 stroke-[3]" />
                 </div>
-                <div className="font-display font-extrabold text-xl text-[#1C1B1A] mb-1.5">
+                <h3 className="text-[18px] font-bold text-[#111827] mb-1">
                   {lang === 'ru' && 'Запись подтверждена'}
                   {lang === 'uz' && 'Ariza qabul qilindi'}
-                  {lang === 'en' && 'Booking Confirmed'}
-                </div>
-                <p className="text-xs text-[#524F4B] mb-6 leading-relaxed max-w-xs mx-auto">
-                  {lang === 'ru' && 'Ваш запрос отправлен главному администратору клиники. Мы перезвоним вам в течение 10 минут.'}
-                  {lang === 'uz' && "Arizangiz qabul qilindi. 10 daqiqa ichida administratorimiz siz bilan bog'lanadi."}
-                  {lang === 'en' && 'Our clinic administrator will contact you within 10 minutes.'}
+                  {lang === 'en' && 'Booking Submitted'}
+                </h3>
+                <p className="text-[13px] text-[#4B5563] mb-6 max-w-xs mx-auto">
+                  {lang === 'ru' && 'Администратор клиники свяжется с вами в течение 10 минут для подтверждения времени.'}
+                  {lang === 'uz' && 'Administratorimiz 10 daqiqa ichida vaqtni tasdiqlash uchun bog‘lanadi.'}
+                  {lang === 'en' && 'Our receptionist will contact you shortly to confirm your slot.'}
                 </p>
                 <button
                   onClick={() => {
                     setIsBookingOpen(false);
-                    setIsSuccess(false);
+                    setIsSubmitted(false);
                   }}
-                  className="w-full font-bold text-xs bg-[#1C1B1A] text-white py-3.5 rounded-full active:scale-95 shadow-md apple-press"
+                  className="w-full py-3 bg-[#111827] text-white font-semibold text-[13px] rounded-xl ios-press"
                 >
-                  {lang === 'ru' && 'Отлично'}
-                  {lang === 'uz' && 'Ajoyib'}
-                  {lang === 'en' && 'Great'}
+                  {lang === 'ru' ? 'Готово' : lang === 'uz' ? 'Tayyor' : 'Done'}
                 </button>
               </div>
             ) : (
               <form onSubmit={handleBookingSubmit} className="space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-display font-extrabold text-lg text-[#1C1B1A]">
+                    <h3 className="text-[17px] font-bold text-[#111827]">
                       {lang === 'ru' && 'Запись на приём'}
                       {lang === 'uz' && 'Qabulga yozilish'}
                       {lang === 'en' && 'Book Appointment'}
                     </h3>
-                    <div className="text-xs text-[#1B4332] font-bold mt-0.5 flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5" />
+                    <div className="text-[12px] text-[#1B4332] font-semibold mt-0.5 line-clamp-1">
                       {bookingService}
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsBookingOpen(false)}
-                    className="w-8 h-8 rounded-full bg-[#ECE8E1] flex items-center justify-center text-[#6B6762] hover:text-[#1C1B1A] active:scale-90"
+                    className="w-7 h-7 rounded-full bg-black/[0.06] flex items-center justify-center text-[#6B7280] hover:text-[#111827]"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
 
+                {/* Patient Name */}
                 <div>
-                  <label className="block text-xs font-bold text-[#4A4743] mb-1.5">
-                    {lang === 'ru' && 'Ваше имя:'}
-                    {lang === 'uz' && 'Ismingiz:'}
-                    {lang === 'en' && 'Your Name:'}
+                  <label className="block text-[12px] font-semibold text-[#4B5563] mb-1">
+                    {lang === 'ru' ? 'Ваше имя' : lang === 'uz' ? 'Ismingiz' : 'Name'}
                   </label>
                   <input
                     type="text"
@@ -1219,15 +1080,14 @@ export default function MiniAppPage() {
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
                     placeholder="Азиз"
-                    className="w-full px-4 py-3 bg-white rounded-2xl border border-[#DDD8CE]/80 text-sm text-[#1C1B1A] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 shadow-xs"
+                    className="w-full px-3.5 py-2.5 bg-black/[0.04] rounded-xl text-[14px] text-[#111827] focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#1B4332]"
                   />
                 </div>
 
+                {/* Patient Phone */}
                 <div>
-                  <label className="block text-xs font-bold text-[#4A4743] mb-1.5">
-                    {lang === 'ru' && 'Номер телефона:'}
-                    {lang === 'uz' && 'Telefon raqam:'}
-                    {lang === 'en' && 'Phone Number:'}
+                  <label className="block text-[12px] font-semibold text-[#4B5563] mb-1">
+                    {lang === 'ru' ? 'Номер телефона' : lang === 'uz' ? 'Telefon raqam' : 'Phone'}
                   </label>
                   <input
                     type="tel"
@@ -1235,98 +1095,95 @@ export default function MiniAppPage() {
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value)}
                     placeholder="+998 90 123 45 67"
-                    className="w-full px-4 py-3 bg-white rounded-2xl border border-[#DDD8CE]/80 text-sm text-[#1C1B1A] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 shadow-xs"
+                    className="w-full px-3.5 py-2.5 bg-black/[0.04] rounded-xl text-[14px] text-[#111827] tabular focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#1B4332]"
                   />
                 </div>
 
-                {/* Date Preset Pills */}
+                {/* Date Presets */}
                 <div>
-                  <label className="block text-xs font-bold text-[#4A4743] mb-1.5">
-                    {lang === 'ru' && 'День приёма:'}
-                    {lang === 'uz' && 'Qabul kuni:'}
-                    {lang === 'en' && 'Preferred Day:'}
+                  <label className="block text-[12px] font-semibold text-[#4B5563] mb-1.5">
+                    {lang === 'ru' ? 'Желаемый день' : lang === 'uz' ? 'Qabul kuni' : 'Day'}
                   </label>
                   <div className="grid grid-cols-3 gap-2">
-                    {DATE_PRESETS.map((d) => (
+                    {[
+                      { id: 'today', ru: 'Сегодня', uz: 'Bugun', en: 'Today' },
+                      { id: 'tomorrow', ru: 'Завтра', uz: 'Ertaga', en: 'Tomorrow' },
+                      { id: 'weekend', ru: 'Суббота', uz: 'Shanba', en: 'Saturday' },
+                    ].map((d) => (
                       <button
                         type="button"
                         key={d.id}
                         onClick={() => {
                           triggerHaptic('light');
-                          setSelectedDatePreset(d.id);
+                          setBookingDate(d.id);
                         }}
-                        className={`py-2 px-3 rounded-xl text-xs font-bold transition-all apple-press ${
-                          selectedDatePreset === d.id
-                            ? 'bg-[#1B4332] text-white shadow-sm'
-                            : 'bg-white border border-[#DDD8CE]/70 text-[#6B6762]'
+                        className={`py-2 text-[12px] font-semibold rounded-lg border transition-colors ios-press ${
+                          bookingDate === d.id
+                            ? 'bg-[#1B4332] text-white border-[#1B4332]'
+                            : 'bg-black/[0.03] text-[#4B5563] border-transparent hover:bg-black/[0.06]'
                         }`}
                       >
-                        {d.label[lang]}
+                        {d[lang]}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Time Slot Selector Pills */}
+                {/* Time Slots */}
                 <div>
-                  <label className="block text-xs font-bold text-[#4A4743] mb-1.5">
-                    {lang === 'ru' && 'Удобное время:'}
-                    {lang === 'uz' && 'Qulay vaqt:'}
-                    {lang === 'en' && 'Preferred Time:'}
+                  <label className="block text-[12px] font-semibold text-[#4B5563] mb-1.5">
+                    {lang === 'ru' ? 'Время приёма' : lang === 'uz' ? 'Vaqt' : 'Time'}
                   </label>
                   <div className="grid grid-cols-3 gap-2">
-                    {TIME_SLOTS.map((slot) => (
+                    {['10:00', '12:30', '14:30', '16:30', '18:30', '20:00'].map((time) => (
                       <button
                         type="button"
-                        key={slot}
+                        key={time}
                         onClick={() => {
                           triggerHaptic('light');
-                          setSelectedTimeSlot(slot);
+                          setBookingTime(time);
                         }}
-                        className={`py-2 rounded-xl text-xs font-bold transition-all apple-press ${
-                          selectedTimeSlot === slot
-                            ? 'bg-[#1B4332] text-white shadow-sm'
-                            : 'bg-white border border-[#DDD8CE]/70 text-[#1C1B1A]'
+                        className={`py-2 text-[12px] font-semibold rounded-lg border tabular transition-colors ios-press ${
+                          bookingTime === time
+                            ? 'bg-[#1B4332] text-white border-[#1B4332]'
+                            : 'bg-black/[0.03] text-[#4B5563] border-transparent hover:bg-black/[0.06]'
                         }`}
                       >
-                        {slot}
+                        {time}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Doctor Selector */}
+                {/* Doctor Selection */}
                 <div>
-                  <label className="block text-xs font-bold text-[#4A4743] mb-1.5">
-                    {lang === 'ru' && 'Врач:'}
-                    {lang === 'uz' && 'Shifokor:'}
-                    {lang === 'en' && 'Doctor:'}
+                  <label className="block text-[12px] font-semibold text-[#4B5563] mb-1">
+                    {lang === 'ru' ? 'Специалист' : lang === 'uz' ? 'Shifokor' : 'Doctor'}
                   </label>
                   <select
                     value={bookingDoctor}
                     onChange={(e) => setBookingDoctor(e.target.value)}
-                    className="w-full px-4 py-3 bg-white rounded-2xl border border-[#DDD8CE]/80 text-xs font-semibold text-[#1C1B1A] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 shadow-xs"
+                    className="w-full px-3 py-2.5 bg-black/[0.04] rounded-xl text-[13px] text-[#111827] focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#1B4332]"
                   >
-                    <option value="Любой свободный специалист">Любой свободный специалист</option>
-                    <option value="Д-р Азиз Каримов (Имплантолог)">Д-р Азиз Каримов (Хирург-имплантолог)</option>
-                    <option value="Д-р Мадина Умарова (Ортодонт)">Д-р Мадина Умарова (Ортодонт Damon/Spark)</option>
-                    <option value="Д-р Сардор Рахимов (Ортопед)">Д-р Сардор Рахимов (Ортопед E.max)</option>
+                    <option value="Д-р Сардор Каримов (Главврач)">Д-р Сардор Каримов (Хирург-имплантолог)</option>
+                    <option value="Д-р Мадина Усманова (Ортодонт)">Д-р Мадина Усманова (Ортодонт Damon/Spark)</option>
+                    <option value="Д-р Тимур Рахимов (Ортопед)">Д-р Тимур Рахимов (Ортопед E.max)</option>
+                    <option value="Д-р Нилуфар Ахмедова (Терапевт)">Д-р Нилуфар Ахмедова (Детский врач)</option>
                   </select>
                 </div>
 
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full font-bold text-xs bg-[#1B4332] text-white py-4 rounded-full hover:bg-[#143326] transition-all shadow-md active:scale-97 apple-press flex items-center justify-center gap-1.5"
+                    className="w-full py-3.5 bg-[#1B4332] text-white font-semibold text-[14px] rounded-xl hover:bg-[#143326] transition-colors ios-press shadow-xs"
                   >
-                    <span>{lang === 'ru' ? 'Подтвердить бронирование' : lang === 'uz' ? 'Band qilishni tasdiqlash' : 'Confirm Booking'}</span>
-                    <ArrowUpRight className="w-4 h-4" />
+                    {lang === 'ru' ? 'Подтвердить запись' : lang === 'uz' ? 'Band qilishni tasdiqlash' : 'Confirm Appointment'}
                   </button>
-                  <div className="text-[10px] text-[#6B6762] text-center mt-2 font-medium">
-                    {lang === 'ru' && 'Конфиденциально · Мгновенное подтверждение в Telegram'}
-                    {lang === 'uz' && 'Maxfiy · Telegram orqali tezkor tasdiq'}
-                    {lang === 'en' && 'Confidential · Instant Telegram notification'}
-                  </div>
+                  <p className="text-center text-[11px] text-[#9CA3AF] mt-2">
+                    {lang === 'ru' && 'Мгновенное уведомление в Telegram · Без предоплаты'}
+                    {lang === 'uz' && 'Telegram orqali tezkor tasdiq · Oldindan to‘lovsiz'}
+                    {lang === 'en' && 'Instant Telegram notification · No prepayment needed'}
+                  </p>
                 </div>
               </form>
             )}
