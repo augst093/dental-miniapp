@@ -17,6 +17,9 @@ import { DemoControlDrawer } from '../components/admin/DemoControlDrawer';
 import { ChatScreen } from '../components/chat/ChatScreen';
 import { MessageCircle } from 'lucide-react';
 
+// Patient dock order, used to decide which way content slides
+const PATIENT_TAB_ORDER: TabType[] = ['home', 'services', 'calculator', 'doctors', 'contacts'];
+
 export default function MiniAppPage() {
   const [lang, setLang] = useState<Language>('ru');
   const [activeTab, setActiveTab] = useState<TabType>('home');
@@ -77,12 +80,21 @@ export default function MiniAppPage() {
   }, []);
 
   // Switch Tab with Haptic & Smooth Scroll
-  const handleTabChange = useCallback((tab: TabType) => {
-    setActiveTab(tab);
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, []);
+  // Tab slide direction: moving right in the dock slides content in from the right, and back slides from the left
+  const [tabDirection, setTabDirection] = useState<'next' | 'prev'>('next');
+
+  const handleTabChange = useCallback(
+    (tab: TabType) => {
+      const from = PATIENT_TAB_ORDER.indexOf(activeTab);
+      const to = PATIENT_TAB_ORDER.indexOf(tab);
+      if (from !== -1 && to !== -1) setTabDirection(to >= from ? 'next' : 'prev');
+      setActiveTab(tab);
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    },
+    [activeTab]
+  );
 
   // Role change handler
   const handleRoleChange = (role: 'patient' | 'admin') => {
@@ -168,6 +180,10 @@ export default function MiniAppPage() {
 
       {/* 2. Main Content Canvas */}
       <main className="flex-1 px-4 pt-[78px] sm:pt-[84px] pb-3 max-w-xl mx-auto w-full">
+        <div
+          key={`${currentRole}-${activeTab}`}
+          className={tabDirection === 'next' ? 'tab-enter-next' : 'tab-enter-prev'}
+        >
         {/* ================= ADMIN VIEW ================= */}
         {currentRole === 'admin' ? (
           <>
@@ -230,6 +246,7 @@ export default function MiniAppPage() {
             )}
           </>
         )}
+        </div>
       </main>
 
       {/* 3. Sticky Primary CTA (Shown only in Patient mode when not dismissed) */}

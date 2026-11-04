@@ -251,6 +251,32 @@ main > * {
   }
 }
 
+/* Tab content slides in from the side it is moving towards (app/page.tsx) */
+@keyframes tab-from-right {
+  from { opacity: 0; transform: translateX(32px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes tab-from-left {
+  from { opacity: 0; transform: translateX(-32px); }
+  to { opacity: 1; transform: none; }
+}
+
+.tab-enter-next {
+  animation: tab-from-right 340ms var(--ease-standard) backwards;
+}
+
+.tab-enter-prev {
+  animation: tab-from-left 340ms var(--ease-standard) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-enter-next,
+  .tab-enter-prev {
+    animation: none;
+  }
+}
+
 /* Full-screen page entrance: slides up without fading, so the screen is never see-through */
 @keyframes dl-screen {
   from { transform: translateY(24px); }
@@ -299,6 +325,24 @@ main > * {
 @keyframes chat-bounce {
   0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
   40% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Loading placeholders for the chat while history is read */
+@keyframes chat-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.chat-skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.55) 25%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0.55) 75%);
+  background-size: 200% 100%;
+  animation: chat-shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-skeleton {
+    animation: none;
+  }
 }
 
 /* Blinking text caret for the chat input (steps keeps it crisp, like a native caret) */

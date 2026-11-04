@@ -22,7 +22,44 @@ interface ChatMessage {
   role: Role;
   text: string;
   time: number;
+  // For the patient's own messages: the assistant has started answering (shows the double tick)
+  delivered?: boolean;
 }
+
+// Position of a bubble inside a run of messages from the same sender (Telegram-style grouping)
+type GroupPosition = 'single' | 'first' | 'middle' | 'last';
+
+const GROUP_GAP_MS = 2 * 60 * 1000;
+
+function groupPositions(list: ChatMessage[]): GroupPosition[] {
+  return list.map((message, index) => {
+    const prev = list[index - 1];
+    const next = list[index + 1];
+    const joinsPrev = !!prev && prev.role === message.role && message.time - prev.time < GROUP_GAP_MS;
+    const joinsNext = !!next && next.role === message.role && next.time - message.time < GROUP_GAP_MS;
+    if (joinsPrev && joinsNext) return 'middle';
+    if (joinsPrev) return 'last';
+    if (joinsNext) return 'first';
+    return 'single';
+  });
+}
+
+// The corner next to the sender's edge is sharp only where a tail or the group continues
+function bubbleShape(mine: boolean, position: GroupPosition): string {
+  const hasTail = position === 'single' || position === 'last';
+  if (mine) {
+    if (hasTail) return 'rounded-2xl rounded-br-[4px]';
+    return position === 'first' ? 'rounded-2xl rounded-br-[6px]' : 'rounded-2xl rounded-r-[6px]';
+  }
+  if (hasTail) return 'rounded-2xl rounded-bl-[4px]';
+  return position === 'first' ? 'rounded-2xl rounded-bl-[6px]' : 'rounded-2xl rounded-l-[6px]';
+}
+
+const EMPTY_STATE: Record<Language, { title: string; sub: string }> = {
+  ru: { title: 'Ассистент DentaLux', sub: 'Отвечу на вопросы о ценах, адресе и записи' },
+  uz: { title: 'DentaLux yordamchisi', sub: 'Narxlar, manzil va yozilish bo‘yicha javob beraman' },
+  en: { title: 'DentaLux assistant', sub: 'I can answer questions about prices, the address and booking' },
+};
 
 interface ChatScreenProps {
   lang: Language;
@@ -33,6 +70,12 @@ interface ChatScreenProps {
 
 // Messages kept for the AI context and for storage (the storage limit is per value, see chatStorage.ts)
 const MAX_STORED = 30;
+
+const STORAGE_WARNING: Record<Language, string> = {
+  ru: 'История не сохраняется',
+  uz: 'Tarix saqlanmayapti',
+  en: 'History is not being saved',
+};
 // Distance from the bottom (px) within which the list keeps following new messages
 const STICK_THRESHOLD = 80;
 
@@ -168,19 +211,27 @@ function TypingDots() {
 }
 
 // Memoised: a bubble re-renders only when its own message object changes
-const Bubble = memo(function Bubble({ message, lang }: { message: ChatMessage; lang: Language }) {
+const Bubble = memo(function Bubble({
+  message,
+  lang,
+  position,
+}: {
+  message: ChatMessage;
+  lang: Language;
+  position: GroupPosition;
+}) {
   const mine = message.role === 'user';
   const pending = !mine && message.text === '';
   const body = mine ? message.text : plainText(message.text);
+  const gap = position === 'first' || position === 'single' ? 'mt-2' : 'mt-[2px]';
 
   return (
-    <div className={`flex ${mine ? 'justify-end' : 'justify-start'} chat-bubble-in`}>
+    <div className={`flex ${mine ? 'justify-end' : 'justify-start'} ${gap} chat-bubble-in`}>
       <div
-        className={`max-w-[82%] px-3 py-2 text-[14.5px] leading-snug whitespace-pre-wrap break-words ${
-          mine
-            ? 'bg-[var(--accent)] text-white rounded-2xl rounded-br-md'
-            : 'bg-white text-[var(--ink)] rounded-2xl rounded-bl-md'
-        }`}
+        className={`max-w-[82%] px-3 py-2 text-[14.5px] leading-snug whitespace-pre-wrap break-words shadow-xs ${bubbleShape(
+          mine,
+          position
+        )} ${mine ? 'bg-[var(--accent)] text-white' : 'bg-white text-[var(--ink)]'}`}
       >
         {pending ? (
           <TypingDots />
@@ -188,9 +239,12 @@ const Bubble = memo(function Bubble({ message, lang }: { message: ChatMessage; l
           <>
             {body}
             <span
-              className={`float-right ml-2 mt-1.5 text-[10px] ${mine ? 'text-blue-100' : 'text-slate-400'}`}
+              className={`float-right ml-2 mt-1.5 flex items-center gap-0.5 text-[10px] ${
+                mine ? 'text-blue-100' : 'text-slate-400'
+              }`}
             >
               {formatTime(message.time, lang)}
+              {mine && <span className="tracking-[-0.15em]">{message.delivered ? '✓✓' : '✓'}</span>}
             </span>
           </>
         )}
@@ -247,12 +301,20 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
   messagesRef.current = messages;
   const clearedRef = useRef<boolean>(false);
 
+  // True only after the stored history was read successfully. If the read failed, nothing is
+  // written in this session, so a new question cannot overwrite the saved history.
+  const storageReadyRef = useRef<boolean>(false);
+  // Whether the last save failed; shown in the header so the problem is visible
+  const [storageFailed, setStorageFailed] = useState<boolean>(false);
+
   // Load the saved history once (Telegram CloudStorage, or the local copy outside Telegram)
   useEffect(() => {
     let cancelled = false;
     loadHistory()
-      .then((json) => {
+      .then(({ ok, json }) => {
         if (cancelled) return;
+        storageReadyRef.current = ok;
+        if (!ok) setStorageFailed(true);
         if (json) {
           try {
             const parsed = JSON.parse(json) as ChatMessage[];
@@ -267,7 +329,10 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
         setHydrated(true);
       })
       .catch(() => {
-        if (!cancelled) setHydrated(true);
+        if (cancelled) return;
+        storageReadyRef.current = false;
+        setStorageFailed(true);
+        setHydrated(true);
       });
     return () => {
       cancelled = true;
@@ -276,11 +341,12 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
 
   // Stored form: finished messages only. Empty placeholders for replies still streaming are dropped.
   const persist = (list: ChatMessage[]) => {
+    if (!storageReadyRef.current) return;
     if (list.length === 0 && !clearedRef.current) return; // never overwrite history with an empty list by accident
     const finished = list.filter((m) => m.role === 'user' || m.text.length > 0);
-    saveHistory(JSON.stringify(finished.slice(-MAX_STORED))).catch(() => {
-      // Storage unavailable: the chat still works for this session
-    });
+    saveHistory(JSON.stringify(finished.slice(-MAX_STORED)))
+      .then(() => setStorageFailed(false))
+      .catch(() => setStorageFailed(true));
   };
 
   // Save once per finished reply (busy turns false), never per streamed token
@@ -385,6 +451,10 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
         history.map(({ role, text: content }) => ({ role, content })),
         lang,
         (delta) => {
+          if (!received) {
+            // First token: the question has been received, show the double tick
+            setMessages((prev) => prev.map((m) => (m.id === userMessage.id ? { ...m, delivered: true } : m)));
+          }
           received = true;
           pending += delta;
           if (!frame) frame = requestAnimationFrame(flush);
@@ -418,6 +488,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
 
   const showGreeting = hydrated && messages.length === 0;
   const greeting: ChatMessage = { id: 'greeting', role: 'assistant', text: copy.greeting, time: 0 };
+  const positions = groupPositions(messages);
 
   return (
     <div
@@ -441,10 +512,17 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
 
           <div className="flex-1 min-w-0">
             <div className="font-bold text-[15px] leading-tight text-[var(--ink)]">DentaLux</div>
-            <div className="text-[12px] text-emerald-600 font-medium flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              {copy.status}
-            </div>
+            {storageFailed ? (
+              <div className="text-[12px] text-amber-600 font-medium flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                {STORAGE_WARNING[lang]}
+              </div>
+            ) : (
+              <div className="text-[12px] text-emerald-600 font-medium flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                {copy.status}
+              </div>
+            )}
           </div>
 
           <button
@@ -468,7 +546,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
       <div
         ref={listRef}
         onScroll={onListScroll}
-        className="flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-1.5"
+        className="flex-1 overflow-y-auto overscroll-contain px-3 py-4"
       >
         <div className="flex justify-center pb-2">
           <span className="text-[11px] font-semibold text-slate-600 bg-white/90 px-3 py-1 rounded-full shadow-xs">
@@ -476,9 +554,28 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
           </span>
         </div>
 
-        {showGreeting && <Bubble message={greeting} lang={lang} />}
-        {messages.map((message) => (
-          <Bubble key={message.id} message={message} lang={lang} />
+        {!hydrated && (
+          <div className="space-y-2 pt-2" aria-hidden="true">
+            <div className="chat-skeleton h-10 w-2/3 rounded-2xl" />
+            <div className="chat-skeleton h-10 w-1/2 rounded-2xl ml-auto" />
+            <div className="chat-skeleton h-14 w-3/4 rounded-2xl" />
+          </div>
+        )}
+
+        {showGreeting && (
+          <div className="flex flex-col items-center text-center pt-4 pb-6 chat-bubble-in">
+            <div className="w-16 h-16 rounded-full bg-[var(--accent)] text-white font-extrabold text-[17px] flex items-center justify-center shadow-md">
+              DL
+            </div>
+            <div className="mt-3 font-bold text-[16px] text-[var(--ink)]">{EMPTY_STATE[lang].title}</div>
+            <div className="text-[12.5px] text-[var(--ink-muted)] max-w-[260px] leading-snug">
+              {EMPTY_STATE[lang].sub}
+            </div>
+          </div>
+        )}
+        {showGreeting && <Bubble message={greeting} lang={lang} position="single" />}
+        {messages.map((message, index) => (
+          <Bubble key={message.id} message={message} lang={lang} position={positions[index]} />
         ))}
       </div>
 

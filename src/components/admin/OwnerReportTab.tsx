@@ -103,6 +103,22 @@ export const OwnerReportTab: React.FC<OwnerReportTabProps> = ({
   // Find max daily count for SVG chart scaling
   const maxDayCount = Math.max(...m.dailyStats.map((d) => d.total), 8);
 
+  // Until the real numbers arrive, show placeholders instead of example figures
+  if (loading && !metrics) {
+    return (
+      <div className="space-y-4 pb-24" aria-busy="true" aria-label="Loading">
+        <div className="chat-skeleton h-8 w-1/2 rounded-xl" />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="chat-skeleton h-24 rounded-2xl" />
+          <div className="chat-skeleton h-24 rounded-2xl" />
+          <div className="chat-skeleton h-24 rounded-2xl" />
+          <div className="chat-skeleton h-24 rounded-2xl" />
+        </div>
+        <div className="chat-skeleton h-44 rounded-2xl" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 pb-24 animate-in fade-in duration-200">
       {/* Top Title & Period Selector */}
