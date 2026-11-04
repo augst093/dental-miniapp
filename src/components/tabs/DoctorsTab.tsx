@@ -18,7 +18,7 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
   const t = UI_TRANSLATIONS;
 
   return (
-    <div className="space-y-4 pb-36 sm:pb-40">
+    <div className="space-y-6 pb-36 sm:pb-40">
       <div>
         <h1 className="text-2xl font-extrabold text-[var(--ink)] tracking-tight">
           {t.quickTiles.doctorsTitle[lang]}
@@ -32,7 +32,7 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {DOCTORS.map((doc) => (
           <div key={doc.id} className="clinic-card p-4 sm:p-5 space-y-3.5 rounded-3xl">
             <div className="flex items-start gap-3">

@@ -48,9 +48,9 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
   });
 
   return (
-    <div className="space-y-4 pb-36 sm:pb-40">
+    <div className="space-y-6 pb-36 sm:pb-40">
       {/* Header and Search */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         <div>
           <h1 className="text-xl font-extrabold text-[var(--ink)]">
             {t.quickTiles.catalogTitle[lang]}
@@ -119,7 +119,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
       </div>
 
       {/* Services List */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         <div className="flex items-center justify-between text-[12px] text-[var(--ink-muted)] px-1">
           <span>
             {lang === 'uz'
@@ -187,11 +187,6 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                         {srv.badge[lang]}
                       </span>
                     )}
-                    {srv.partnerBrand && (
-                      <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                        {srv.partnerBrand}
-                      </span>
-                    )}
                   </div>
                   <p className="text-[12px] text-[var(--ink-secondary)] leading-relaxed">
                     {srv.description[lang]}
@@ -201,7 +196,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
 
               <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[15px] font-bold text-[var(--accent)] leading-tight">
+                  <div className="font-serif italic text-[19px] text-[var(--accent)] leading-tight">
                     {srv.priceUzs}
                   </div>
                   <div className="flex items-center gap-2 text-[11px] text-[var(--ink-muted)]">

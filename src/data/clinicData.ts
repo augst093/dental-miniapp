@@ -726,7 +726,7 @@ export const UI_TRANSLATIONS = {
     title: { ru: 'Основные направления лечения', uz: 'Asosiy davolash yo‘nalishlari', en: 'Key Clinical Treatments' },
     subtitle: { ru: 'Современные клинические протоколы с фиксацией плана', uz: 'Aniq reja bilan zamonaviy klinik protokollar', en: 'Modern clinical protocols with treatment planning' },
     viewAll: { ru: 'Весь каталог', uz: 'Barcha xizmatlar', en: 'Full catalog' },
-    bookItem: { ru: 'Записаться на приём', uz: 'Qabulga yozilish', en: 'Book an appointment' },
+    bookItem: { ru: 'Записаться на консультацию', uz: 'Qabulga yozilish', en: 'Book an appointment' },
   },
   calculator: {
     title: { ru: 'Калькулятор стоимости лечения', uz: 'Davolash smetasi kalkulyatori', en: 'Treatment Cost Estimator' },

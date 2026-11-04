@@ -49,7 +49,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
   };
 
   return (
-    <div className="space-y-4 pb-36 sm:pb-40">
+    <div className="space-y-6 pb-36 sm:pb-40">
       {/* ========================================================
           1. EMERGENCY SOS BANNER (ACUTE PAIN RELIEF) - Frosted Red Glass
          ======================================================== */}
@@ -108,6 +108,9 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           2. HERO SECTION (V2.1 Aesthetic: Bold Sans + Royal Blue Serif Italic)
          ======================================================== */}
       <section className="clinic-card p-5 sm:p-7 relative overflow-hidden space-y-5 border border-white/90 shadow-xl">
+        {/* Clinic photo: drop a file at public/hero-clinic.jpg; gradient shows until then */}
+        <div className="hero-media" role="img" aria-label="DentaLux Tashkent" />
+
         {/* Soft atmospheric ambient light glows */}
         <div className="absolute -top-16 -right-16 w-60 h-60 bg-blue-500/10 rounded-full pointer-events-none blur-3xl" />
         <div className="absolute -bottom-16 -left-16 w-60 h-60 bg-indigo-500/10 rounded-full pointer-events-none blur-3xl" />
@@ -180,9 +183,6 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             >
               <Calendar className="w-4 h-4" />
               <span>{t.hero.ctaBooking[lang]}</span>
-              <span className="text-[11px] font-bold text-[var(--accent)] bg-white px-2 py-0.5 rounded-full shadow-xs">
-                {t.hero.badgeFree[lang]}
-              </span>
             </button>
 
             <button
@@ -196,16 +196,6 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           </div>
         </div>
 
-        {/* Clean photo placeholder container */}
-        <div className="mt-3 pt-3 border-t border-slate-200/70 flex items-center justify-between text-[11px] text-[var(--ink-muted)]">
-          <div className="flex items-center gap-1.5">
-            <Camera className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>{t.hero.photoPlaceholder[lang]}</span>
-          </div>
-          <span className="font-mono text-slate-600 font-semibold bg-slate-100/90 px-2 py-0.5 rounded-full">
-            Vatech Pax-i3D
-          </span>
-        </div>
       </section>
 
       {/* ========================================================
