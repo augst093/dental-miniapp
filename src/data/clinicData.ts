@@ -164,7 +164,7 @@ export const SERVICES: ServiceItem[] = [
       en: 'Doctor Consultation + 3D CT Scan',
     },
     priceUzs: 'Бесплатно при начале лечения',
-    priceUsd: 'FREE',
+    priceUsd: '$0',
     duration: {
       ru: '30–45 мин',
       uz: '30–45 daq',
@@ -767,7 +767,7 @@ export const UI_TRANSLATIONS = {
     contacts: { ru: 'Клиника', uz: 'Klinika', en: 'Clinic' },
   },
   stickyCta: {
-    title: { ru: 'Записаться на 3D-осмотр', uz: '3D-ko‘rikka yozilish', en: 'Book 3D Examination' },
+    title: { ru: 'Записаться на консультацию', uz: 'Konsultatsiyaga yozilish', en: 'Book a Consultation' },
     badge: { ru: 'Бесплатно', uz: 'Bepul', en: 'Free' },
     sub: { ru: '0 сум вместо 350 000 сум · Без предоплаты', uz: '350 000 so‘m o‘rniga 0 so‘m · Oldindan to‘lovsiz', en: '$0 instead of regular fee · No prepayment' },
   },

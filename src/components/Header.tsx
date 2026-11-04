@@ -46,8 +46,8 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
             <div className="flex items-center gap-1 text-[11px] text-[var(--ink-muted)] mt-1 truncate">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
               <span className="text-emerald-700 font-semibold shrink-0">{t.header.statusOpen[lang]}</span>
-              <span className="text-slate-300">·</span>
-              <span className="truncate">{config.hours.weekdays}</span>
+              <span className="text-slate-300 hidden min-[400px]:inline">·</span>
+              <span className="truncate hidden min-[400px]:inline">{config.hours.weekdays}</span>
             </div>
           </div>
         </div>

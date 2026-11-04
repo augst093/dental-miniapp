@@ -8,6 +8,7 @@ import {
   Layers,
   Calculator,
   Users,
+  User,
   MapPin,
   Clock,
   ShieldCheck,
@@ -152,14 +153,14 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
           {/* Doctor Avatar Stack with Frosted Pill */}
           <div className="inline-flex items-center gap-2.5 bg-white/70 backdrop-blur-md border border-slate-200/80 px-3 py-1.5 rounded-full shadow-xs">
-            <div className="flex -space-x-2 overflow-hidden py-0.5">
+            <div className="flex -space-x-1.5 px-0.5 py-0.5">
               {DOCTORS.map((doc) => (
                 <div
                   key={doc.id}
-                  className="inline-flex w-7 h-7 rounded-full ring-2 ring-white bg-[var(--accent)] text-white text-[10px] font-extrabold items-center justify-center shrink-0 shadow-xs"
+                  className="inline-flex w-7 h-7 rounded-full ring-2 ring-white bg-[var(--accent-subtle)] text-[var(--accent)] items-center justify-center shrink-0 shadow-xs"
                   title={doc.name[lang]}
                 >
-                  {doc.initials}
+                  <User className="w-4 h-4" strokeWidth={1.75} />
                 </div>
               ))}
             </div>

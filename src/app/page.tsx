@@ -31,6 +31,22 @@ export default function MiniAppPage() {
   // Sticky CTA Dismissed State
   const [isCtaDismissed, setIsCtaDismissed] = useState<boolean>(false);
 
+  // Demo panel is hidden for patients; enable with ?demo=1 in the URL
+  const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
+
+  // Sticky CTA is shown only after the hero CTA has scrolled out of view
+  const [isScrolledPastHero, setIsScrolledPastHero] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setIsDemoMode(new URLSearchParams(window.location.search).has('demo'));
+
+    const onScroll = () => setIsScrolledPastHero(window.scrollY > 320);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   // Initialize Telegram WebApp
   useEffect(() => {
     if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
@@ -128,12 +144,14 @@ export default function MiniAppPage() {
 
   return (
     <div className="min-h-[100dvh] bg-[var(--bg)] text-[var(--ink)] flex flex-col font-sans select-none antialiased bg-mesh-radial">
-      {/* 0. Demo Control Drawer & Discreet Floating Island Banner */}
-      <DemoControlDrawer
-        currentRole={currentRole}
-        onRoleChange={handleRoleChange}
-        triggerHaptic={triggerHaptic}
-      />
+      {/* 0. Demo Control Drawer & Discreet Floating Island Banner (only with ?demo=1) */}
+      {isDemoMode && (
+        <DemoControlDrawer
+          currentRole={currentRole}
+          onRoleChange={handleRoleChange}
+          triggerHaptic={triggerHaptic}
+        />
+      )}
 
       {/* 1. Sticky Opaque Header */}
       <Header
@@ -209,7 +227,7 @@ export default function MiniAppPage() {
       </main>
 
       {/* 3. Sticky Primary CTA (Shown only in Patient mode when not dismissed) */}
-      {currentRole === 'patient' && !isBookingOpen && activeTab !== 'calculator' && !isCtaDismissed && (
+      {currentRole === 'patient' && !isBookingOpen && activeTab !== 'calculator' && !isCtaDismissed && isScrolledPastHero && (
         <StickyCta
           lang={lang}
           onOpenBooking={() => handleOpenBooking()}
