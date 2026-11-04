@@ -185,9 +185,9 @@ export default function MiniAppPage() {
       </header>
 
       {/* ========================================================
-          2. MAIN TAB CONTENT (Container max-w-xl, pb-28 for safe dock clearance)
+          2. MAIN TAB CONTENT (Container max-w-xl, pb-36 for safe dock clearance)
          ======================================================== */}
-      <main className="flex-1 px-4 pt-4 pb-28 max-w-xl mx-auto w-full">
+      <main className="flex-1 px-4 pt-4 pb-36 max-w-xl mx-auto w-full">
         {/* ========================================================
             TAB 1: ГЛАВНАЯ (HOME / DASHBOARD)
            ======================================================== */}
