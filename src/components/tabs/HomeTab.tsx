@@ -87,7 +87,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                   'Неотложная помощь при острой боли'
               );
             }}
-            className="flex-1 py-2.5 px-4 rounded-full bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-sm shadow-red-600/25 transition-all touch-target"
+            className="sos-pulse flex-1 py-2.5 px-4 rounded-full bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-sm shadow-red-600/25 transition-all touch-target"
           >
             <span>{t.emergencyBanner.action[lang]}</span>
             <ArrowRight className="w-3.5 h-3.5" />

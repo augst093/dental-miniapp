@@ -148,6 +148,109 @@ main > * {
   }
 }
 
+/* ========================================================
+   MOTION SYSTEM
+   standard: smooth deceleration for most movement
+   spring: small overshoot for things that "arrive" (sheets, numbers)
+   Fill mode is "backwards" on entrances so hover/press transforms keep working afterwards.
+   ======================================================== */
+:root {
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+/* Enter animations referenced by class name in modals and sheets.
+   These were used before but never defined (no animation plugin is loaded). */
+@keyframes dl-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dl-zoom {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes dl-sheet {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes dl-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+.animate-in {
+  animation: dl-fade 260ms var(--ease-standard) backwards;
+}
+
+.animate-in.zoom-in-95 {
+  animation: dl-zoom 320ms var(--ease-spring) backwards;
+}
+
+/* Bottom sheet / modal card: spring up */
+.sheet-enter {
+  animation: dl-sheet 520ms var(--ease-spring) backwards;
+}
+
+/* Staggered entrance for list items: each child arrives slightly after the previous one */
+.stagger > * {
+  animation: dl-rise 420ms var(--ease-standard) backwards;
+}
+
+.stagger > *:nth-child(2) { animation-delay: 50ms; }
+.stagger > *:nth-child(3) { animation-delay: 100ms; }
+.stagger > *:nth-child(4) { animation-delay: 150ms; }
+.stagger > *:nth-child(5) { animation-delay: 200ms; }
+.stagger > *:nth-child(6) { animation-delay: 250ms; }
+.stagger > *:nth-child(7) { animation-delay: 300ms; }
+.stagger > *:nth-child(8) { animation-delay: 350ms; }
+.stagger > *:nth-child(n + 9) { animation-delay: 400ms; }
+
+/* Emergency button: a soft ring pulse draws the eye without shouting */
+@keyframes dl-sos {
+  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45); }
+  70% { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+.sos-pulse {
+  animation: dl-sos 2.4s ease-out infinite;
+}
+
+/* Hero photo drifts very slowly so the first screen feels alive */
+@keyframes dl-drift {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
+.hero-media {
+  animation: dl-drift 24s ease-in-out infinite alternate;
+}
+
+/* Press and hover feedback for interactive surfaces */
+.clinic-card-interactive:active {
+  transform: scale(0.985);
+}
+
+@media (hover: hover) {
+  .btn-pill-primary:hover {
+    box-shadow: 0 14px 30px -14px var(--accent-glow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .animate-in.zoom-in-95,
+  .sheet-enter,
+  .stagger > *,
+  .sos-pulse,
+  .hero-media {
+    animation: none;
+  }
+}
+
 /* One consistent icon stroke weight across the app */
 svg.lucide {
   stroke-width: 1.75;

@@ -127,7 +127,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
       </div>
 
       {/* Services List */}
-      <div className="space-y-4">
+      <div className="space-y-4 stagger">
         <div className="flex items-center justify-between text-[12px] text-[var(--ink-muted)] px-1">
           <span>
             {lang === 'uz'

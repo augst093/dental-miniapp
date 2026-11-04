@@ -290,7 +290,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       />
 
       {/* Modal Card / Bottom Sheet */}
-      <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-2xl border-t sm:border border-white/90 rounded-t-[32px] sm:rounded-3xl max-h-[92dvh] flex flex-col shadow-2xl z-10 overflow-hidden pb-safe">
+      <div className="sheet-enter relative w-full max-w-lg bg-white/95 backdrop-blur-2xl border-t sm:border border-white/90 rounded-t-[32px] sm:rounded-3xl max-h-[92dvh] flex flex-col shadow-2xl z-10 overflow-hidden pb-safe">
         {/* Drag handle for mobile */}
         <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mt-2.5 mb-1 sm:hidden shrink-0" />
 

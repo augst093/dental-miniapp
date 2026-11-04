@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
+import { useTweenNumber } from '../ui/useTweenNumber';
 import {
   Plus,
   Minus,
@@ -61,6 +62,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
   };
 
   const totalUzs = (currentPlan.basePriceUzs * planUnits).toLocaleString('ru-RU');
+  const animatedTotal = useTweenNumber(currentPlan.basePriceUzs * planUnits);
   const totalUsd = (currentPlan.basePriceUsd * planUnits).toLocaleString('en-US');
 
   const handleBookWithEstimate = () => {
@@ -177,8 +179,8 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
             {t.totalLabel[lang]}
           </div>
           <div className="flex items-baseline justify-between gap-2 flex-wrap">
-            <div className="text-2xl sm:text-3xl font-extrabold text-white">
-              {totalUzs} сум
+            <div className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums">
+              {Math.round(animatedTotal).toLocaleString('ru-RU')} сум
             </div>
             <div className="text-[13px] text-blue-200 font-mono">
               ≈ ${totalUsd}
