@@ -87,6 +87,14 @@ export const CallButton: React.FC<CallButtonProps> = ({
 
         <a
           href={`tel:${dialNumber}`}
+          onClick={(event) => {
+            // Inside Telegram, tel: is ignored: open the call page in Safari, where dialing works
+            const webApp = window.Telegram?.WebApp;
+            if (webApp?.openLink) {
+              event.preventDefault();
+              webApp.openLink(`${window.location.origin}/call?n=${encodeURIComponent(dialNumber)}`);
+            }
+          }}
           className="btn-pill-primary w-full py-3 flex items-center justify-center gap-2 text-[14px] active:scale-95 transition-transform"
         >
           <Phone className="w-4 h-4" />

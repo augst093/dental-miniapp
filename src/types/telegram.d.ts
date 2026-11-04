@@ -49,6 +49,8 @@ declare global {
           removeItems: (keys: string[], callback?: (error: string | null, removed?: boolean) => void) => void;
         };
         isVersionAtLeast?: (version: string) => boolean;
+        // Opens an http(s) page in the external browser (Safari on iPhone)
+        openLink?: (url: string, options?: { try_instant_view?: boolean }) => void;
         colorScheme?: 'light' | 'dark';
         themeParams?: {
           bg_color?: string;
