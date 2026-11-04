@@ -1,0 +1,153 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Clinic {
+  id           String   @id @default("default")
+  name         String
+  city         String   @default("Ташкент")
+  address      String
+  phone        String
+  workingHours String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Doctor {
+  id                  String        @id @default(uuid())
+  name                String
+  specialty           String
+  experienceYears     Int?
+  photoUrl            String?
+  workingDays         String        @default("1,2,3,4,5,6") // 0=Sun, 1=Mon...
+  workingHoursStart   String        @default("09:00")
+  workingHoursEnd     String        @default("20:00")
+  slotDurationMinutes Int           @default(30)
+  isActive            Boolean       @default(true)
+  appointments        Appointment[]
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+}
+
+model Service {
+  id              String        @id @default(uuid())
+  title           String
+  category        String
+  priceUzs        Int
+  durationMinutes Int           @default(30)
+  description     String?
+  isActive        Boolean       @default(true)
+  appointments    Appointment[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Patient {
+  id           String        @id @default(uuid())
+  telegramId   BigInt?       @unique
+  name         String
+  phone        String
+  language     String        @default("ru")
+  consentAt    DateTime?
+  isBlocked    Boolean       @default(false)
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([phone])
+  @@index([telegramId])
+}
+
+enum AppointmentStatus {
+  pending
+  confirmed
+  reschedule_requested
+  cancelled
+  completed
+  no_show
+}
+
+model Appointment {
+  id              String            @id @default(uuid())
+  patientId       String
+  patient         Patient           @relation(fields: [patientId], references: [id])
+  doctorId        String?
+  doctor          Doctor?           @relation(fields: [doctorId], references: [id])
+  serviceId       String?
+  service         Service?          @relation(fields: [serviceId], references: [id])
+  serviceTitle    String
+  doctorName      String
+  dateTime        DateTime          // Slot timestamp in UTC (displayed in Asia/Tashkent UTC+5)
+  durationMinutes Int               @default(30)
+  status          AppointmentStatus @default(pending)
+  source          String            @default("miniapp") // miniapp, bot, phone_admin
+  notes           String?
+  isDemo          Boolean           @default(false)
+
+  reminders       Reminder[]
+  auditLogs       AuditLog[]
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([doctorId, dateTime])
+  @@index([dateTime])
+  @@index([status])
+}
+
+enum ReminderType {
+  reminder_24h
+  reminder_2h
+}
+
+enum ReminderStatus {
+  pending
+  sent
+  failed
+  skipped
+  cancelled
+}
+
+model Reminder {
+  id            String         @id @default(uuid())
+  appointmentId String
+  appointment   Appointment    @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  type          ReminderType
+  dueAt         DateTime       // UTC timestamp when reminder should be sent
+  sentAt        DateTime?
+  status        ReminderStatus @default(pending)
+  attemptCount  Int            @default(0)
+  lastError     String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@unique([appointmentId, type])
+  @@index([status, dueAt])
+}
+
+model AuditLog {
+  id            String       @id @default(uuid())
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  actorType     String       // patient, admin, system, bot
+  actorId       String?      // telegram_id or admin name
+  action        String       // status_change, created, rescheduled, cancelled
+  fromStatus    String?
+  toStatus      String?
+  details       String?
+  createdAt     DateTime     @default(now())
+
+  @@index([appointmentId])
+  @@index([createdAt])
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

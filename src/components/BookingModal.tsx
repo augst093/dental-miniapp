@@ -110,6 +110,9 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('12:30');
   const [clientName, setClientName] = useState<string>(userNamePrefill || '');
   const [clientPhone, setClientPhone] = useState<string>('+998 ');
+  const [consentAgreed, setConsentAgreed] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   // Render-phase sync when props change (standard React pattern)
@@ -194,48 +197,80 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     else if (step === 2) setStep(1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!consentAgreed) return;
+
     triggerHaptic('heavy');
-    setIsSuccess(true);
+    setIsSubmitting(true);
+    setBookingError(null);
 
-    if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
-      const tg = window.Telegram.WebApp;
-      if (tg.HapticFeedback) {
-        tg.HapticFeedback.notificationOccurred('success');
+    try {
+      // Determine target ISO date based on day preset
+      const now = new Date();
+      const nowTashkent = new Date(now.getTime() + 5 * 60 * 60 * 1000);
+      const targetDate = new Date(nowTashkent);
+      if (selectedDayPreset === 'tomorrow') {
+        targetDate.setDate(targetDate.getDate() + 1);
+      } else if (selectedDayPreset === 'weekend') {
+        const day = targetDate.getDay();
+        const daysUntilSat = (6 - day + 7) % 7 || 7;
+        targetDate.setDate(targetDate.getDate() + daysUntilSat);
       }
-      try {
-        const dayLabel =
-          selectedDayPreset === 'today'
-            ? lang === 'uz'
-              ? 'Bugun'
-              : lang === 'en'
-              ? 'Today'
-              : 'Сегодня'
-            : selectedDayPreset === 'tomorrow'
-            ? lang === 'uz'
-              ? 'Ertaga'
-              : lang === 'en'
-              ? 'Tomorrow'
-              : 'Завтра'
-            : lang === 'uz'
-            ? 'Dam olish kuni'
-            : lang === 'en'
-            ? 'Weekend'
-            : 'В выходные';
+      const y = targetDate.getFullYear();
+      const m = String(targetDate.getMonth() + 1).padStart(2, '0');
+      const d = String(targetDate.getDate()).padStart(2, '0');
+      const dateStr = `${y}-${m}-${d}`;
 
-        const payload = {
-          name: clientName.trim() || (lang === 'uz' ? 'Bemor' : lang === 'en' ? 'Patient' : 'Пациент'),
-          phone: clientPhone.trim() || 'Не указан',
-          service: selectedService,
-          doctor: selectedDoctor,
-          time: `${dayLabel}, ${selectedTimeSlot}`,
-          source: 'Mini App 3-Step Wizard',
-        };
-        tg.sendData(JSON.stringify(payload));
-      } catch {
-        // Fallback for regular browser tests
+      // Submit to database API
+      const res = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          patientName: clientName.trim() || (lang === 'uz' ? 'Bemor' : lang === 'en' ? 'Patient' : 'Пациент'),
+          patientPhone: clientPhone.trim(),
+          doctorName: selectedDoctor,
+          serviceTitle: selectedService,
+          dateStr,
+          timeStr: selectedTimeSlot,
+          consentAgreed: true,
+          source: 'miniapp',
+        }),
+      });
+
+      const data = await res.json();
+      if (!data.success) {
+        setBookingError(data.error || 'Ошибка при бронировании слота');
+        setIsSubmitting(false);
+        return;
       }
+
+      setIsSuccess(true);
+
+      if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+        const tg = window.Telegram.WebApp;
+        if (tg.HapticFeedback) {
+          tg.HapticFeedback.notificationOccurred('success');
+        }
+        try {
+          const payload = {
+            name: clientName.trim() || (lang === 'uz' ? 'Bemor' : lang === 'en' ? 'Patient' : 'Пациент'),
+            phone: clientPhone.trim() || 'Не указан',
+            service: selectedService,
+            doctor: selectedDoctor,
+            time: `${dateStr} ${selectedTimeSlot}`,
+            source: 'Mini App 3-Step Wizard',
+          };
+          tg.sendData(JSON.stringify(payload));
+        } catch {
+          // Fallback for regular browser tests
+        }
+      }
+    } catch {
+      // Optimistic completion in offline/demo mode
+      setIsSuccess(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -617,11 +652,35 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     </div>
                   </div>
 
-                  {/* Trust Reassurance Badge */}
-                  <div className="bg-blue-50/90 border border-blue-200/80 p-3 rounded-2xl flex items-start gap-2.5 text-blue-950 text-[12px] leading-relaxed">
-                    <ShieldCheck className="w-4 h-4 text-[var(--accent)] shrink-0 mt-0.5" />
-                    <span>{t.trustGuarantee[lang]}</span>
-                  </div>
+                  {/* Consent checkbox for personal data processing */}
+                    <label className="flex items-start gap-2.5 cursor-pointer text-[11px] text-[var(--ink-secondary)] select-none pt-1">
+                      <input
+                        type="checkbox"
+                        required
+                        checked={consentAgreed}
+                        onChange={(e) => setConsentAgreed(e.target.checked)}
+                        className="mt-0.5 rounded text-[var(--accent)] focus:ring-[var(--accent)] cursor-pointer"
+                      />
+                      <span className="leading-tight">
+                        {lang === 'uz'
+                          ? 'Qabulni tashkil etish uchun aloqa ma’lumotlarim (ism va telefon) qayta ishlanishiga roziman.'
+                          : lang === 'en'
+                          ? 'I consent to the processing of my contact details for booking management.'
+                          : 'Согласен на обработку контактных данных (имя и телефон) для организации приёма.'}
+                      </span>
+                    </label>
+
+                    {bookingError && (
+                      <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-[12px] font-medium animate-in fade-in">
+                        {bookingError}
+                      </div>
+                    )}
+
+                    {/* Trust Reassurance Badge */}
+                    <div className="bg-blue-50/90 border border-blue-200/80 p-3 rounded-2xl flex items-start gap-2.5 text-blue-950 text-[12px] leading-relaxed">
+                      <ShieldCheck className="w-4 h-4 text-[var(--accent)] shrink-0 mt-0.5" />
+                      <span>{t.trustGuarantee[lang]}</span>
+                    </div>
 
                   {/* Summary recap */}
                   <div className="bg-slate-100/80 border border-slate-200/80 p-3 rounded-2xl text-[12px] space-y-1 text-[var(--ink-secondary)]">

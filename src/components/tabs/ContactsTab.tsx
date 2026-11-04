@@ -169,17 +169,21 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({
 
       {/* Official License & Accreditation */}
       <div className="clinic-card p-4 sm:p-5 space-y-2 text-[12px] text-[var(--ink-secondary)] rounded-3xl">
-        <div className="flex items-center gap-2 text-[var(--ink)] font-bold">
-          <ShieldCheck className="w-4 h-4 text-blue-600" />
-          <span>{config.licenseNumber}</span>
-        </div>
-        <p className="text-[11px] text-[var(--ink-muted)]">
-          {lang === 'uz'
-            ? 'Toshkent shahar Sog‘liqni saqlash boshqarmasi tomonidan berilgan rasmiy tibbiy faoliyat litsenziyasi.'
-            : lang === 'en'
-            ? 'Official medical dentistry license issued by the Ministry of Health of the Republic of Uzbekistan.'
-            : 'Лицензия на осуществление медицинской стоматологической деятельности выдана Министерством здравоохранения РУз.'}
-        </p>
+        {config.licenseNumber && (
+          <>
+            <div className="flex items-center gap-2 text-[var(--ink)] font-bold">
+              <ShieldCheck className="w-4 h-4 text-blue-600" />
+              <span>{config.licenseNumber}</span>
+            </div>
+            <p className="text-[11px] text-[var(--ink-muted)]">
+              {lang === 'uz'
+                ? 'Toshkent shahar Sog‘liqni saqlash boshqarmasi tomonidan berilgan rasmiy tibbiy faoliyat litsenziyasi.'
+                : lang === 'en'
+                ? 'Official medical dentistry license issued by the Ministry of Health of the Republic of Uzbekistan.'
+                : 'Лицензия на осуществление медицинской стоматологической деятельности выдана Министерством здравоохранения РУз.'}
+            </p>
+          </>
+        )}
 
         {/* Partner Brands */}
         <div className="pt-2 border-t border-slate-100 flex items-center gap-2 flex-wrap">

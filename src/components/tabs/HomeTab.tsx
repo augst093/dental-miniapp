@@ -421,10 +421,21 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             </div>
             <div>
               <div className="font-bold text-[var(--ink)]">
-                {t.standards.licenseTitle[lang]}
+                {config.licenseNumber
+                  ? t.standards.licenseTitle[lang]
+                  : lang === 'uz'
+                  ? 'Sterillik 100%'
+                  : lang === 'en'
+                  ? 'Sterilization 100%'
+                  : 'Стерилизация 100%'}
               </div>
               <div className="text-[11px] text-[var(--ink-muted)]">
-                {config.licenseNumber}
+                {config.licenseNumber ||
+                  (lang === 'uz'
+                    ? 'Avtoklavlash va xalqaro sanitariya protokoli'
+                    : lang === 'en'
+                    ? 'Autoclaving & international safety protocol'
+                    : 'Автоклавирование и протокол безопасности')}
               </div>
             </div>
           </div>

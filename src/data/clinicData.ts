@@ -57,7 +57,7 @@ export const CLINIC_CONFIG: ClinicConfig = {
       en: '09:00 — 21:00, 7 days a week',
     },
   },
-  licenseNumber: 'Лицензия Минздрава РУз №008412', // TODO: подтвердить у клиники
+  licenseNumber: '', // Optional: will be rendered only if filled by the clinic
   catalogYear: '2026',
   rating: null, // TODO: подтвердить у клиники реальный рейтинг перед показом
   reviewsCount: null,
