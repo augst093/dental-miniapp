@@ -38,7 +38,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
   return (
     <nav className="fixed bottom-3 left-3 right-3 max-w-md mx-auto z-40 pointer-events-none pb-safe">
-      <div className="frosted-glass-pill p-1.5 rounded-full flex items-center justify-around gap-0.5 shadow-2xl pointer-events-auto border border-white/90">
+      <div className="frosted-glass-pill backdrop-blur-2xl backdrop-saturate-150 p-1.5 rounded-full flex items-center justify-around gap-0.5 shadow-2xl pointer-events-auto border border-white/95">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

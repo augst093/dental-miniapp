@@ -25,7 +25,7 @@ export const StickyCta: React.FC<StickyCtaProps> = ({
   return (
     <div className="fixed bottom-[80px] left-3 right-3 max-w-md mx-auto z-30 pointer-events-none pb-safe">
       <div className="pointer-events-auto">
-        <div className="frosted-glass-pill p-2.5 sm:p-3 rounded-full flex items-center justify-between gap-3 shadow-xl border border-white/90 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="frosted-glass-pill backdrop-blur-2xl backdrop-saturate-150 p-2.5 sm:p-3 rounded-full flex items-center justify-between gap-3 shadow-xl border border-white/95 animate-in fade-in slide-in-from-bottom-2 duration-300">
           <div className="min-w-0 flex-1 pl-2">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="font-bold text-[13px] sm:text-[14px] text-[var(--ink)] leading-tight">

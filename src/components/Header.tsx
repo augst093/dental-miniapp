@@ -22,7 +22,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
   };
 
   return (
-    <header className="sticky top-0 z-30 header-bar px-4 py-2.5 pt-safe transition-all duration-200">
+    <header className="sticky top-0 z-30 header-bar backdrop-blur-2xl backdrop-saturate-150 px-4 py-2.5 pt-safe transition-all duration-200">
       <div className="max-w-xl mx-auto flex items-center justify-between gap-3">
         {/* Brand & Status */}
         <div className="flex items-center gap-2 min-w-0">
