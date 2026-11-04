@@ -42,6 +42,13 @@ declare global {
             language_code?: string;
           };
         };
+        // Per-user cloud storage (Bot API 6.9+): survives webview resets and follows the user
+        CloudStorage?: {
+          setItem: (key: string, value: string, callback?: (error: string | null, stored?: boolean) => void) => void;
+          getItems: (keys: string[], callback: (error: string | null, values?: Record<string, string>) => void) => void;
+          removeItems: (keys: string[], callback?: (error: string | null, removed?: boolean) => void) => void;
+        };
+        isVersionAtLeast?: (version: string) => boolean;
         colorScheme?: 'light' | 'dark';
         themeParams?: {
           bg_color?: string;

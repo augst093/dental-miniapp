@@ -3,9 +3,10 @@
 import React, { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, CalendarDays, Send, Trash2 } from 'lucide-react';
 import { Language } from '../../data/clinicData';
+import { clearHistory, loadHistory, saveHistory } from './chatStorage';
 
 // Telegram-style assistant chat. Messages go to /api/chat, which calls DeepSeek on the server.
-// History lives only on this device (localStorage) and can be cleared.
+// History is kept per Telegram user (CloudStorage) with a local copy, and can be cleared.
 //
 // Performance notes:
 // - Streamed tokens are batched into one state update per animation frame.
@@ -30,8 +31,8 @@ interface ChatScreenProps {
   triggerHaptic: (style?: 'light' | 'medium' | 'heavy') => void;
 }
 
-const STORAGE_KEY = 'dentalux_chat_v1';
-const MAX_STORED = 60;
+// Messages kept for the AI context and for storage (the storage limit is per value, see chatStorage.ts)
+const MAX_STORED = 30;
 // Distance from the bottom (px) within which the list keeps following new messages
 const STICK_THRESHOLD = 80;
 
@@ -241,26 +242,59 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
   // Whether the list should follow new messages (false when the user scrolled up to read)
   const stickRef = useRef<boolean>(true);
 
-  // Load saved history once
+  // Latest messages for the save on unmount, and whether the user cleared the chat on purpose
+  const messagesRef = useRef<ChatMessage[]>([]);
+  messagesRef.current = messages;
+  const clearedRef = useRef<boolean>(false);
+
+  // Load the saved history once (Telegram CloudStorage, or the local copy outside Telegram)
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setMessages(JSON.parse(raw) as ChatMessage[]);
-    } catch {
-      // Corrupt storage: start with an empty chat
-    }
-    setHydrated(true);
+    let cancelled = false;
+    loadHistory()
+      .then((json) => {
+        if (cancelled) return;
+        if (json) {
+          try {
+            const parsed = JSON.parse(json) as ChatMessage[];
+            if (Array.isArray(parsed)) {
+              // Only fill an empty chat, so a message sent before loading finished is not lost
+              setMessages((prev) => (prev.length ? prev : parsed.slice(-MAX_STORED)));
+            }
+          } catch {
+            // Corrupt history: start with an empty chat
+          }
+        }
+        setHydrated(true);
+      })
+      .catch(() => {
+        if (!cancelled) setHydrated(true);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  // Stored form: finished messages only. Empty placeholders for replies still streaming are dropped.
+  const persist = (list: ChatMessage[]) => {
+    if (list.length === 0 && !clearedRef.current) return; // never overwrite history with an empty list by accident
+    const finished = list.filter((m) => m.role === 'user' || m.text.length > 0);
+    saveHistory(JSON.stringify(finished.slice(-MAX_STORED))).catch(() => {
+      // Storage unavailable: the chat still works for this session
+    });
+  };
 
   // Save once per finished reply (busy turns false), never per streamed token
   useEffect(() => {
     if (!hydrated || busy) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_STORED)));
-    } catch {
-      // Storage full or disabled: the chat still works for this session
-    }
+    persist(messages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, hydrated, busy]);
+
+  // Closing the chat while a reply is still streaming keeps the question and the partial answer
+  useEffect(() => {
+    return () => persist(messagesRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Keep the newest message in view, instantly (smooth scrolling per token is what made it stutter)
   useLayoutEffect(() => {
@@ -318,6 +352,8 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
 
     stickRef.current = true;
     setMessages([...history, { id: assistantId, role: 'assistant', text: '', time: Date.now() }]);
+    // The question is stored straight away, so it survives even if the chat is closed mid-reply
+    persist(history);
     setDraft('');
     setBusy(true);
 
@@ -374,11 +410,10 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
     controllerRef.current?.abort();
     setMessages([]);
     setBusy(false);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // Nothing to clean up
-    }
+    clearedRef.current = true;
+    clearHistory().catch(() => {
+      // Nothing more to clean up
+    });
   };
 
   const showGreeting = hydrated && messages.length === 0;
