@@ -144,7 +144,12 @@ export default function MiniAppPage() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-[var(--bg)] text-[var(--ink)] flex flex-col font-sans select-none antialiased bg-mesh-radial">
+    <>
+    {/* The app stays mounted but hidden while the chat is open, so nothing shows behind the chat */}
+    <div
+      style={{ display: isChatOpen ? 'none' : undefined }}
+      className="min-h-[100dvh] bg-[var(--bg)] text-[var(--ink)] flex flex-col font-sans select-none antialiased bg-mesh-radial"
+    >
       {/* 0. Demo Control Drawer & Discreet Floating Island Banner (only with ?demo=1) */}
       {isDemoMode && (
         <DemoControlDrawer
@@ -253,19 +258,6 @@ export default function MiniAppPage() {
         </button>
       )}
 
-      {/* 3c. Assistant chat */}
-      {isChatOpen && (
-        <ChatScreen
-          lang={lang}
-          onClose={() => setIsChatOpen(false)}
-          onOpenBooking={() => {
-            setIsChatOpen(false);
-            handleOpenBooking();
-          }}
-          triggerHaptic={triggerHaptic}
-        />
-      )}
-
       {/* 4. Fixed Bottom Navigation Dock */}
       <BottomNav
         activeTab={activeTab}
@@ -276,16 +268,28 @@ export default function MiniAppPage() {
         onSwitchRole={handleRoleChange}
       />
 
-      {/* 5. 3-Step Progressive Disclosure Booking Wizard */}
-      <BookingModal
-        isOpen={isBookingOpen}
-        onClose={handleCloseBooking}
-        initialService={bookingService}
-        initialDoctor={bookingDoctor}
-        lang={lang}
-        triggerHaptic={triggerHaptic}
-        userNamePrefill={userName}
-      />
     </div>
+
+    {/* 5. 3-Step Progressive Disclosure Booking Wizard (outside the hidden app root, so it works from the chat) */}
+    <BookingModal
+      isOpen={isBookingOpen}
+      onClose={handleCloseBooking}
+      initialService={bookingService}
+      initialDoctor={bookingDoctor}
+      lang={lang}
+      triggerHaptic={triggerHaptic}
+      userNamePrefill={userName}
+    />
+
+    {/* 3c. Assistant chat: full screen. Booking opened from the chat returns here when closed. */}
+    {isChatOpen && (
+      <ChatScreen
+        lang={lang}
+        onClose={() => setIsChatOpen(false)}
+        onOpenBooking={() => handleOpenBooking()}
+        triggerHaptic={triggerHaptic}
+      />
+    )}
+    </>
   );
 }

@@ -251,6 +251,22 @@ main > * {
   }
 }
 
+/* Full-screen page entrance: slides up without fading, so the screen is never see-through */
+@keyframes dl-screen {
+  from { transform: translateY(24px); }
+  to { transform: none; }
+}
+
+.screen-enter {
+  animation: dl-screen 360ms var(--ease-standard) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-enter {
+    animation: none;
+  }
+}
+
 /* Chat (components/chat/ChatScreen.tsx): wallpaper, bubble entrance, typing dots */
 .chat-wallpaper {
   background-color: #dfe9f7;

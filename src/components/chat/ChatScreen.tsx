@@ -309,7 +309,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
 
   return (
     <div
-      className="chat-wallpaper fixed inset-x-0 z-[60] flex flex-col sheet-enter"
+      className="chat-wallpaper fixed inset-x-0 z-[45] flex flex-col screen-enter"
       style={viewport ? { top: viewport.top, height: viewport.height } : { top: 0, bottom: 0 }}
     >
       {/* Header */}
