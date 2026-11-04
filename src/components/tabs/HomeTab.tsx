@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { CallButton } from '../ui/CallButton';
+import { IconBadge } from '../ui/IconBadge';
+import { loadFavoriteDoctor } from '../../lib/favoriteDoctor';
 import {
   Sparkles,
   Phone,
@@ -9,6 +11,7 @@ import {
   Layers,
   Calculator,
   Users,
+  Heart,
   User,
   MapPin,
   Clock,
@@ -43,6 +46,13 @@ export const HomeTab: React.FC<HomeTabProps> = ({
   const config = CLINIC_CONFIG;
 
   const featuredServices = SERVICES.filter((s) => s.highlight);
+
+  // The doctor the patient chose on the doctors tab
+  const [favoriteDoctor, setFavoriteDoctor] = useState<(typeof DOCTORS)[number] | null>(null);
+  useEffect(() => {
+    const id = loadFavoriteDoctor();
+    setFavoriteDoctor(DOCTORS.find((doc) => doc.id === id) ?? null);
+  }, []);
 
   // Show the photo block only once public/hero-clinic.jpg actually loads
   const [hasHeroPhoto, setHasHeroPhoto] = useState<boolean>(false);
@@ -217,6 +227,30 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
       </section>
 
+      {/* Chosen doctor (from the doctors tab), with a one-tap booking */}
+      {favoriteDoctor && (
+        <button
+          onClick={() => {
+            triggerHaptic('medium');
+            onOpenBooking(undefined, favoriteDoctor.name[lang]);
+          }}
+          className="clinic-card rounded-2xl p-3.5 flex items-center gap-3 text-left active:scale-[0.98] transition-transform"
+        >
+          <IconBadge tone="danger" size="sm">
+            <Heart className="w-4 h-4 fill-current" />
+          </IconBadge>
+          <div className="min-w-0 flex-1">
+            <div className="type-caption">
+              {lang === 'uz' ? 'Sizning shifokoringiz' : lang === 'en' ? 'Your doctor' : 'Ваш врач'}
+            </div>
+            <div className="type-card-title truncate">{favoriteDoctor.name[lang]}</div>
+          </div>
+          <span className="text-[12px] font-bold text-[var(--accent)] shrink-0">
+            {lang === 'uz' ? 'Yozilish' : lang === 'en' ? 'Book' : 'Записаться'}
+          </span>
+        </button>
+      )}
+
       {/* ========================================================
           3. QUICK TILES (4 Core Entry Points) - Frosted Glass
          ======================================================== */}
@@ -316,7 +350,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-serif italic font-normal text-[22px] text-[var(--ink)]">
+            <h2 className="type-section-title">
               {t.featured.title[lang]}
             </h2>
             <p className="hidden sm:block text-[12px] text-[var(--ink-muted)]">

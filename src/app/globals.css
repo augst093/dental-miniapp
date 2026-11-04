@@ -373,6 +373,54 @@ main > * {
   }
 }
 
+/* ========================================================
+   TYPOGRAPHY SCALE
+   One set of roles used by every screen, so titles and text line up across tabs.
+   page-title: the title of a tab; section-title: a block inside a tab (serif accent);
+   card-title: the name of a card; body: running text; caption: small secondary text.
+   ======================================================== */
+.type-page-title {
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+@media (min-width: 640px) {
+  .type-page-title {
+    font-size: 26px;
+  }
+}
+
+.type-section-title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.type-card-title {
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.type-body {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-secondary);
+}
+
+.type-caption {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
 /* One consistent icon stroke weight across the app */
 svg.lucide {
   stroke-width: 1.75;

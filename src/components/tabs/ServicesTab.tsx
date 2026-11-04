@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import { Search, X, AlertCircle } from 'lucide-react';
+import { EmptyState } from '../ui/EmptyState';
 import {
   CATEGORIES,
   SERVICES,
@@ -54,7 +55,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
       {/* Header and Search */}
       <div className="space-y-4">
         <div>
-          <h1 className="text-xl font-extrabold text-[var(--ink)]">
+          <h1 className="type-page-title">
             {t.quickTiles.catalogTitle[lang]}
           </h1>
           <p className="text-[12px] text-[var(--ink-muted)]">
@@ -147,29 +148,24 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
         </div>
 
         {filteredServices.length === 0 ? (
-          <div className="clinic-card p-8 text-center space-y-2">
-            <Search className="w-8 h-8 text-slate-300 mx-auto" />
-            <h3 className="font-bold text-[14px] text-[var(--ink)]">
-              {lang === 'uz'
-                ? 'Hech narsa topilmadi'
-                : lang === 'en'
-                ? 'No matching services found'
-                : 'Ничего не найдено'}
-            </h3>
-            <p className="text-[12px] text-[var(--ink-muted)] max-w-xs mx-auto">
-              {lang === 'uz'
+          <EmptyState
+            icon={<Search className="w-6 h-6" />}
+            tone="neutral"
+            title={
+              lang === 'uz' ? 'Hech narsa topilmadi' : lang === 'en' ? 'No matching services found' : 'Ничего не найдено'
+            }
+            text={
+              lang === 'uz'
                 ? 'Boshqa so‘z bilan qidiring yoki umumiy konsultatsiyaga yoziling'
                 : lang === 'en'
                 ? 'Try another keyword or book a general initial consultation'
-                : 'Попробуйте изменить поисковый запрос или запишитесь на первичный осмотр'}
-            </p>
-            <button
-              onClick={() => onOpenBooking()}
-              className="mt-3 py-2 px-4 rounded-xl bg-[var(--accent)] text-white text-[13px] font-bold"
-            >
-              {t.hero.ctaBooking[lang]}
-            </button>
-          </div>
+                : 'Попробуйте другой запрос или запишитесь на первичный осмотр'
+            }
+            action={{
+              label: lang === 'uz' ? 'Qabulga yozilish' : lang === 'en' ? 'Book a visit' : 'Записаться на осмотр',
+              onClick: () => onOpenBooking(),
+            }}
+          />
         ) : (
           filteredServices.map((srv) => (
             <div

@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { CalendarCheck, CalendarClock, X } from 'lucide-react';
-import { Language } from '../data/clinicData';
+import { CalendarCheck, CalendarClock, CalendarPlus, MapPin, X } from 'lucide-react';
+import { CLINIC_CONFIG, Language } from '../data/clinicData';
+import { buildCalendarUrl, openExternal } from '../lib/openExternal';
+import { IconBadge } from './ui/IconBadge';
 import { PatientVisit, loadVisit, saveVisit } from '../lib/patientVisit';
 
 // The patient's next visit on the home screen. Each action updates the card on this device
@@ -16,6 +18,9 @@ const COPY: Record<
     reschedule: string;
     cancel: string;
     dismiss: string;
+    calendar: string;
+    route: string;
+    bring: string;
     confirmed: string;
     cancelled: string;
     askConfirm: (date: string, time: string) => string;
@@ -29,6 +34,9 @@ const COPY: Record<
     reschedule: 'Перенести',
     cancel: 'Отменить',
     dismiss: 'Убрать',
+    calendar: 'В календарь',
+    route: 'Маршрут',
+    bring: 'Возьмите паспорт и приходите за 10 минут.',
     confirmed: 'Визит подтверждён',
     cancelled: 'Визит отменён',
     askConfirm: (d, t) => `Подтверждаю визит ${d} в ${t}.`,
@@ -41,6 +49,9 @@ const COPY: Record<
     reschedule: 'Ko‘chirish',
     cancel: 'Bekor qilish',
     dismiss: 'Yopish',
+    calendar: 'Kalendarga',
+    route: 'Yo‘l',
+    bring: 'Pasportingizni oling va 10 daqiqa oldin keling.',
     confirmed: 'Qabul tasdiqlandi',
     cancelled: 'Qabul bekor qilindi',
     askConfirm: (d, t) => `${d} soat ${t} dagi qabulni tasdiqlayman.`,
@@ -53,6 +64,9 @@ const COPY: Record<
     reschedule: 'Reschedule',
     cancel: 'Cancel',
     dismiss: 'Dismiss',
+    calendar: 'Add to calendar',
+    route: 'Route',
+    bring: 'Bring your passport and arrive 10 minutes early.',
     confirmed: 'Visit confirmed',
     cancelled: 'Visit cancelled',
     askConfirm: (d, t) => `I confirm my visit on ${d} at ${t}.`,
@@ -123,13 +137,9 @@ export const VisitCard: React.FC<VisitCardProps> = ({ lang, onAskChat }) => {
   return (
     <div className="clinic-card p-4 sm:p-5 rounded-3xl space-y-3 chat-bubble-in">
       <div className="flex items-start gap-3">
-        <div
-          className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-            confirmed ? 'bg-emerald-50 text-emerald-600' : 'bg-[var(--accent-subtle)] text-[var(--accent)]'
-          }`}
-        >
+        <IconBadge tone={confirmed ? 'success' : 'accent'}>
           <CalendarCheck className="w-5 h-5" />
-        </div>
+        </IconBadge>
         <div className="min-w-0 flex-1">
           <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-muted)]">
             {confirmed ? copy.confirmed : copy.title}
@@ -141,6 +151,33 @@ export const VisitCard: React.FC<VisitCardProps> = ({ lang, onAskChat }) => {
             {visit.doctor} · {visit.service}
           </div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={() =>
+            openExternal(
+              buildCalendarUrl({
+                title: `DentaLux: ${visit.service}`,
+                dateStr: visit.dateStr,
+                timeStr: visit.timeStr,
+                location: CLINIC_CONFIG.address[lang],
+                details: `${visit.doctor}. ${copy.bring}`,
+              })
+            )
+          }
+          className="py-2.5 rounded-full bg-white border border-slate-200 text-[var(--ink)] text-[12px] font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+        >
+          <CalendarPlus className="w-3.5 h-3.5 text-[var(--accent)]" />
+          <span>{copy.calendar}</span>
+        </button>
+        <button
+          onClick={() => openExternal(CLINIC_CONFIG.yandexMapsUrl)}
+          className="py-2.5 rounded-full bg-white border border-slate-200 text-[var(--ink)] text-[12px] font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+        >
+          <MapPin className="w-3.5 h-3.5 text-[var(--accent)]" />
+          <span>{copy.route}</span>
+        </button>
       </div>
 
       {!confirmed && (

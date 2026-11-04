@@ -86,7 +86,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ lang, enabled }) => {
           <div className="w-28 h-28 rounded-full bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center mb-8">
             <Icon className="w-12 h-12" strokeWidth={1.6} />
           </div>
-          <h2 className="text-[24px] font-extrabold tracking-tight text-[var(--ink)] max-w-xs">{slide.title}</h2>
+          <h2 className="type-page-title max-w-xs">{slide.title}</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-[var(--ink-secondary)] max-w-xs">{slide.text}</p>
         </div>
       </div>

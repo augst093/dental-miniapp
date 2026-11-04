@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
-import { Calendar, Award, User } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Calendar, Award, User, Heart } from 'lucide-react';
+import { loadFavoriteDoctor, saveFavoriteDoctor } from '../../lib/favoriteDoctor';
 import { DOCTORS, Language, UI_TRANSLATIONS } from '../../data/clinicData';
 
 interface DoctorsTabProps {
@@ -17,10 +18,16 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
 }) => {
   const t = UI_TRANSLATIONS;
 
+  // The patient's chosen doctor (kept on this device)
+  const [favoriteId, setFavoriteId] = useState<string | null>(null);
+  useEffect(() => {
+    setFavoriteId(loadFavoriteDoctor());
+  }, []);
+
   return (
     <div className="space-y-6 pb-36 sm:pb-40">
       <div>
-        <h1 className="text-2xl font-extrabold text-[var(--ink)] tracking-tight">
+        <h1 className="type-page-title">
           {t.quickTiles.doctorsTitle[lang]}
         </h1>
         <p className="text-[12px] text-[var(--ink-muted)] mt-1">
@@ -33,9 +40,29 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
       </div>
 
       <div className="space-y-4 stagger">
-        {DOCTORS.map((doc) => (
-          <div key={doc.id} className="clinic-card p-4 sm:p-5 space-y-3.5 rounded-3xl">
-            <div className="flex items-start gap-3">
+        {DOCTORS.map((doc) => {
+          const isFavorite = favoriteId === doc.id;
+          return (
+          <div
+            key={doc.id}
+            className={`relative clinic-card p-4 sm:p-5 space-y-3.5 rounded-3xl ${isFavorite ? 'ring-2 ring-[var(--accent)]/30' : ''}`}
+          >
+            <button
+              onClick={() => {
+                triggerHaptic('light');
+                const next = isFavorite ? null : doc.id;
+                saveFavoriteDoctor(next);
+                setFavoriteId(next);
+              }}
+              aria-pressed={isFavorite}
+              aria-label={isFavorite ? 'Убрать из моих врачей' : 'Сделать моим врачом'}
+              className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors active:scale-90 ${
+                isFavorite ? 'bg-red-50 text-red-500' : 'bg-slate-100 text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+            </button>
+            <div className="flex items-start gap-3 pr-8">
               {/* Doctor Avatar */}
               <div className="w-12 h-12 rounded-full overflow-hidden bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center shrink-0 shadow-sm">
                 {doc.photoUrl ? (
@@ -93,7 +120,8 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
