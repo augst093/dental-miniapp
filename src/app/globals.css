@@ -286,13 +286,8 @@ main > * {
   to { opacity: 1; transform: none; }
 }
 
-@keyframes chat-fab-glow {
-  0%, 100% { box-shadow: 0 10px 28px -10px var(--accent-glow); }
-  50% { box-shadow: 0 10px 34px -6px var(--accent-glow), 0 0 0 8px rgba(29, 78, 216, 0.08); }
-}
-
 .chat-fab {
-  animation: chat-fab-in 420ms var(--ease-spring) backwards, chat-fab-glow 3s ease-in-out 420ms infinite;
+  animation: chat-fab-in 420ms var(--ease-spring) backwards;
 }
 
 @media (prefers-reduced-motion: reduce) {

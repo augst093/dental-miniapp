@@ -1,11 +1,18 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, CalendarDays, Send, Trash2 } from 'lucide-react';
 import { Language } from '../../data/clinicData';
 
 // Telegram-style assistant chat. Messages go to /api/chat, which calls DeepSeek on the server.
 // History lives only on this device (localStorage) and can be cleared.
+//
+// Performance notes:
+// - Streamed tokens are batched into one state update per animation frame.
+// - Bubbles are memoised, so only the bubble that is still streaming re-renders.
+// - History is written to storage once per finished reply, not per token.
+// - Scrolling is instant while streaming and respects a user who scrolled up to read.
+// - No backdrop blur and no infinite animations inside the chat.
 
 type Role = 'user' | 'assistant';
 
@@ -25,6 +32,8 @@ interface ChatScreenProps {
 
 const STORAGE_KEY = 'dentalux_chat_v1';
 const MAX_STORED = 60;
+// Distance from the bottom (px) within which the list keeps following new messages
+const STICK_THRESHOLD = 80;
 
 const COPY: Record<
   Language,
@@ -157,14 +166,16 @@ function TypingDots() {
   );
 }
 
-function Bubble({ message, lang }: { message: ChatMessage; lang: Language }) {
+// Memoised: a bubble re-renders only when its own message object changes
+const Bubble = memo(function Bubble({ message, lang }: { message: ChatMessage; lang: Language }) {
   const mine = message.role === 'user';
   const pending = !mine && message.text === '';
+  const body = mine ? message.text : plainText(message.text);
 
   return (
     <div className={`flex ${mine ? 'justify-end' : 'justify-start'} chat-bubble-in`}>
       <div
-        className={`max-w-[82%] px-3 py-2 text-[14.5px] leading-snug whitespace-pre-wrap break-words shadow-xs ${
+        className={`max-w-[82%] px-3 py-2 text-[14.5px] leading-snug whitespace-pre-wrap break-words ${
           mine
             ? 'bg-[var(--accent)] text-white rounded-2xl rounded-br-md'
             : 'bg-white text-[var(--ink)] rounded-2xl rounded-bl-md'
@@ -174,7 +185,7 @@ function Bubble({ message, lang }: { message: ChatMessage; lang: Language }) {
           <TypingDots />
         ) : (
           <>
-            {mine ? message.text : plainText(message.text)}
+            {body}
             <span
               className={`float-right ml-2 mt-1.5 text-[10px] ${mine ? 'text-blue-100' : 'text-slate-400'}`}
             >
@@ -185,7 +196,7 @@ function Bubble({ message, lang }: { message: ChatMessage; lang: Language }) {
       </div>
     </div>
   );
-}
+});
 
 export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBooking, triggerHaptic }) => {
   const copy = COPY[lang];
@@ -193,31 +204,13 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
   const [hydrated, setHydrated] = useState<boolean>(false);
   const [draft, setDraft] = useState<string>('');
   const [busy, setBusy] = useState<boolean>(false);
-  const listRef = useRef<HTMLDivElement | null>(null);
-  const controllerRef = useRef<AbortController | null>(null);
-  // Visible area above the on-screen keyboard (null on platforms without visualViewport)
+  // Visible area above the on-screen keyboard (null where visualViewport is unavailable)
   const [viewport, setViewport] = useState<{ top: number; height: number } | null>(null);
 
-  // When the keyboard opens, the chat must fit the remaining area so the header and the
-  // newest messages stay on screen. iOS shifts the whole page otherwise.
-  useEffect(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;
-
-    const update = () => {
-      setViewport({ top: vv.offsetTop, height: vv.height });
-      const list = listRef.current;
-      if (list) list.scrollTop = list.scrollHeight;
-    };
-
-    update();
-    vv.addEventListener('resize', update);
-    vv.addEventListener('scroll', update);
-    return () => {
-      vv.removeEventListener('resize', update);
-      vv.removeEventListener('scroll', update);
-    };
-  }, []);
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const controllerRef = useRef<AbortController | null>(null);
+  // Whether the list should follow new messages (false when the user scrolled up to read)
+  const stickRef = useRef<boolean>(true);
 
   // Load saved history once
   useEffect(() => {
@@ -230,21 +223,55 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
     setHydrated(true);
   }, []);
 
-  // Persist history after every change
+  // Save once per finished reply (busy turns false), never per streamed token
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || busy) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_STORED)));
     } catch {
       // Storage full or disabled: the chat still works for this session
     }
-  }, [messages, hydrated]);
+  }, [messages, hydrated, busy]);
 
-  // Keep the newest message in view
-  useEffect(() => {
+  // Keep the newest message in view, instantly (smooth scrolling per token is what made it stutter)
+  useLayoutEffect(() => {
     const list = listRef.current;
-    if (list) list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' });
+    if (list && stickRef.current) list.scrollTop = list.scrollHeight;
   }, [messages]);
+
+  const onListScroll = () => {
+    const list = listRef.current;
+    if (!list) return;
+    stickRef.current = list.scrollHeight - list.scrollTop - list.clientHeight < STICK_THRESHOLD;
+  };
+
+  // The chat must fit the area above the keyboard, otherwise the header and newest messages
+  // leave the screen. Only real size changes trigger a re-render, and scrolling the list is
+  // left alone unless the keyboard just opened.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    let lastHeight = vv.height;
+    const update = () => {
+      const next = { top: Math.round(vv.offsetTop), height: Math.round(vv.height) };
+      setViewport((prev) => (prev && prev.top === next.top && prev.height === next.height ? prev : next));
+      if (next.height < lastHeight) {
+        stickRef.current = true;
+        const list = listRef.current;
+        if (list) list.scrollTop = list.scrollHeight;
+      }
+      lastHeight = next.height;
+    };
+
+    update();
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
+  }, []);
 
   // Cancel an in-flight reply when the chat closes
   useEffect(() => {
@@ -260,6 +287,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
     const assistantId = newId();
     const history = [...messages, userMessage];
 
+    stickRef.current = true;
     setMessages([...history, { id: assistantId, role: 'assistant', text: '', time: Date.now() }]);
     setDraft('');
     setBusy(true);
@@ -267,25 +295,45 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
     const controller = new AbortController();
     controllerRef.current = controller;
 
-    const setAssistantText = (updater: (current: string) => string) => {
+    // Streamed tokens are collected and applied once per frame: one state update per frame
+    // instead of one per token, so only the streaming bubble re-renders.
+    let pending = '';
+    let frame = 0;
+    let received = false;
+
+    const applyText = (update: (current: string) => string) => {
       setMessages((prev) =>
-        prev.map((m) => (m.id === assistantId ? { ...m, text: updater(m.text) } : m))
+        prev.map((m) => (m.id === assistantId ? { ...m, text: update(m.text) } : m))
       );
+    };
+
+    const flush = () => {
+      frame = 0;
+      if (!pending) return;
+      const chunk = pending;
+      pending = '';
+      applyText((current) => current + chunk);
     };
 
     try {
       await streamReply(
         history.map(({ role, text: content }) => ({ role, content })),
         lang,
-        (delta) => setAssistantText((current) => current + delta),
+        (delta) => {
+          received = true;
+          pending += delta;
+          if (!frame) frame = requestAnimationFrame(flush);
+        },
         controller.signal
       );
-      // An empty reply is treated as a failure
-      setAssistantText((current) => current || copy.error);
+      if (frame) cancelAnimationFrame(frame);
+      flush();
+      if (!received) applyText(() => copy.error);
     } catch (error) {
+      if (frame) cancelAnimationFrame(frame);
       if (controller.signal.aborted) return;
       const status = error instanceof ChatRequestError ? error.status : 0;
-      setAssistantText(() => (status === 429 ? copy.rateLimited : copy.error));
+      applyText(() => (status === 429 ? copy.rateLimited : copy.error));
     } finally {
       setBusy(false);
       controllerRef.current = null;
@@ -313,7 +361,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
       style={viewport ? { top: viewport.top, height: viewport.height } : { top: 0, bottom: 0 }}
     >
       {/* Header */}
-      <header className="pt-safe bg-white/90 backdrop-blur-xl border-b border-slate-200/70 shadow-xs">
+      <header className="pt-safe bg-white border-b border-slate-200/70 shadow-xs">
         <div className="flex items-center gap-2.5 px-2.5 py-2">
           <button
             onClick={onClose}
@@ -323,14 +371,14 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
             <ArrowLeft className="w-5 h-5" />
           </button>
 
-          <div className="w-10 h-10 rounded-full bg-[var(--accent)] text-white font-extrabold text-[13px] flex items-center justify-center shadow-xs shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[var(--accent)] text-white font-extrabold text-[13px] flex items-center justify-center shrink-0">
             DL
           </div>
 
           <div className="flex-1 min-w-0">
             <div className="font-bold text-[15px] leading-tight text-[var(--ink)]">DentaLux</div>
             <div className="text-[12px] text-emerald-600 font-medium flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               {copy.status}
             </div>
           </div>
@@ -347,15 +395,19 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
             aria-label={copy.clear}
             className="w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 active:scale-90 transition-transform"
           >
-            <Trash2 className="w-4.5 h-4.5" />
+            <Trash2 className="w-[18px] h-[18px]" />
           </button>
         </div>
       </header>
 
       {/* Messages */}
-      <div ref={listRef} className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5">
+      <div
+        ref={listRef}
+        onScroll={onListScroll}
+        className="flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-1.5"
+      >
         <div className="flex justify-center pb-2">
-          <span className="text-[11px] font-semibold text-slate-600 bg-white/70 backdrop-blur px-3 py-1 rounded-full shadow-xs">
+          <span className="text-[11px] font-semibold text-slate-600 bg-white/90 px-3 py-1 rounded-full shadow-xs">
             {copy.today}
           </span>
         </div>
@@ -373,7 +425,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
             key={label}
             onClick={() => send(label)}
             disabled={busy}
-            className="shrink-0 px-3 py-1.5 rounded-full bg-white/90 border border-slate-200/80 text-[12.5px] font-semibold text-[var(--accent)] shadow-xs active:scale-95 transition-transform disabled:opacity-50"
+            className="shrink-0 px-3 py-1.5 rounded-full bg-white border border-slate-200/80 text-[12.5px] font-semibold text-[var(--accent)] shadow-xs active:scale-95 transition-transform disabled:opacity-50"
           >
             {label}
           </button>
@@ -411,7 +463,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
           type="submit"
           disabled={!draft.trim() || busy}
           aria-label="Send"
-          className="w-11 h-11 rounded-full bg-[var(--accent)] text-white flex items-center justify-center shadow-md active:scale-90 transition-all disabled:opacity-40 disabled:shadow-none shrink-0"
+          className="w-11 h-11 rounded-full bg-[var(--accent)] text-white flex items-center justify-center shadow-md active:scale-90 transition-transform disabled:opacity-40 disabled:shadow-none shrink-0"
         >
           <Send className="w-5 h-5" />
         </button>
