@@ -4,6 +4,7 @@ import React from 'react';
 import { Phone, Sparkles } from 'lucide-react';
 import { CLINIC_CONFIG, Language, UI_TRANSLATIONS } from '../data/clinicData';
 import { SlidingIndicator, useSlidingIndicator } from './ui/SlidingIndicator';
+import { CallButton } from './ui/CallButton';
 
 interface HeaderProps {
   lang: Language;
@@ -57,15 +58,16 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
         {/* Right Actions: Direct Phone Call & Language Selector */}
         <div className="flex items-center gap-1.5 shrink-0">
           {/* Direct Phone Call Button */}
-          <a
-            href={`tel:${config.phone}`}
-            onClick={() => triggerHaptic('medium')}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-50/90 hover:bg-blue-100 active:scale-95 border border-blue-200/70 flex items-center justify-center text-[var(--accent)] transition-all touch-target shadow-xs"
+          <CallButton
+            phone={config.phone}
+            display={config.phoneDisplay}
+            lang={lang}
             title={t.header.callButtonAria[lang]}
-            aria-label={t.header.callButtonAria[lang]}
+            triggerHaptic={triggerHaptic}
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-50/90 hover:bg-blue-100 active:scale-95 border border-blue-200/70 flex items-center justify-center text-[var(--accent)] transition-all touch-target shadow-xs"
           >
             <Phone className="w-3.5 h-3.5 fill-current opacity-90" />
-          </a>
+          </CallButton>
 
           {/* Segmented Language Selector Capsule */}
           <div

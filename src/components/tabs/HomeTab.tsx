@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { CallButton } from '../ui/CallButton';
 import {
   Sparkles,
   Phone,
@@ -101,14 +102,17 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
 
-          <a
-            href={`tel:${config.phone}`}
-            onClick={() => triggerHaptic('medium')}
+          <CallButton
+            phone={config.phone}
+            display={config.phoneDisplay}
+            lang={lang}
+            title={t.emergencyBanner.callAction[lang]}
+            triggerHaptic={triggerHaptic}
             className="py-2.5 px-4 rounded-full bg-white/80 hover:bg-white active:scale-95 border border-red-200 text-red-700 font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-xs transition-all touch-target"
           >
             <Phone className="w-3.5 h-3.5 fill-current" />
             <span>{t.emergencyBanner.callAction[lang]}</span>
-          </a>
+          </CallButton>
         </div>
       </section>
 

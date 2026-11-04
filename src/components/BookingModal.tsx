@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { CallButton } from './ui/CallButton';
 import {
   X,
   Check,
@@ -406,13 +407,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   <ExternalLink className="w-3.5 h-3.5 text-[var(--ink-muted)]" />
                 </a>
 
-                <a
-                  href={`tel:${config.phone}`}
+                <CallButton
+                  phone={config.phone}
+                  display={config.phoneDisplay}
+                  lang={lang}
+                  title={t.callAction[lang]}
                   className="flex items-center justify-center gap-2 p-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[13px] font-semibold text-[var(--ink)] transition-all touch-target"
                 >
                   <Phone className="w-4 h-4 text-emerald-600" />
                   <span>{t.callAction[lang]}</span>
-                </a>
+                </CallButton>
               </div>
 
               <a

@@ -10,6 +10,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { CLINIC_CONFIG, Language, UI_TRANSLATIONS } from '../../data/clinicData';
+import { CallButton } from '../ui/CallButton';
 
 interface ContactsTabProps {
   lang: Language;
@@ -117,10 +118,13 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({
 
       {/* Direct Contact Channels */}
       <div className="space-y-2.5">
-        <a
-          href={`tel:${config.phone}`}
-          onClick={() => triggerHaptic('medium')}
-          className="clinic-card-interactive p-4 sm:p-5 rounded-3xl flex items-center justify-between touch-target"
+        <CallButton
+          phone={config.phone}
+          display={config.phoneDisplay}
+          lang={lang}
+          title={lang === 'uz' ? 'Qo‘ng‘iroq qilish' : lang === 'en' ? 'Call the clinic' : 'Позвонить в клинику'}
+          triggerHaptic={triggerHaptic}
+          className="w-full clinic-card-interactive p-4 sm:p-5 rounded-3xl flex items-center justify-between touch-target text-left"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
@@ -138,7 +142,7 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({
           <span className="text-[12px] font-bold text-[var(--accent)] bg-[var(--accent-subtle)] px-3 py-1.5 rounded-full">
             {lang === 'uz' ? 'Qo‘ng‘iroq' : lang === 'en' ? 'Call' : 'Позвонить'}
           </span>
-        </a>
+        </CallButton>
 
         {/* Telegram Direct Chat (Crucial for Uzbekistan) */}
         <a
