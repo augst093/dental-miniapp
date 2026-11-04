@@ -72,7 +72,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
           {/* Segmented Language Selector Capsule */}
           <div
             ref={indicator.attach}
-            className="relative flex items-center p-0.5 bg-slate-100/80 backdrop-blur-md border border-slate-200/70 rounded-full text-[11px] sm:text-[12px] font-bold shadow-xs"
+            className="relative flex items-center p-1 bg-slate-100/80 backdrop-blur-md border border-slate-200/70 rounded-full text-[12px] sm:text-[13px] font-bold shadow-xs"
           >
             <SlidingIndicator box={indicator.box} className="bg-[var(--accent)] shadow-xs" />
             {(['ru', 'uz', 'en'] as Language[]).map((l) => (
@@ -80,7 +80,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
                 key={l}
                 data-seg-key={l}
                 onClick={() => handleLangClick(l)}
-                className={`relative px-2 py-0.5 rounded-full transition-colors duration-300 select-none ${
+                className={`relative px-2.5 py-1.5 rounded-full transition-colors duration-300 select-none ${
                   lang === l
                     ? 'text-white font-extrabold'
                     : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
