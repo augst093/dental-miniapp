@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
           {/* Name & Open Status */}
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 leading-none">
-              <span className="font-extrabold text-[14px] sm:text-[15px] tracking-tight text-[var(--ink)] truncate">
+              <span className="font-extrabold text-[14px] sm:text-[15px] tracking-tight text-[var(--ink)] shrink-0 whitespace-nowrap">
                 {config.name[lang]}
               </span>
               <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-bold text-[var(--accent)] bg-[var(--accent-subtle)] border border-blue-200/60 px-1.5 py-0.5 rounded-full shrink-0">
@@ -45,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
 
             <div className="flex items-center gap-1 text-[11px] text-[var(--ink-muted)] mt-1 truncate">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-              <span className="text-emerald-700 font-semibold">{t.header.statusOpen[lang]}</span>
+              <span className="text-emerald-700 font-semibold shrink-0">{t.header.statusOpen[lang]}</span>
               <span className="text-slate-300">·</span>
               <span className="truncate">{config.hours.weekdays}</span>
             </div>
