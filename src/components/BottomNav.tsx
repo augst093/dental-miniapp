@@ -37,8 +37,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 bottom-dock pb-safe border-t border-[var(--border)] shadow-lg">
-      <div className="max-w-xl mx-auto flex items-center justify-around px-2 py-1">
+    <nav className="fixed bottom-3 left-3 right-3 max-w-md mx-auto z-40 pointer-events-none pb-safe">
+      <div className="frosted-glass-pill p-1.5 rounded-full flex items-center justify-around gap-0.5 shadow-2xl pointer-events-auto border border-white/90">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -47,21 +47,21 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
-              className={`flex-1 flex flex-col items-center justify-center py-1.5 px-1 min-h-[48px] relative transition-all rounded-xl select-none ${
+              className={`flex-1 flex flex-col items-center justify-center py-2 px-1 min-h-[48px] relative transition-all rounded-full select-none ${
                 isActive
-                  ? 'text-[var(--accent)] font-semibold'
-                  : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
+                  ? 'text-[var(--accent)] font-bold'
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               {isActive && (
-                <span className="absolute top-0 w-8 h-1 bg-[var(--accent)] rounded-full animate-in fade-in duration-200" />
+                <span className="absolute inset-0 bg-blue-50/90 rounded-full -z-10 shadow-xs border border-blue-200/60 animate-in fade-in duration-200" />
               )}
               <Icon
-                className={`w-5 h-5 mb-1 transition-transform ${
-                  isActive ? 'scale-110 stroke-[2.25]' : 'scale-100 stroke-[1.75]'
+                className={`w-5 h-5 mb-0.5 transition-transform duration-200 ${
+                  isActive ? 'scale-110 stroke-[2.3]' : 'scale-100 stroke-[1.8]'
                 }`}
               />
-              <span className="text-[11px] tracking-tight leading-none text-center truncate max-w-[64px]">
+              <span className="text-[10px] sm:text-[11px] tracking-tight leading-none text-center truncate max-w-[58px]">
                 {tab.label}
               </span>
             </button>

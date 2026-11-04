@@ -48,7 +48,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
   });
 
   return (
-    <div className="space-y-4 pb-24">
+    <div className="space-y-4 pb-36 sm:pb-40">
       {/* Header and Search */}
       <div className="space-y-3">
         <div>

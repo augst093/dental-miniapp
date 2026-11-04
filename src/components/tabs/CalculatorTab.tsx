@@ -68,7 +68,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
   };
 
   return (
-    <div className="space-y-4 pb-24">
+    <div className="space-y-4 pb-36 sm:pb-40">
       {/* Title & Clinical Context */}
       <div>
         <h1 className="text-2xl font-extrabold text-[var(--ink)] tracking-tight">

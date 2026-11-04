@@ -23,10 +23,10 @@ export const StickyCta: React.FC<StickyCtaProps> = ({
   };
 
   return (
-    <div className="fixed bottom-[65px] left-0 right-0 z-20 px-3 pointer-events-none pb-safe">
-      <div className="max-w-xl mx-auto pointer-events-auto">
-        <div className="bg-white/85 backdrop-blur-xl border border-white/90 p-3 sm:p-3.5 rounded-2xl sm:rounded-3xl shadow-xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="min-w-0 flex-1">
+    <div className="fixed bottom-[80px] left-3 right-3 max-w-md mx-auto z-30 pointer-events-none pb-safe">
+      <div className="pointer-events-auto">
+        <div className="frosted-glass-pill p-2.5 sm:p-3 rounded-full flex items-center justify-between gap-3 shadow-xl border border-white/90 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="min-w-0 flex-1 pl-2">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="font-bold text-[13px] sm:text-[14px] text-[var(--ink)] leading-tight">
                 {t.title[lang]}
@@ -36,14 +36,14 @@ export const StickyCta: React.FC<StickyCtaProps> = ({
                 {t.badge[lang]}
               </span>
             </div>
-            <p className="text-[11px] sm:text-[12px] text-[var(--ink-muted)] truncate mt-0.5">
+            <p className="text-[11px] text-slate-500 truncate mt-0.5">
               {t.sub[lang]}
             </p>
           </div>
 
           <button
             onClick={handleClick}
-            className="btn-pill-primary shrink-0 py-2.5 px-4 text-[13px] flex items-center gap-1.5 touch-target"
+            className="btn-pill-primary shrink-0 py-2 px-4 text-[13px] flex items-center gap-1.5 touch-target shadow-sm"
           >
             <Calendar className="w-4 h-4" />
             <span>

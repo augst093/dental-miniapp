@@ -2,20 +2,20 @@
 
 :root {
   /* ========================================================
-     V2.1 Aesthetic Palette (Referenced from Design Spec)
-     - Ambient Ice-Blue Background with Subtle Dot-Matrix Texture
+     V2.1 Aesthetic Palette
+     - Steamy / Frosted Window Glass (запотевшее матовое окно)
      - Electric Ultramarine Royal Cobalt Accent (#1D4ED8 / #2563EB)
      - Deep Obsidian Navy Primary Ink (#091124)
-     - Frosted Glassmorphism Surfaces (backdrop-blur-xl)
+     - Floating iOS-style Island Nav Dock
      ======================================================== */
   --bg: #F4F7FC;
   --bg-mesh: #EEF3FA;
   
-  --surface: rgba(255, 255, 255, 0.78);
+  --surface: rgba(255, 255, 255, 0.76);
   --surface-solid: #FFFFFF;
-  --surface-subtle: rgba(241, 245, 249, 0.7);
-  --surface-card: rgba(255, 255, 255, 0.82);
-  --surface-glass: rgba(255, 255, 255, 0.68);
+  --surface-subtle: rgba(241, 245, 249, 0.75);
+  --surface-card: rgba(255, 255, 255, 0.78);
+  --surface-glass: rgba(255, 255, 255, 0.72);
   --surface-glass-border: rgba(255, 255, 255, 0.9);
 
   --ink: #091124;                 /* Deep Obsidian Navy (WCAG AAA 16:1) */
@@ -27,17 +27,17 @@
   --accent-hover: #1E40AF;        /* Deep Royal Hover */
   --accent-subtle: #EFF4FF;       /* Soft ice-blue tint for pills & badges */
   --accent-contrast: #FFFFFF;     /* Crisp white */
-  --accent-glow: rgba(29, 78, 216, 0.25);
+  --accent-glow: rgba(29, 78, 216, 0.28);
 
   --border: rgba(226, 232, 240, 0.85);
   --border-subtle: rgba(241, 245, 249, 0.9);
-  --border-glass: rgba(255, 255, 255, 0.75);
+  --border-glass: rgba(255, 255, 255, 0.8);
   --border-focus: #1D4ED8;
 
   /* Apple-style Smooth Radii System */
   --radius-sm: 12px;              /* Small chips & tags */
-  --radius-md: 20px;              /* Cards & input boxes */
-  --radius-lg: 28px;              /* Hero blocks & bottom sheet */
+  --radius-md: 22px;              /* Cards & input boxes */
+  --radius-lg: 32px;              /* Hero blocks & bottom sheet */
   --radius-pill: 9999px;          /* Full rounded pill buttons */
 }
 
@@ -65,55 +65,71 @@ body {
   background-size: 100% 100%, 100% 100%, 100% 100%, 20px 20px;
 }
 
-/* Glassmorphism Cards */
+/* ========================================================
+   FROSTED STEAMY GLASS (Эффект запотевшего матового окна)
+   - Deep 32px diffuse blur with saturation boost (Apple-grade)
+   - Milky matte gradient
+   - Dual-layer specular edge + diffused internal frost glow
+   ======================================================== */
 .clinic-card {
-  background: var(--surface-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-glass);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.70) 100%);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: var(--radius-md);
   box-shadow: 
-    0 10px 25px -5px rgba(15, 23, 42, 0.04),
-    0 8px 10px -6px rgba(15, 23, 42, 0.02),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 18px 0 rgba(255, 255, 255, 0.4),
+    0 12px 30px -4px rgba(15, 23, 42, 0.05),
+    0 4px 10px -2px rgba(15, 23, 42, 0.02);
 }
 
 .clinic-card-interactive {
-  background: var(--surface-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-glass);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.70) 100%);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: var(--radius-md);
   box-shadow: 
-    0 10px 25px -5px rgba(15, 23, 42, 0.04),
-    0 8px 10px -6px rgba(15, 23, 42, 0.02),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 18px 0 rgba(255, 255, 255, 0.4),
+    0 12px 30px -4px rgba(15, 23, 42, 0.05),
+    0 4px 10px -2px rgba(15, 23, 42, 0.02);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .clinic-card-interactive:hover {
-  border-color: rgba(29, 78, 216, 0.25);
-  background: rgba(255, 255, 255, 0.92);
-  transform: translateY(-1px);
-  box-shadow: 0 14px 30px -4px rgba(15, 23, 42, 0.07);
+  border-color: rgba(29, 78, 216, 0.3);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.84) 100%);
+  transform: translateY(-2px);
+  box-shadow: 
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 1),
+    inset 0 0 20px 0 rgba(255, 255, 255, 0.5),
+    0 18px 36px -4px rgba(15, 23, 42, 0.09);
 }
 .clinic-card-interactive:active {
   transform: scale(0.985);
 }
 
-/* Glass Header and Bottom Dock */
-.header-bar {
-  background: rgba(244, 247, 252, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+/* Floating iOS-style Frosted Capsule / Island */
+.frosted-glass-pill {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.72) 100%);
+  backdrop-filter: blur(36px) saturate(210%);
+  -webkit-backdrop-filter: blur(36px) saturate(210%);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.98),
+    inset 0 0 20px 0 rgba(255, 255, 255, 0.45),
+    0 20px 45px -8px rgba(15, 23, 42, 0.12),
+    0 8px 18px -4px rgba(15, 23, 42, 0.06);
 }
 
-.bottom-dock {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 -4px 20px -2px rgba(15, 23, 42, 0.05);
+/* Glass Header */
+.header-bar {
+  background: linear-gradient(180deg, rgba(244, 247, 252, 0.92) 0%, rgba(244, 247, 252, 0.78) 100%);
+  backdrop-filter: blur(32px) saturate(190%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.03);
 }
 
 /* Button Pills from Reference Image */
