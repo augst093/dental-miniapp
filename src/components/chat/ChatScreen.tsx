@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, CalendarDays, SendHorizonal, Trash2 } from 'lucide-react';
 import { Language } from '../../data/clinicData';
 import { clearHistory, loadHistory, saveHistory } from './chatStorage';
@@ -309,14 +309,15 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     setCaretIndex(el.selectionStart ?? el.value.length);
   };
 
-  // Position the caret after every change of text, cursor or focus
-  useLayoutEffect(() => {
+  // Coordinates relative to the wrapper's padding box (where an absolute child is placed).
+  // The field scrolls to the caret after the value is applied, so this is measured again on the
+  // next frame and on every scroll of the field.
+  const measureCaret = useCallback(() => {
     const wrap = inputWrapRef.current;
     const marker = markerRef.current;
     const field = inputRef.current;
     if (!wrap || !marker || !field) return;
 
-    // Coordinates relative to the padding box of the wrapper (where an absolute child is placed)
     const wrapRect = wrap.getBoundingClientRect();
     const markerRect = marker.getBoundingClientRect();
     const left = markerRect.left - wrapRect.left - wrap.clientLeft;
@@ -324,7 +325,22 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     setCaretPos((previous) =>
       previous && previous.left === left && previous.top === top ? previous : { left, top }
     );
-  }, [draft, caretIndex, inputFocused]);
+  }, []);
+
+  // The field grows with its text up to max-h-32 (128px), then scrolls. A textarea does not grow by itself.
+  useLayoutEffect(() => {
+    const field = inputRef.current;
+    if (!field) return;
+    field.style.height = 'auto';
+    field.style.height = `${Math.min(field.scrollHeight, 128)}px`;
+  }, [draft]);
+
+  // Position the caret after every change of text, cursor or focus
+  useLayoutEffect(() => {
+    measureCaret();
+    const frame = requestAnimationFrame(measureCaret);
+    return () => cancelAnimationFrame(frame);
+  }, [draft, caretIndex, inputFocused, measureCaret]);
   // Whether the list should follow new messages (false when the user scrolled up to read)
   const stickRef = useRef<boolean>(true);
 
@@ -665,6 +681,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
               syncCaret(e.currentTarget);
             }}
             onBlur={() => setInputFocused(false)}
+            onScroll={measureCaret}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -686,7 +703,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
               blink from "solid", like a native caret. */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute left-0 top-0 transition-opacity duration-150"
+            className="pointer-events-none absolute left-0 top-0 z-10 transition-opacity duration-150"
             style={{
               opacity: inputFocused && caretPos ? 1 : 0,
               transform: `translate3d(${caretPos?.left ?? 0}px, ${caretPos?.top ?? 0}px, 0)`,
