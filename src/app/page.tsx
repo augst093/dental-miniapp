@@ -22,6 +22,9 @@ export default function MiniAppPage() {
   const [bookingService, setBookingService] = useState<string>('Первичный 3D-осмотр (КТ)');
   const [bookingDoctor, setBookingDoctor] = useState<string>('');
 
+  // Sticky CTA Dismissed State
+  const [isCtaDismissed, setIsCtaDismissed] = useState<boolean>(false);
+
   // Initialize Telegram WebApp
   useEffect(() => {
     if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
@@ -109,7 +112,7 @@ export default function MiniAppPage() {
       />
 
       {/* 2. Main Content Canvas */}
-      <main className="flex-1 px-4 py-3 max-w-xl mx-auto w-full">
+      <main className="flex-1 px-4 pt-[74px] sm:pt-[80px] pb-3 max-w-xl mx-auto w-full">
         {activeTab === 'home' && (
           <HomeTab
             lang={lang}
@@ -152,11 +155,12 @@ export default function MiniAppPage() {
         )}
       </main>
 
-      {/* 3. Sticky Primary CTA (Hidden on Calculator to avoid obscuring estimate breakdown) */}
-      {!isBookingOpen && activeTab !== 'calculator' && (
+      {/* 3. Sticky Primary CTA (Hidden when dismissed, on Calculator, or when booking modal is open) */}
+      {!isBookingOpen && activeTab !== 'calculator' && !isCtaDismissed && (
         <StickyCta
           lang={lang}
           onOpenBooking={() => handleOpenBooking()}
+          onDismiss={() => setIsCtaDismissed(true)}
           triggerHaptic={triggerHaptic}
         />
       )}
