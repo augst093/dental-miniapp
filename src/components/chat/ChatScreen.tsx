@@ -209,6 +209,35 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
+
+  // Own blinking caret: the native caret of the field does not blink reliably in Telegram's
+  // webview, so it is hidden and a mirror of the text places a styled caret at the insertion point.
+  const inputWrapRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const mirrorRef = useRef<HTMLDivElement | null>(null);
+  const markerRef = useRef<HTMLSpanElement | null>(null);
+  const [caretIndex, setCaretIndex] = useState<number>(0);
+  const [inputFocused, setInputFocused] = useState<boolean>(false);
+  const [caretPos, setCaretPos] = useState<{ left: number; top: number } | null>(null);
+
+  const syncCaret = (el: HTMLTextAreaElement) => {
+    setCaretIndex(el.selectionStart ?? el.value.length);
+  };
+
+  // Position the caret after every change of text, cursor or focus
+  useLayoutEffect(() => {
+    const wrap = inputWrapRef.current;
+    const marker = markerRef.current;
+    const field = inputRef.current;
+    if (!wrap || !marker || !field) return;
+
+    const wrapRect = wrap.getBoundingClientRect();
+    const markerRect = marker.getBoundingClientRect();
+    setCaretPos({
+      left: markerRect.left - wrapRect.left,
+      top: markerRect.top - wrapRect.top - field.scrollTop,
+    });
+  }, [draft, caretIndex, inputFocused]);
   // Whether the list should follow new messages (false when the user scrolled up to read)
   const stickRef = useRef<boolean>(true);
 
@@ -440,10 +469,37 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
         }}
         className="pb-safe px-2.5 pb-2.5 pt-1 flex items-end gap-2"
       >
-        <div className="flex-1 bg-white rounded-3xl px-4 py-2 shadow-sm border border-slate-200/70">
+        <div
+          ref={inputWrapRef}
+          className="relative flex-1 bg-white rounded-3xl px-4 py-2 shadow-sm border border-slate-200/70"
+        >
+          {/* Hidden mirror of the text, used only to measure where the caret belongs */}
+          <div
+            ref={mirrorRef}
+            aria-hidden="true"
+            className="absolute left-4 right-4 top-2 py-1 leading-snug whitespace-pre-wrap break-words invisible pointer-events-none"
+            style={{ fontSize: 16 }}
+          >
+            {draft.slice(0, caretIndex)}
+            <span ref={markerRef}>&#8203;</span>
+            {draft.slice(caretIndex) || ' '}
+          </div>
+
           <textarea
+            ref={inputRef}
             value={draft}
-            onChange={(e) => setDraft(e.target.value)}
+            onChange={(e) => {
+              setDraft(e.target.value);
+              syncCaret(e.target);
+            }}
+            onSelect={(e) => syncCaret(e.currentTarget)}
+            onKeyUp={(e) => syncCaret(e.currentTarget)}
+            onClick={(e) => syncCaret(e.currentTarget)}
+            onFocus={(e) => {
+              setInputFocused(true);
+              syncCaret(e.currentTarget);
+            }}
+            onBlur={() => setInputFocused(false)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -454,10 +510,19 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ lang, onClose, onOpenBoo
             maxLength={1000}
             enterKeyHint="send"
             placeholder={copy.placeholder}
-            // 16px prevents iOS from zooming into the field when it is focused
-            style={{ fontSize: 16, caretColor: 'var(--accent)' }}
-            className="w-full resize-none bg-transparent outline-none leading-snug max-h-32 py-1 text-[var(--ink)] placeholder:text-slate-400"
+            // 16px prevents iOS from zooming into the field when it is focused.
+            // The native caret is hidden; our own blinking caret is drawn below.
+            style={{ fontSize: 16, caretColor: 'transparent' }}
+            className="relative w-full resize-none bg-transparent outline-none leading-snug max-h-32 py-1 text-[var(--ink)] placeholder:text-slate-400"
           />
+
+          {inputFocused && caretPos && (
+            <span
+              aria-hidden="true"
+              className="chat-caret pointer-events-none absolute w-[2px] rounded-full bg-[var(--accent)]"
+              style={{ left: caretPos.left, top: caretPos.top + 6, height: 20 }}
+            />
+          )}
         </div>
         <button
           type="submit"

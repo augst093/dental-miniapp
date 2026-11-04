@@ -301,6 +301,16 @@ main > * {
   40% { transform: translateY(-4px); opacity: 1; }
 }
 
+/* Blinking text caret for the chat input (steps keeps it crisp, like a native caret) */
+@keyframes chat-caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.chat-caret {
+  animation: chat-caret-blink 1s steps(1) infinite;
+}
+
 .chat-dot {
   width: 6px;
   height: 6px;
