@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import {
   Sparkles,
   User,
@@ -31,6 +32,7 @@ export const DemoControlDrawer: React.FC<DemoControlDrawerProps> = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<boolean>(false);
+  const roleIndicator = useSlidingIndicator<'patient' | 'admin'>(currentRole);
 
   const showFeedback = (msg: string) => {
     setFeedbackMessage(msg);
@@ -149,28 +151,34 @@ export const DemoControlDrawer: React.FC<DemoControlDrawerProps> = ({
             {/* Role Switch */}
             <div className="bg-slate-100 p-2.5 rounded-2xl flex items-center justify-between">
               <span className="text-[12px] font-bold text-slate-700">Текущая роль:</span>
-              <div className="flex items-center gap-1">
+              <div ref={roleIndicator.attach} className="relative flex items-center gap-1">
+                <SlidingIndicator
+                  box={roleIndicator.box}
+                  className={currentRole === 'admin' ? 'bg-blue-600 shadow-xs' : 'bg-white shadow-xs'}
+                />
                 <button
+                  data-seg-key={'patient'}
                   onClick={() => {
                     triggerHaptic('light');
                     onRoleChange('patient');
                   }}
-                  className={`px-3 py-1.5 rounded-xl text-[12px] font-bold transition-all ${
+                  className={`relative px-3 py-1.5 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
                     currentRole === 'patient'
-                      ? 'bg-white text-blue-600 shadow-xs'
+                      ? 'text-blue-600'
                       : 'text-slate-500 hover:text-slate-900'
                   }`}
                 >
                   Пациент
                 </button>
                 <button
+                  data-seg-key={'admin'}
                   onClick={() => {
                     triggerHaptic('light');
                     onRoleChange('admin');
                   }}
-                  className={`px-3 py-1.5 rounded-xl text-[12px] font-bold transition-all ${
+                  className={`relative px-3 py-1.5 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
                     currentRole === 'admin'
-                      ? 'bg-blue-600 text-white shadow-xs'
+                      ? 'text-white'
                       : 'text-slate-500 hover:text-slate-900'
                   }`}
                 >

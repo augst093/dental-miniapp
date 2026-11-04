@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import { Search, X, AlertCircle } from 'lucide-react';
 import {
   CATEGORIES,
@@ -21,6 +22,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
   triggerHaptic,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const categoryIndicator = useSlidingIndicator<string>(selectedCategory);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const t = UI_TRANSLATIONS;
@@ -91,7 +93,14 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
         </div>
 
         {/* Horizontal Category Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+        <div
+          ref={categoryIndicator.attach}
+          className="relative flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1"
+        >
+          <SlidingIndicator
+            box={categoryIndicator.box}
+            className={selectedCategory === 'emergency' ? 'bg-red-600 shadow-xs' : 'bg-[var(--accent)] shadow-xs'}
+          />
           {CATEGORIES.map((cat) => {
             const isSelected = selectedCategory === cat.id;
             const isEmergency = cat.id === 'emergency';
@@ -99,12 +108,11 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
             return (
               <button
                 key={cat.id}
+                data-seg-key={cat.id}
                 onClick={() => handleCategorySelect(cat.id)}
-                className={`px-3.5 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 ${
+                className={`relative px-3.5 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap transition-colors duration-300 flex items-center gap-1.5 shrink-0 ${
                   isSelected
-                    ? isEmergency
-                      ? 'bg-red-600 text-white shadow-xs'
-                      : 'bg-[var(--accent)] text-white shadow-xs'
+                    ? 'text-white'
                     : isEmergency
                     ? 'bg-red-50 text-red-700 border border-red-200'
                     : 'bg-white/80 text-[var(--ink-secondary)] border border-slate-200/80 hover:border-slate-300'

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { CLINIC_CONFIG, Language } from '../../data/clinicData';
 import { ClinicMetrics } from '../../lib/db';
+import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 
 interface OwnerReportTabProps {
   lang: Language;
@@ -27,6 +28,7 @@ export const OwnerReportTab: React.FC<OwnerReportTabProps> = ({
   triggerHaptic,
 }) => {
   const [periodDays, setPeriodDays] = useState<7 | 30>(7);
+  const periodIndicator = useSlidingIndicator<7 | 30>(periodDays);
   const [metrics, setMetrics] = useState<ClinicMetrics | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [digestStatus, setDigestStatus] = useState<string | null>(null);
@@ -116,28 +118,34 @@ export const OwnerReportTab: React.FC<OwnerReportTabProps> = ({
         </div>
 
         {/* Period Selector Tabs */}
-        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-2xl">
+        <div
+          ref={periodIndicator.attach}
+          className="relative flex items-center gap-1 p-1 bg-slate-100 rounded-2xl"
+        >
+          <SlidingIndicator box={periodIndicator.box} className="bg-white shadow-xs" />
           <button
+            data-seg-key={7}
             onClick={() => {
               triggerHaptic('light');
               setPeriodDays(7);
             }}
-            className={`px-3 py-1.5 rounded-xl text-[12px] font-bold transition-all ${
+            className={`relative px-3 py-1.5 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
               periodDays === 7
-                ? 'bg-white text-slate-900 shadow-xs'
+                ? 'text-slate-900'
                 : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             7 дней
           </button>
           <button
+            data-seg-key={30}
             onClick={() => {
               triggerHaptic('light');
               setPeriodDays(30);
             }}
-            className={`px-3 py-1.5 rounded-xl text-[12px] font-bold transition-all ${
+            className={`relative px-3 py-1.5 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
               periodDays === 30
-                ? 'bg-white text-slate-900 shadow-xs'
+                ? 'text-slate-900'
                 : 'text-slate-500 hover:text-slate-900'
             }`}
           >

@@ -3,6 +3,7 @@
 import React from 'react';
 import { Phone, Sparkles } from 'lucide-react';
 import { CLINIC_CONFIG, Language, UI_TRANSLATIONS } from '../data/clinicData';
+import { SlidingIndicator, useSlidingIndicator } from './ui/SlidingIndicator';
 
 interface HeaderProps {
   lang: Language;
@@ -13,6 +14,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerHaptic }) => {
   const t = UI_TRANSLATIONS;
   const config = CLINIC_CONFIG;
+  const indicator = useSlidingIndicator<Language>(lang);
 
   const handleLangClick = (newLang: Language) => {
     if (newLang !== lang) {
@@ -66,14 +68,19 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
           </a>
 
           {/* Segmented Language Selector Capsule */}
-          <div className="flex items-center p-0.5 bg-slate-100/80 backdrop-blur-md border border-slate-200/70 rounded-full text-[11px] sm:text-[12px] font-bold shadow-xs">
+          <div
+            ref={indicator.attach}
+            className="relative flex items-center p-0.5 bg-slate-100/80 backdrop-blur-md border border-slate-200/70 rounded-full text-[11px] sm:text-[12px] font-bold shadow-xs"
+          >
+            <SlidingIndicator box={indicator.box} className="bg-[var(--accent)] shadow-xs" />
             {(['ru', 'uz', 'en'] as Language[]).map((l) => (
               <button
                 key={l}
+                data-seg-key={l}
                 onClick={() => handleLangClick(l)}
-                className={`px-2 py-0.5 rounded-full transition-all select-none ${
+                className={`relative px-2 py-0.5 rounded-full transition-colors duration-300 select-none ${
                   lang === l
-                    ? 'bg-[var(--accent)] text-white shadow-xs font-extrabold'
+                    ? 'text-white font-extrabold'
                     : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
                 }`}
               >

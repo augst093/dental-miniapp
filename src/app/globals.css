@@ -127,6 +127,27 @@ main > * {
   background: linear-gradient(180deg, rgba(9, 17, 36, 0) 45%, rgba(9, 17, 36, 0.28) 100%);
 }
 
+/* Sliding highlight for segmented controls (see components/ui/SlidingIndicator.tsx) */
+.sliding-indicator {
+  transition: opacity 200ms ease;
+}
+
+.sliding-indicator[data-animated="true"] {
+  transition:
+    transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 380ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 380ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 200ms ease,
+    background-color 300ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sliding-indicator,
+  .sliding-indicator[data-animated="true"] {
+    transition: none;
+  }
+}
+
 /* One consistent icon stroke weight across the app */
 svg.lucide {
   stroke-width: 1.75;

@@ -12,6 +12,7 @@ import {
   User,
 } from 'lucide-react';
 import { Language, UI_TRANSLATIONS } from '../data/clinicData';
+import { SlidingIndicator, useSlidingIndicator } from './ui/SlidingIndicator';
 
 export type TabType =
   | 'home'
@@ -40,6 +41,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onSwitchRole,
 }) => {
   const t = UI_TRANSLATIONS.nav;
+  const indicator = useSlidingIndicator<TabType>(activeTab);
 
   // Patient navigation items
   const patientTabs: { id: TabType; label: string; icon: React.ElementType }[] = [
@@ -87,7 +89,14 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
   return (
     <nav className="fixed bottom-3 left-3 right-3 max-w-md mx-auto z-40 pointer-events-none pb-safe">
-      <div className="frosted-glass-pill backdrop-blur-2xl backdrop-saturate-150 p-1.5 rounded-full flex items-center justify-around gap-0.5 shadow-2xl pointer-events-auto border border-white/95">
+      <div
+        ref={indicator.attach}
+        className="relative frosted-glass-pill backdrop-blur-2xl backdrop-saturate-150 p-1.5 rounded-full flex items-center justify-around gap-0.5 shadow-2xl pointer-events-auto border border-white/95"
+      >
+        <SlidingIndicator
+          box={indicator.box}
+          className="bg-blue-50/90 shadow-xs border border-blue-200/60"
+        />
         {currentTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -95,16 +104,14 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           return (
             <button
               key={tab.id}
+              data-seg-key={tab.id}
               onClick={() => handleTabClick(tab.id)}
-              className={`flex-1 flex flex-col items-center justify-center py-2 px-1 min-h-[48px] relative transition-all rounded-full select-none ${
+              className={`flex-1 flex flex-col items-center justify-center py-2 px-1 min-h-[48px] relative transition-colors duration-300 rounded-full select-none ${
                 isActive
                   ? 'text-[var(--accent)] font-bold'
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              {isActive && (
-                <span className="absolute inset-0 bg-blue-50/90 rounded-full -z-10 shadow-xs border border-blue-200/60 animate-in fade-in duration-200" />
-              )}
               <Icon
                 className={`w-5 h-5 mb-0.5 transition-transform duration-200 ${
                   isActive ? 'scale-110 stroke-[2.3]' : 'scale-100 stroke-[1.8]'

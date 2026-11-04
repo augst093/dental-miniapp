@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import {
   Plus,
   Minus,
@@ -29,6 +30,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
   const [planUnits, setPlanUnits] = useState<number>(
     TREATMENT_CALCULATOR_OPTIONS[0].defaultUnits
   );
+  const presetIndicator = useSlidingIndicator<number>(planUnits);
 
   const t = UI_TRANSLATIONS.calculator;
   const currentPlan = TREATMENT_CALCULATOR_OPTIONS[selectedPlanIdx];
@@ -147,16 +149,18 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
 
         {/* Quick Presets if available */}
         {currentPlan.presets && (
-          <div className="flex items-center gap-1.5 flex-wrap pt-1">
+          <div ref={presetIndicator.attach} className="relative flex items-center gap-1.5 flex-wrap pt-1">
+            <SlidingIndicator box={presetIndicator.box} className="bg-[var(--accent)] shadow-xs" />
             {currentPlan.presets.map((preset) => {
               const isSelected = planUnits === preset.units;
               return (
                 <button
                   key={preset.units}
+                  data-seg-key={preset.units}
                   onClick={() => handlePresetSelect(preset.units)}
-                  className={`px-3.5 py-1.5 rounded-full text-[12px] font-semibold transition-all ${
+                  className={`relative px-3.5 py-1.5 rounded-full text-[12px] font-semibold transition-colors duration-300 ${
                     isSelected
-                      ? 'bg-[var(--accent)] text-white shadow-xs'
+                      ? 'text-white'
                       : 'bg-slate-100/90 text-[var(--ink-secondary)] hover:bg-slate-200'
                   }`}
                 >

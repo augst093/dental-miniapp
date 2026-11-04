@@ -29,6 +29,7 @@ import {
   STATUS_LABELS,
 } from '../../lib/appointmentLifecycle';
 import { DBAppointment } from '../../lib/db';
+import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import {
   formatTashkentISODate,
   formatTashkentTime,
@@ -54,6 +55,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const [activeSubTab, setActiveSubTab] = useState<'today' | 'week' | 'doctors'>('today');
+  const subTabIndicator = useSlidingIndicator<'today' | 'week' | 'doctors'>(activeSubTab);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -275,41 +277,45 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       </div>
 
       {/* Admin Sub-Tabs */}
-      <div className="flex items-center justify-between gap-1 p-1 bg-slate-200/70 rounded-2xl">
+      <div ref={subTabIndicator.attach} className="relative flex items-center justify-between gap-1 p-1 bg-slate-200/70 rounded-2xl">
+        <SlidingIndicator box={subTabIndicator.box} className="bg-white shadow-xs" />
         <button
+          data-seg-key={'today'}
           onClick={() => {
             triggerHaptic('light');
             setActiveSubTab('today');
           }}
-          className={`flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-all ${
+          className={`relative flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
             activeSubTab === 'today'
-              ? 'bg-white text-slate-900 shadow-xs'
+              ? 'text-slate-900'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           Сегодня ({appointments.filter((a) => formatTashkentISODate(a.dateTime) === todayIso).length})
         </button>
         <button
+          data-seg-key={'week'}
           onClick={() => {
             triggerHaptic('light');
             setActiveSubTab('week');
           }}
-          className={`flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-all ${
+          className={`relative flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
             activeSubTab === 'week'
-              ? 'bg-white text-slate-900 shadow-xs'
+              ? 'text-slate-900'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           Календарь
         </button>
         <button
+          data-seg-key={'doctors'}
           onClick={() => {
             triggerHaptic('light');
             setActiveSubTab('doctors');
           }}
-          className={`flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-all ${
+          className={`relative flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
             activeSubTab === 'doctors'
-              ? 'bg-white text-slate-900 shadow-xs'
+              ? 'text-slate-900'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
