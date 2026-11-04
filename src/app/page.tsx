@@ -245,7 +245,9 @@ export default function MiniAppPage() {
             setIsChatOpen(true);
           }}
           aria-label="Чат с ассистентом"
-          className="fixed right-4 bottom-[150px] z-30 w-14 h-14 rounded-full bg-[var(--accent)] text-white shadow-2xl flex items-center justify-center active:scale-90 transition-transform chat-fab"
+          className={`fixed right-4 z-30 w-14 h-14 rounded-full bg-white text-[var(--accent)] border border-blue-100 shadow-2xl flex items-center justify-center active:scale-90 transition-transform chat-fab ${
+            activeTab === 'home' ? 'bottom-[96px]' : 'bottom-[156px]'
+          }`}
         >
           <MessageCircle className="w-6 h-6" />
         </button>
