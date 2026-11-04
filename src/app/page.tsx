@@ -268,7 +268,7 @@ export default function MiniAppPage() {
             setIsChatOpen(true);
           }}
           aria-label="Чат с ассистентом"
-          className={`fixed right-4 z-30 w-14 h-14 rounded-full bg-white text-[var(--accent)] border border-blue-100 shadow-2xl flex items-center justify-center active:scale-90 transition-transform chat-fab ${
+          className={`fixed right-4 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white text-[var(--accent)] border border-blue-100 shadow-2xl flex items-center justify-center active:scale-90 transition-transform chat-fab ${
             'bottom-[96px]'
           }`}
         >

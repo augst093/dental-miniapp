@@ -319,7 +319,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             <h2 className="font-serif italic font-normal text-[22px] text-[var(--ink)]">
               {t.featured.title[lang]}
             </h2>
-            <p className="text-[12px] text-[var(--ink-muted)]">
+            <p className="hidden sm:block text-[12px] text-[var(--ink-muted)]">
               {t.featured.subtitle[lang]}
             </p>
           </div>
@@ -349,15 +349,15 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                     </span>
                   )}
                   {srv.partnerBrand && (
-                    <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                    <span className="hidden sm:inline text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
                       {srv.partnerBrand}
                     </span>
                   )}
                 </div>
-                <p className="text-[12px] text-[var(--ink-secondary)] leading-relaxed">
+                <p className="text-[12px] text-[var(--ink-secondary)] leading-relaxed line-clamp-2 sm:line-clamp-none">
                   {srv.description[lang]}
                 </p>
-                <div className="flex items-center gap-3 text-[11px] text-[var(--ink-muted)] pt-0.5">
+                <div className="hidden sm:flex items-center gap-3 text-[11px] text-[var(--ink-muted)] pt-0.5">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3 text-slate-400" />
                     {srv.duration[lang]}
@@ -371,7 +371,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                     {srv.priceUzs}
                   </div>
                   {srv.priceUsd && (
-                    <div className="text-[11px] text-[var(--ink-muted)]">
+                    <div className="hidden sm:block text-[11px] text-[var(--ink-muted)]">
                       ≈ {srv.priceUsd}
                     </div>
                   )}

@@ -61,14 +61,14 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
                 <div className="text-[12px] font-semibold text-[var(--accent)] mt-0.5">
                   {doc.role[lang]}
                 </div>
-                <p className="text-[12px] text-[var(--ink-secondary)] mt-1 leading-snug">
+                <p className="text-[12px] text-[var(--ink-secondary)] mt-1 leading-snug line-clamp-2 sm:line-clamp-none">
                   {doc.specialization[lang]}
                 </p>
               </div>
             </div>
 
             {/* Credentials / Education summary */}
-            <div className="bg-slate-100/80 border border-slate-200/60 p-3 rounded-2xl text-[12px] text-[var(--ink-secondary)] flex items-start gap-2">
+            <div className="hidden sm:flex bg-slate-100/80 border border-slate-200/60 p-3 rounded-2xl text-[12px] text-[var(--ink-secondary)] items-start gap-2">
               <Award className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <span className="leading-relaxed">{doc.credentials[lang]}</span>
             </div>

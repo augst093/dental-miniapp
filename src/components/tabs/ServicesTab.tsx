@@ -196,7 +196,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                       </span>
                     )}
                   </div>
-                  <p className="text-[12px] text-[var(--ink-secondary)] leading-relaxed">
+                  <p className="text-[12px] text-[var(--ink-secondary)] leading-relaxed line-clamp-2 sm:line-clamp-none">
                     {srv.description[lang]}
                   </p>
                 </div>
