@@ -98,7 +98,7 @@ const COPY: Record<
   }
 > = {
   ru: {
-    status: 'AI-ассистент · в сети',
+    status: 'на связи 24/7',
     placeholder: 'Сообщение',
     greeting: 'Здравствуйте! Помогу с ценами, адресом и записью. Что вас интересует?',
     quick: ['Цены', 'Адрес и часы', 'Записаться', 'Болит зуб'],
@@ -110,7 +110,7 @@ const COPY: Record<
     close: 'Закрыть',
   },
   uz: {
-    status: 'AI-yordamchi · onlayn',
+    status: 'onlayn 24/7',
     placeholder: 'Xabar',
     greeting: 'Assalomu alaykum! Narxlar, manzil va yozilish bo‘yicha yordam beraman. Nima qiziqtiradi?',
     quick: ['Narxlar', 'Manzil va soatlar', 'Yozilish', 'Tish og‘riyapti'],
@@ -122,7 +122,7 @@ const COPY: Record<
     close: 'Yopish',
   },
   en: {
-    status: 'AI assistant · online',
+    status: 'online 24/7',
     placeholder: 'Message',
     greeting: 'Hello! I can help with prices, the address and booking. What would you like to know?',
     quick: ['Prices', 'Address & hours', 'Book a visit', 'Tooth pain'],
