@@ -1,16 +1,34 @@
 'use client';
 
 import React from 'react';
-import { Home, Layers, Calculator, Users, MapPin } from 'lucide-react';
+import {
+  Home,
+  Layers,
+  Calculator,
+  Users,
+  MapPin,
+  Calendar,
+  BarChart3,
+  User,
+} from 'lucide-react';
 import { Language, UI_TRANSLATIONS } from '../data/clinicData';
 
-export type TabType = 'home' | 'services' | 'calculator' | 'doctors' | 'contacts';
+export type TabType =
+  | 'home'
+  | 'services'
+  | 'calculator'
+  | 'doctors'
+  | 'contacts'
+  | 'admin_today'
+  | 'admin_report';
 
 interface BottomNavProps {
   activeTab: TabType;
   onTabChange: (tab: TabType) => void;
   lang: Language;
   triggerHaptic: (style?: 'light' | 'medium' | 'heavy') => void;
+  role?: 'patient' | 'admin';
+  onSwitchRole?: (role: 'patient' | 'admin') => void;
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
@@ -18,10 +36,13 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onTabChange,
   lang,
   triggerHaptic,
+  role = 'patient',
+  onSwitchRole,
 }) => {
   const t = UI_TRANSLATIONS.nav;
 
-  const tabs: { id: TabType; label: string; icon: React.ElementType }[] = [
+  // Patient navigation items
+  const patientTabs: { id: TabType; label: string; icon: React.ElementType }[] = [
     { id: 'home', label: t.home[lang], icon: Home },
     { id: 'services', label: t.services[lang], icon: Layers },
     { id: 'calculator', label: t.calculator[lang], icon: Calculator },
@@ -29,7 +50,35 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     { id: 'contacts', label: t.contacts[lang], icon: MapPin },
   ];
 
+  // Admin navigation items
+  const adminTabs: { id: TabType; label: string; icon: React.ElementType }[] = [
+    {
+      id: 'admin_today',
+      label: lang === 'uz' ? 'Qabullar' : lang === 'en' ? 'Today' : 'Записи',
+      icon: Calendar,
+    },
+    {
+      id: 'admin_report',
+      label: lang === 'uz' ? 'Hisobot' : lang === 'en' ? 'Report' : 'Отчёт',
+      icon: BarChart3,
+    },
+    {
+      id: 'home',
+      label: lang === 'uz' ? 'Bemor' : lang === 'en' ? 'Patient' : 'Пациент',
+      icon: User,
+    },
+  ];
+
+  const currentTabs = role === 'admin' ? adminTabs : patientTabs;
+
   const handleTabClick = (tabId: TabType) => {
+    if (role === 'admin' && tabId === 'home') {
+      triggerHaptic('medium');
+      if (onSwitchRole) onSwitchRole('patient');
+      onTabChange('home');
+      return;
+    }
+
     if (activeTab !== tabId) {
       triggerHaptic('light');
       onTabChange(tabId);
@@ -39,7 +88,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   return (
     <nav className="fixed bottom-3 left-3 right-3 max-w-md mx-auto z-40 pointer-events-none pb-safe">
       <div className="frosted-glass-pill backdrop-blur-2xl backdrop-saturate-150 p-1.5 rounded-full flex items-center justify-around gap-0.5 shadow-2xl pointer-events-auto border border-white/95">
-        {tabs.map((tab) => {
+        {currentTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
 
@@ -61,7 +110,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                   isActive ? 'scale-110 stroke-[2.3]' : 'scale-100 stroke-[1.8]'
                 }`}
               />
-              <span className="text-[10px] sm:text-[11px] tracking-tight leading-none text-center truncate max-w-[58px]">
+              <span className="text-[10px] sm:text-[11px] tracking-tight leading-none text-center truncate max-w-[62px]">
                 {tab.label}
               </span>
             </button>

@@ -11,11 +11,17 @@ import { ServicesTab } from '../components/tabs/ServicesTab';
 import { CalculatorTab } from '../components/tabs/CalculatorTab';
 import { DoctorsTab } from '../components/tabs/DoctorsTab';
 import { ContactsTab } from '../components/tabs/ContactsTab';
+import { AdminPanel } from '../components/admin/AdminPanel';
+import { OwnerReportTab } from '../components/admin/OwnerReportTab';
+import { DemoControlDrawer } from '../components/admin/DemoControlDrawer';
 
 export default function MiniAppPage() {
   const [lang, setLang] = useState<Language>('ru');
   const [activeTab, setActiveTab] = useState<TabType>('home');
   const [userName, setUserName] = useState<string>('');
+
+  // Role: 'patient' or 'admin' (Demo Mode enables quick switching)
+  const [currentRole, setCurrentRole] = useState<'patient' | 'admin'>('patient');
 
   // Booking Modal State
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
@@ -61,24 +67,42 @@ export default function MiniAppPage() {
     }
   }, []);
 
-  // BackButton behavior for Tab Navigation (when modal is closed)
-  const handleTabBack = useCallback(() => {
-    triggerHaptic('light');
-    setActiveTab('home');
+  // Role change handler
+  const handleRoleChange = (role: 'patient' | 'admin') => {
+    setCurrentRole(role);
+    if (role === 'admin') {
+      setActiveTab('admin_today');
+    } else {
+      setActiveTab('home');
+    }
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [triggerHaptic]);
+  };
+
+  // BackButton behavior for Tab Navigation (when modal is closed)
+  const handleTabBack = useCallback(() => {
+    triggerHaptic('light');
+    if (currentRole === 'admin') {
+      setActiveTab('admin_today');
+    } else {
+      setActiveTab('home');
+    }
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentRole, triggerHaptic]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const tg = window.Telegram?.WebApp;
     if (!tg) return;
 
-    // If modal is open, modal handles BackButton itself
     if (isBookingOpen) return;
 
-    if (activeTab !== 'home') {
+    const isRoot = currentRole === 'admin' ? activeTab === 'admin_today' : activeTab === 'home';
+
+    if (!isRoot) {
       tg.BackButton.show();
       tg.BackButton.onClick(handleTabBack);
     } else {
@@ -89,7 +113,7 @@ export default function MiniAppPage() {
     return () => {
       tg.BackButton.offClick(handleTabBack);
     };
-  }, [activeTab, isBookingOpen, handleTabBack]);
+  }, [activeTab, currentRole, isBookingOpen, handleTabBack]);
 
   // Open booking modal helper
   const handleOpenBooking = (serviceTitle?: string, doctorTitle?: string) => {
@@ -104,6 +128,13 @@ export default function MiniAppPage() {
 
   return (
     <div className="min-h-[100dvh] bg-[var(--bg)] text-[var(--ink)] flex flex-col font-sans select-none antialiased bg-mesh-radial">
+      {/* 0. Demo Control Drawer & Discreet Floating Island Banner */}
+      <DemoControlDrawer
+        currentRole={currentRole}
+        onRoleChange={handleRoleChange}
+        triggerHaptic={triggerHaptic}
+      />
+
       {/* 1. Sticky Opaque Header */}
       <Header
         lang={lang}
@@ -112,51 +143,73 @@ export default function MiniAppPage() {
       />
 
       {/* 2. Main Content Canvas */}
-      <main className="flex-1 px-4 pt-[74px] sm:pt-[80px] pb-3 max-w-xl mx-auto w-full">
-        {activeTab === 'home' && (
-          <HomeTab
-            lang={lang}
-            onNavigateTab={handleTabChange}
-            onOpenBooking={handleOpenBooking}
-            triggerHaptic={triggerHaptic}
-          />
-        )}
+      <main className="flex-1 px-4 pt-[78px] sm:pt-[84px] pb-3 max-w-xl mx-auto w-full">
+        {/* ================= ADMIN VIEW ================= */}
+        {currentRole === 'admin' ? (
+          <>
+            {activeTab === 'admin_report' ? (
+              <OwnerReportTab
+                lang={lang}
+                triggerHaptic={triggerHaptic}
+              />
+            ) : (
+              <AdminPanel
+                lang={lang}
+                triggerHaptic={triggerHaptic}
+                onOpenReport={() => handleTabChange('admin_report')}
+                onSwitchToPatientView={() => handleRoleChange('patient')}
+              />
+            )}
+          </>
+        ) : (
+          /* ================= PATIENT VIEW ================= */
+          <>
+            {activeTab === 'home' && (
+              <HomeTab
+                lang={lang}
+                onNavigateTab={handleTabChange}
+                onOpenBooking={handleOpenBooking}
+                triggerHaptic={triggerHaptic}
+              />
+            )}
 
-        {activeTab === 'services' && (
-          <ServicesTab
-            lang={lang}
-            onOpenBooking={handleOpenBooking}
-            triggerHaptic={triggerHaptic}
-          />
-        )}
+            {activeTab === 'services' && (
+              <ServicesTab
+                lang={lang}
+                onOpenBooking={handleOpenBooking}
+                triggerHaptic={triggerHaptic}
+              />
+            )}
 
-        {activeTab === 'calculator' && (
-          <CalculatorTab
-            lang={lang}
-            onOpenBooking={handleOpenBooking}
-            triggerHaptic={triggerHaptic}
-          />
-        )}
+            {activeTab === 'calculator' && (
+              <CalculatorTab
+                lang={lang}
+                onOpenBooking={handleOpenBooking}
+                triggerHaptic={triggerHaptic}
+              />
+            )}
 
-        {activeTab === 'doctors' && (
-          <DoctorsTab
-            lang={lang}
-            onOpenBooking={handleOpenBooking}
-            triggerHaptic={triggerHaptic}
-          />
-        )}
+            {activeTab === 'doctors' && (
+              <DoctorsTab
+                lang={lang}
+                onOpenBooking={handleOpenBooking}
+                triggerHaptic={triggerHaptic}
+              />
+            )}
 
-        {activeTab === 'contacts' && (
-          <ContactsTab
-            lang={lang}
-            onOpenBooking={() => handleOpenBooking()}
-            triggerHaptic={triggerHaptic}
-          />
+            {activeTab === 'contacts' && (
+              <ContactsTab
+                lang={lang}
+                onOpenBooking={() => handleOpenBooking()}
+                triggerHaptic={triggerHaptic}
+              />
+            )}
+          </>
         )}
       </main>
 
-      {/* 3. Sticky Primary CTA (Hidden when dismissed, on Calculator, or when booking modal is open) */}
-      {!isBookingOpen && activeTab !== 'calculator' && !isCtaDismissed && (
+      {/* 3. Sticky Primary CTA (Shown only in Patient mode when not dismissed) */}
+      {currentRole === 'patient' && !isBookingOpen && activeTab !== 'calculator' && !isCtaDismissed && (
         <StickyCta
           lang={lang}
           onOpenBooking={() => handleOpenBooking()}
@@ -171,6 +224,8 @@ export default function MiniAppPage() {
         onTabChange={handleTabChange}
         lang={lang}
         triggerHaptic={triggerHaptic}
+        role={currentRole}
+        onSwitchRole={handleRoleChange}
       />
 
       {/* 5. 3-Step Progressive Disclosure Booking Wizard */}
