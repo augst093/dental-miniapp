@@ -203,6 +203,23 @@ async function streamReply(
   }
 }
 
+// Thin check marks drawn as vectors, in the style of Telegram: one when sent, two when delivered
+function DeliveryTicks({ double }: { double: boolean }) {
+  if (!double) {
+    return (
+      <svg width="11" height="9" viewBox="0 0 11 9" fill="none" aria-hidden="true" className="shrink-0">
+        <path d="M1 4.6 4 7.6 10 1.4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="16" height="9" viewBox="0 0 16 9" fill="none" aria-hidden="true" className="shrink-0">
+      <path d="M1 4.6 4 7.6 10 1.4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5.4 4.6 8.4 7.6 14.4 1.4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function TypingDots() {
   return (
     <span className="inline-flex items-center gap-1 py-1" aria-label="typing">
@@ -247,7 +264,7 @@ const Bubble = memo(function Bubble({
               }`}
             >
               {formatTime(message.time, lang)}
-              {mine && <span className="tracking-[-0.15em]">{message.delivered ? '✓✓' : '✓'}</span>}
+              {mine && <DeliveryTicks double={!!message.delivered} />}
             </span>
           </>
         )}
