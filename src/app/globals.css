@@ -19,13 +19,45 @@
 body {
   background-color: var(--bg);
   color: var(--ink);
-  font-family: var(--font-body), Georgia, serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, .font-display {
-  font-family: var(--font-display), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  letter-spacing: -0.03em;
+  font-family: var(--font-display), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.025em;
+}
+
+/* Apple-style Frosted Glass Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+}
+
+.glass-panel-subtle {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.glass-nav {
+  background: rgba(246, 244, 240, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(221, 216, 206, 0.6);
+}
+
+.glass-card-dark {
+  background: rgba(27, 67, 50, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 32px rgba(27, 67, 50, 0.22);
 }
 
 /* Custom smooth horizontal snapping */
@@ -38,11 +70,16 @@ h1, h2, h3, h4, .font-display {
   scroll-snap-align: start;
 }
 
-/* Hide scrollbar for clean editorial look */
+/* Hide scrollbar for clean Apple look */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Safe area padding for Telegram & iOS Home Indicator */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
 }
