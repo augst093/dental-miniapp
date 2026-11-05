@@ -3,7 +3,11 @@ import { dbRepository } from '@/lib/db';
 import { authorizeAdminRequest } from "@/lib/telegramAuth";
 import { getNowUTC, formatTashkentISODate, fromTashkentDateTime } from '@/lib/timezone';
 
+// Fail closed: without DEMO_MODE=true the demo endpoints do not exist (404), not merely locked
 export async function POST(request: NextRequest) {
+  if (process.env.DEMO_MODE !== 'true') {
+    return new NextResponse(null, { status: 404 });
+  }
   const gate = authorizeAdminRequest(request);
   if (!gate.ok) {
     return NextResponse.json({ success: false, error: gate.error }, { status: gate.status });

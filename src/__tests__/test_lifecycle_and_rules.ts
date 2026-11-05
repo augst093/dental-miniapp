@@ -222,6 +222,24 @@ async function runTests() {
     assert.strictEqual(authRes.user?.id, 987654321);
   });
 
+  await test('Demo: every demo endpoint returns 404 when DEMO_MODE is off', async () => {
+    const { NextRequest } = await import('next/server');
+    const { POST } = await import('../app/api/demo/route');
+    const prev = process.env.DEMO_MODE;
+    process.env.DEMO_MODE = 'false';
+    try {
+      const req = new NextRequest('http://localhost/api/demo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'reset_demo' }),
+      });
+      const res = await POST(req);
+      assert.strictEqual(res.status, 404);
+    } finally {
+      process.env.DEMO_MODE = prev;
+    }
+  });
+
   await test('Telegram Auth: Rejects tampered or invalid hash', async () => {
     const mockBotToken = '123456789:ABCDEF_mock_token_for_tests';
     const authDate = Math.floor(Date.now() / 1000);
