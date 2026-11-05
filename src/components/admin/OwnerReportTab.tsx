@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { telegramAuthHeaders } from '@/lib/telegramClient';
 import {
   TrendingUp,
   Clock,
@@ -36,7 +37,7 @@ export const OwnerReportTab: React.FC<OwnerReportTabProps> = ({
   const fetchMetrics = async (days: number) => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/reports?days=${days}`);
+      const res = await fetch(`/api/reports?days=${days}`, { headers: telegramAuthHeaders() });
       const data = await res.json();
       if (data.success) {
         setMetrics(data.metrics);
@@ -58,7 +59,7 @@ export const OwnerReportTab: React.FC<OwnerReportTabProps> = ({
     try {
       const res = await fetch('/api/demo', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...telegramAuthHeaders() },
         body: JSON.stringify({ action: 'send_digest' }),
       });
       const data = await res.json();

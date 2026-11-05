@@ -124,3 +124,41 @@ export function validateTelegramInitData(
     return { authenticated: false, isAdmin: false, error: err?.message || 'Auth failure' };
   }
 }
+
+export const TG_INIT_DATA_HEADER = 'x-telegram-init-data';
+
+export type AdminGate =
+  | { ok: true; user: TelegramUser }
+  | { ok: false; status: 401 | 403 | 503; error: string };
+
+/**
+ * Strict gate for admin-only API routes. Fails closed:
+ * - no BOT_TOKEN on the server -> refuse (503), never open the admin data;
+ * - no valid, fresh, signed initData -> 401;
+ * - signed by Telegram but the user is not in ADMIN_ID -> 403.
+ * DEMO_MODE=true is the only way to open it without Telegram (local demos).
+ */
+export function authorizeAdminRequest(request: Request): AdminGate {
+  return authorizeAdminInitData(request.headers.get(TG_INIT_DATA_HEADER) || '');
+}
+
+export function authorizeAdminInitData(initData: string): AdminGate {
+  if (process.env.DEMO_MODE === 'true') {
+    return { ok: true, user: { id: 0, first_name: 'Демо' } };
+  }
+
+  const botToken = process.env.BOT_TOKEN;
+  if (!botToken) {
+    return { ok: false, status: 503, error: 'Сервер не настроен: BOT_TOKEN не задан' };
+  }
+
+  const result = validateTelegramInitData(initData, botToken, process.env.ADMIN_ID);
+
+  if (!result.authenticated || !result.user) {
+    return { ok: false, status: 401, error: result.error || 'Нужен вход через Telegram' };
+  }
+  if (!result.isAdmin) {
+    return { ok: false, status: 403, error: 'Доступ только для администраторов клиники' };
+  }
+  return { ok: true, user: result.user };
+}

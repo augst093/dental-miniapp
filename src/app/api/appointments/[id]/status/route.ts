@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbRepository } from '@/lib/db';
 import { AppointmentStatus, LifecycleActor } from '@/lib/appointmentLifecycle';
+import { authorizeAdminRequest } from "@/lib/telegramAuth";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const gate = authorizeAdminRequest(request);
+  if (!gate.ok) {
+    return NextResponse.json({ success: false, error: gate.error }, { status: gate.status });
+  }
   try {
     const { id } = await params;
     const body = await request.json();

@@ -33,6 +33,7 @@ declare global {
           onClick: (fn: () => void) => void;
           offClick: (fn: () => void) => void;
         };
+        initData?: string;
         initDataUnsafe?: {
           user?: {
             id: number;

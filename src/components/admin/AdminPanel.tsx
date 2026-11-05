@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { telegramAuthHeaders } from '@/lib/telegramClient';
 import {
   Calendar,
   Clock,
@@ -84,7 +85,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch('/api/appointments');
+      const res = await fetch('/api/appointments', { headers: telegramAuthHeaders() });
       const data = await res.json();
       if (data.success) {
         setAppointments(data.appointments || []);
@@ -124,7 +125,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     try {
       const res = await fetch(`/api/appointments/${appointmentId}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...telegramAuthHeaders() },
         body: JSON.stringify({
           status: newStatus,
           actor: 'admin',
@@ -160,7 +161,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     try {
       const res = await fetch('/api/appointments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...telegramAuthHeaders() },
         body: JSON.stringify({
           patientName: manualName.trim(),
           patientPhone: manualPhone.trim(),

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { telegramAuthHeaders } from '@/lib/telegramClient';
 import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import {
   Sparkles,
@@ -46,7 +47,7 @@ export const DemoControlDrawer: React.FC<DemoControlDrawerProps> = ({
     try {
       const res = await fetch('/api/demo', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...telegramAuthHeaders() },
         body: JSON.stringify({ action }),
       });
       const data = await res.json();

@@ -11,6 +11,7 @@ import { CalculatorTab } from '../components/tabs/CalculatorTab';
 import { DoctorsTab } from '../components/tabs/DoctorsTab';
 import { ContactsTab } from '../components/tabs/ContactsTab';
 import { AdminPanel } from '../components/admin/AdminPanel';
+import { telegramAuthHeaders } from '../lib/telegramClient';
 import { OwnerReportTab } from '../components/admin/OwnerReportTab';
 import { DemoControlDrawer } from '../components/admin/DemoControlDrawer';
 import { ChatScreen } from '../components/chat/ChatScreen';
@@ -45,6 +46,16 @@ export default function MiniAppPage() {
     setChatDraft(text);
     setIsChatOpen(true);
   };
+
+  // Admin inside Telegram: the server checks the signed initData and says whether this person is an admin
+  const [isTgAdmin, setIsTgAdmin] = useState<boolean>(false);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.Telegram?.WebApp?.initData) return;
+    fetch('/api/me', { headers: telegramAuthHeaders() })
+      .then((r) => r.json())
+      .then((data) => setIsTgAdmin(Boolean(data?.isAdmin)))
+      .catch(() => setIsTgAdmin(false));
+  }, []);
 
   // Demo panel is hidden for patients; enable with ?demo=1 in the URL
   const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
@@ -176,6 +187,16 @@ export default function MiniAppPage() {
           onRoleChange={handleRoleChange}
           triggerHaptic={triggerHaptic}
         />
+      )}
+
+      {/* 0b. Admin switch for verified clinic admins opening the Mini App in Telegram */}
+      {isTgAdmin && !isDemoMode && (
+        <button
+          onClick={() => handleRoleChange(currentRole === 'admin' ? 'patient' : 'admin')}
+          className="fixed right-3 top-[14px] z-[60] rounded-full bg-[var(--accent)] text-white text-[12px] font-bold px-3.5 py-1.5 shadow-lg active:scale-95 transition-transform"
+        >
+          {currentRole === 'admin' ? 'Для пациентов' : 'Админ-панель'}
+        </button>
       )}
 
       {/* 1. Sticky Opaque Header */}
