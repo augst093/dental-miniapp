@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Award, Calendar, Check, GraduationCap, Languages, User, X } from 'lucide-react';
 import { Doctor, Language } from '../../data/clinicData';
 
@@ -102,7 +103,7 @@ export const DoctorAboutSheet: React.FC<DoctorAboutSheetProps> = ({
     .filter(Boolean);
   const delay = (ms: number) => ({ animationDelay: `${ms}ms` });
 
-  return (
+  const sheet = (
     <div
       className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4"
       role="dialog"
@@ -117,7 +118,7 @@ export const DoctorAboutSheet: React.FC<DoctorAboutSheetProps> = ({
       />
 
       <div
-        className={`relative w-full sm:max-w-lg max-h-[88dvh] overflow-y-auto bg-white/[0.98] rounded-t-[32px] sm:rounded-3xl shadow-2xl border border-white/90 px-5 pt-3 pb-6 ${
+        className={`relative w-full sm:max-w-lg max-h-[88dvh] overflow-y-auto bg-white/[0.98] rounded-t-[32px] sm:rounded-3xl shadow-2xl border border-white/90 px-5 pt-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))] ${
           closing ? 'sheet-exit' : 'sheet-enter'
         }`}
       >
@@ -225,4 +226,7 @@ export const DoctorAboutSheet: React.FC<DoctorAboutSheetProps> = ({
       </div>
     </div>
   );
+
+  // Rendered at the document root, so no animated screen can clip the overlay or the sheet
+  return typeof document === 'undefined' ? null : createPortal(sheet, document.body);
 };
