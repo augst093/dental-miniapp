@@ -55,7 +55,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ lang, enabled }) => {
     }
   }, [enabled]);
 
-  if (!visible) return null;
+  // Hide right away if the context changes (for example, demo mode is detected after the first render)
+  if (!visible || !enabled) return null;
 
   const slides = SLIDES[lang];
   const labels = LABELS[lang];

@@ -68,7 +68,7 @@ export const DemoControlDrawer: React.FC<DemoControlDrawerProps> = ({
   return (
     <>
       {/* 1. Discreet Top Pill Banner (Floating Island) */}
-      <div className="fixed top-2.5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 px-3 py-1 bg-slate-900/90 text-white backdrop-blur-xl rounded-full shadow-lg border border-slate-700/80 text-[11px] font-semibold select-none">
+      <div className="fixed bottom-[92px] left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 px-3 py-1 bg-slate-900/90 text-white backdrop-blur-xl rounded-full shadow-lg border border-slate-700/80 text-[11px] font-semibold select-none">
         <span className="flex h-2 w-2 relative">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
