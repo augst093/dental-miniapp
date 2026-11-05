@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { telegramAuthHeaders } from '@/lib/telegramClient';
 import { CallButton } from './ui/CallButton';
 import { saveVisit } from '../lib/patientVisit';
 import { CalendarPicker } from './booking/CalendarPicker';
 import { TimePicker } from './booking/TimePicker';
 import { formatDayLong } from '../lib/bookingDates';
+import { markMoving } from '../lib/motion';
 import {
   X,
   Check,
@@ -104,6 +105,26 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const config = CLINIC_CONFIG;
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  // Steps slide in the direction of travel. The current step first slides out, then the next one enters.
+  const [stepDir, setStepDir] = useState<'next' | 'prev'>('next');
+  const [stepExiting, setStepExiting] = useState(false);
+  const stepTimer = useRef<number | undefined>(undefined);
+
+  const goToStep = useCallback(
+    (target: 1 | 2 | 3) => {
+      if (target === step || stepExiting) return;
+      setStepDir(target > step ? 'next' : 'prev');
+      setStepExiting(true);
+      markMoving(620);
+      if (stepTimer.current !== undefined) window.clearTimeout(stepTimer.current);
+      stepTimer.current = window.setTimeout(() => {
+        setStep(target);
+        setStepExiting(false);
+        stepTimer.current = undefined;
+      }, 190);
+    },
+    [step, stepExiting]
+  );
   const [selectedService, setSelectedService] = useState<string>(
     initialService || QUICK_SERVICES[lang][0].title
   );
@@ -150,15 +171,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
     if (step === 3) {
       triggerHaptic('light');
-      setStep(2);
+      goToStep(2);
     } else if (step === 2) {
       triggerHaptic('light');
-      setStep(1);
+      goToStep(1);
     } else {
       triggerHaptic('light');
       onClose();
     }
-  }, [step, isSuccess, onClose, triggerHaptic]);
+  }, [step, isSuccess, onClose, triggerHaptic, goToStep]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -192,14 +213,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
   const handleNextStep = () => {
     triggerHaptic('medium');
-    if (step === 1) setStep(2);
-    else if (step === 2) setStep(3);
+    if (step === 1) goToStep(2);
+    else if (step === 2) goToStep(3);
   };
 
   const handlePrevStep = () => {
     triggerHaptic('light');
-    if (step === 3) setStep(2);
-    else if (step === 2) setStep(1);
+    if (step === 3) goToStep(2);
+    else if (step === 2) goToStep(1);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -445,7 +466,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
             <div>
               {/* STEP 1: SERVICE & DOCTOR SELECTION */}
               {step === 1 && (
-                <div className="space-y-4 animate-in fade-in duration-200">
+                <div className={`space-y-4 ${`step-view ${stepExiting ? (stepDir === 'next' ? 'step-out-next' : 'step-out-prev') : (stepDir === 'next' ? 'step-in-next' : 'step-in-prev')}`}`}>
                   <div>
                     <label className="block text-[13px] font-bold text-[var(--ink)] mb-2">
                       {t.step1Title[lang]}
@@ -529,7 +550,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               {/* STEP 2: DATE & TIME SELECTION (live calendar + live free slots) */}
               {step === 2 && (
-                <div className="space-y-5 animate-in fade-in duration-200">
+                <div className={`space-y-5 ${`step-view ${stepExiting ? (stepDir === 'next' ? 'step-out-next' : 'step-out-prev') : (stepDir === 'next' ? 'step-in-next' : 'step-in-prev')}`}`}>
                   <div className="clinic-card p-3.5 rounded-3xl">
                     <CalendarPicker
                       value={selectedDate}
@@ -591,7 +612,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               {/* STEP 3: CONTACT INFORMATION & SUBMIT */}
               {step === 3 && (
-                <form onSubmit={handleSubmit} className="space-y-4 animate-in fade-in duration-200">
+                <form onSubmit={handleSubmit} className={`space-y-4 ${`step-view ${stepExiting ? (stepDir === 'next' ? 'step-out-next' : 'step-out-prev') : (stepDir === 'next' ? 'step-in-next' : 'step-in-prev')}`}`}>
                   <div>
                     <label className="block text-[13px] font-bold text-[var(--ink)] mb-1">
                       {t.nameLabel[lang]} <span className="text-red-500">*</span>

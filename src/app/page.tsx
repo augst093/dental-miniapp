@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { CLINIC_CONFIG, Language } from '../data/clinicData';
 import { Header } from '../components/Header';
 import { BottomNav, TabType } from '../components/BottomNav';
@@ -11,6 +11,7 @@ import { CalculatorTab } from '../components/tabs/CalculatorTab';
 import { DoctorsTab } from '../components/tabs/DoctorsTab';
 import { ContactsTab } from '../components/tabs/ContactsTab';
 import { AdminPanel } from '../components/admin/AdminPanel';
+import { markMoving } from '../lib/motion';
 import { telegramAuthHeaders } from '../lib/telegramClient';
 import { OwnerReportTab } from '../components/admin/OwnerReportTab';
 import { DemoControlDrawer } from '../components/admin/DemoControlDrawer';
@@ -100,16 +101,29 @@ export default function MiniAppPage() {
   // Switch Tab with Haptic & Smooth Scroll
   // Tab slide direction: moving right in the dock slides content in from the right, and back slides from the left
   const [tabDirection, setTabDirection] = useState<'next' | 'prev'>('next');
+  // Two phases: the current screen slides out, then the new one slides in from the matching side
+  const [tabExiting, setTabExiting] = useState<boolean>(false);
+  const tabTimer = useRef<number | undefined>(undefined);
 
   const handleTabChange = useCallback(
     (tab: TabType) => {
+      if (tab === activeTab) {
+        if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
       const from = PATIENT_TAB_ORDER.indexOf(activeTab);
       const to = PATIENT_TAB_ORDER.indexOf(tab);
-      if (from !== -1 && to !== -1) setTabDirection(to >= from ? 'next' : 'prev');
-      setActiveTab(tab);
-      if (typeof window !== 'undefined') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      const dir: 'next' | 'prev' = from !== -1 && to !== -1 && to < from ? 'prev' : 'next';
+      setTabDirection(dir);
+      setTabExiting(true);
+      markMoving(640);
+      if (tabTimer.current !== undefined) window.clearTimeout(tabTimer.current);
+      tabTimer.current = window.setTimeout(() => {
+        setActiveTab(tab);
+        setTabExiting(false);
+        tabTimer.current = undefined;
+        if (typeof window !== 'undefined') window.scrollTo({ top: 0 });
+      }, 180);
     },
     [activeTab]
   );
@@ -210,7 +224,11 @@ export default function MiniAppPage() {
       <main className="flex-1 px-4 pt-[78px] sm:pt-[84px] pb-3 max-w-xl mx-auto w-full">
         <div
           key={`${currentRole}-${activeTab}`}
-          className={tabDirection === 'next' ? 'tab-enter-next' : 'tab-enter-prev'}
+          className={
+            tabExiting
+              ? tabDirection === 'next' ? 'screen-out-next' : 'screen-out-prev'
+              : tabDirection === 'next' ? 'screen-in-next' : 'screen-in-prev'
+          }
         >
         {/* ================= ADMIN VIEW ================= */}
         {currentRole === 'admin' ? (
