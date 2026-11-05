@@ -44,13 +44,13 @@ check('unknown status filter -> 400', r.status === 400, `(${r.status})`);
 r = await call('GET', '/api/admin/inbox?status=new', null, ADMIN);
 check('staff sees the new thread with counts', r.status === 200 && r.body.threads.some((t) => t.id === threadId) && r.body.counts.new >= 1, `(new=${r.body?.counts?.new})`);
 r = await call('GET', `/api/admin/inbox/${threadId}`, null, ADMIN);
-check('thread holds both patient messages', r.status === 200 && r.body.thread.messages.length === 2, `(${r.body?.thread?.messages?.length})`);
+check('thread holds the patient messages (repeat runs may add more)', r.status === 200 && r.body.thread.messages.filter((m) => m.direction === 'in').length >= 2, `(${r.body?.thread?.messages?.length})`);
 
 r = await call('POST', `/api/admin/inbox/${threadId}/reply`, { text: 'Ответ администратора' }, ADMIN);
-check('reply with failing delivery is not reported as sent', r.status === 502 || r.status === 409, `(${r.status}) ${r.body?.error?.code ?? ''}`);
+check('reply is queued in the outbox (202)', r.status === 202 && r.body?.deliveryStatus === 'queued', `(${r.status})`);
 r = await call('GET', `/api/admin/inbox/${threadId}`, null, ADMIN);
 const out = r.body?.thread?.messages?.find((m) => m.direction === 'out');
-check('failed reply is stored with status failed', out?.deliveryStatus === 'failed', `(${out?.deliveryStatus})`);
+check('reply shows as queued until the worker delivers it', out?.deliveryStatus === 'queued', `(${out?.deliveryStatus})`);
 
 r = await call('PATCH', `/api/admin/inbox/${threadId}`, { status: 'resolved' }, ADMIN);
 check('staff resolves the thread -> 200', r.status === 200 && r.body.status === 'resolved', `(${r.status})`);
