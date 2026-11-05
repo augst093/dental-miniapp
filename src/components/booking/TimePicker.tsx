@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { CalendarX2, RotateCcw } from 'lucide-react';
 import type { Language } from '../../data/clinicData';
 import { BOOKING_COPY } from '../../lib/bookingDates';
-import { useSlidingIndicator, SlidingIndicator } from '../ui/SlidingIndicator';
 
 interface SlotDto {
   time: string;
@@ -69,7 +68,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({ dateIso, doctorId, value
   }, [slots]);
 
   const anyFree = slots.some((slot) => slot.available);
-  const seg = useSlidingIndicator(value ?? '');
 
   if (status === 'loading') {
     return (
@@ -119,8 +117,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({ dateIso, doctorId, value
 
   return (
     <div className="space-y-4">
-      <div ref={seg.attach} className="relative space-y-4">
-        <SlidingIndicator box={seg.box} className="bg-[var(--accent)] shadow-md shadow-blue-600/30" />
+      <div className="relative space-y-4">
 
         {sections.map((section) => {
           const items = groups[section.key];
@@ -139,7 +136,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({ dateIso, doctorId, value
                     <button
                       key={slot.time}
                       type="button"
-                      data-seg-key={slot.time}
                       disabled={unavailable}
                       aria-pressed={isSelected}
                       title={label || undefined}
@@ -147,13 +143,16 @@ export const TimePicker: React.FC<TimePickerProps> = ({ dateIso, doctorId, value
                         triggerHaptic?.('light');
                         onChange(slot.time);
                       }}
-                      style={{ animationDelay: `${delay}ms` }}
-                      className={`relative z-[1] py-2.5 rounded-full border text-[13px] font-semibold tabular-nums cal-chip-enter transition-[transform,color,border-color,background-color] duration-200 active:scale-90 ${
+                      style={{
+                        animationDelay: `${delay}ms`,
+                        ...(isSelected ? { backgroundColor: 'var(--accent)', borderColor: 'var(--accent)' } : {}),
+                      }}
+                      className={`relative py-2.5 rounded-full border text-[13px] font-semibold tabular-nums transition-[transform,color,border-color,background-color,box-shadow] duration-300 active:scale-90 ${
                         isSelected
-                          ? 'border-transparent text-white'
+                          ? 'text-white shadow-md shadow-blue-600/30 cal-day-selected'
                           : unavailable
-                          ? 'border-transparent bg-slate-100/70 text-slate-400 line-through decoration-slate-300 cursor-not-allowed'
-                          : 'bg-white/90 border-slate-200/80 text-[var(--ink)] hover:border-[var(--accent)]/40'
+                          ? 'border-transparent bg-slate-100/70 text-slate-400 line-through decoration-slate-300 cursor-not-allowed cal-chip-enter'
+                          : 'bg-white/90 border-slate-200/80 text-[var(--ink)] hover:border-[var(--accent)]/40 cal-chip-enter'
                       }`}
                     >
                       {slot.time}

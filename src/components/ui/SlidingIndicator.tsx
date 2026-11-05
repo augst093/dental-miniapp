@@ -44,13 +44,22 @@ export function useSlidingIndicator<K extends string | number>(activeKey: K) {
     const item = items.find((element) => element.dataset.segKey === String(activeKey));
     if (!item) return;
 
-    const containerRect = container.getBoundingClientRect();
-    const itemRect = item.getBoundingClientRect();
+    // Layout offsets are immune to CSS transforms (entrance animations, sheets sliding in),
+    // so the highlight lands exactly on the option even while parents are still moving.
+    let left = 0;
+    let top = 0;
+    let node: HTMLElement | null = item;
+    while (node && node !== container) {
+      left += node.offsetLeft;
+      top += node.offsetTop;
+      node = node.offsetParent as HTMLElement | null;
+    }
+    if (node !== container) return; // option is not inside a positioned chain under the container
     const next: IndicatorBox = {
-      left: itemRect.left - containerRect.left - container.clientLeft + container.scrollLeft,
-      top: itemRect.top - containerRect.top - container.clientTop + container.scrollTop,
-      width: itemRect.width,
-      height: itemRect.height,
+      left,
+      top,
+      width: item.offsetWidth,
+      height: item.offsetHeight,
     };
     setBox((previous) => (isSameBox(previous, next) ? previous : next));
   }, [activeKey, container]);

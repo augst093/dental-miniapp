@@ -787,8 +787,8 @@ export const UI_TRANSLATIONS = {
     step1Doctor: { ru: 'Желаемый врач', uz: 'Tanlangan shifokor', en: 'Preferred Doctor' },
     step2Title: { ru: '2. Когда вам удобно?', uz: '2. Qachon qulay?', en: '2. Pick Date & Time' },
     step3Title: { ru: '3. Контактные данные', uz: '3. Bog‘lanish uchun', en: '3. Your Contacts' },
-    nextStep: { ru: 'Далее →', uz: 'Keyingisi →', en: 'Next Step →' },
-    backStep: { ru: '← Назад', uz: '← Orqaga', en: '← Back' },
+    nextStep: { ru: 'Далее', uz: 'Keyingisi', en: 'Next Step' },
+    backStep: { ru: 'Назад', uz: 'Orqaga', en: 'Back' },
     cancel: { ru: 'Отмена', uz: 'Yopish', en: 'Cancel' },
 
     nameLabel: { ru: 'Ваше имя', uz: 'Ismingiz', en: 'Your Name' },

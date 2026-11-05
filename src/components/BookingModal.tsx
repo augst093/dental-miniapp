@@ -298,7 +298,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       />
 
       {/* Modal Card / Bottom Sheet */}
-      <div className="sheet-enter relative w-full max-w-lg bg-white/95 backdrop-blur-2xl border-t sm:border border-white/90 rounded-t-[32px] sm:rounded-3xl max-h-[92dvh] flex flex-col shadow-2xl z-10 overflow-hidden pb-safe">
+      <div className="sheet-enter relative w-full max-w-lg bg-white/[0.98] border-t sm:border border-white/90 rounded-t-[32px] sm:rounded-3xl max-h-[92dvh] flex flex-col shadow-2xl z-10 overflow-hidden pb-safe">
         {/* Drag handle for mobile */}
         <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mt-2.5 mb-1 sm:hidden shrink-0" />
 
@@ -543,7 +543,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   </div>
 
                   {selectedDate && (
-                    <div className="space-y-2.5 sheet-enter">
+                    <div className="space-y-2.5 time-reveal">
                       <label className="block text-[13px] font-bold text-[var(--ink)]">
                         {formatDayLong(selectedDate, lang)}
                       </label>
