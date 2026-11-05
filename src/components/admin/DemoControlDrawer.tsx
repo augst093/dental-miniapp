@@ -194,7 +194,7 @@ export const DemoControlDrawer: React.FC<DemoControlDrawerProps> = ({
               <button
                 disabled={actionLoading}
                 onClick={() => executeDemoAction('send_reminder')}
-                className="w-full p-3 rounded-2xl bg-blue-50 hover:bg-blue-100 border border-blue-200/80 text-blue-900 font-bold flex items-center justify-between transition-all"
+                className="w-full p-3 rounded-2xl bg-blue-50 hover:bg-blue-100 border border-blue-200/80 text-blue-900 font-bold flex items-center justify-between transition-[transform,background-color,color,border-color,box-shadow,opacity]"
               >
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4 text-blue-600" />
@@ -209,7 +209,7 @@ export const DemoControlDrawer: React.FC<DemoControlDrawerProps> = ({
               <button
                 disabled={actionLoading}
                 onClick={() => executeDemoAction('create_sample')}
-                className="w-full p-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 text-emerald-900 font-bold flex items-center justify-between transition-all"
+                className="w-full p-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 text-emerald-900 font-bold flex items-center justify-between transition-[transform,background-color,color,border-color,box-shadow,opacity]"
               >
                 <div className="flex items-center gap-2">
                   <CalendarPlus className="w-4 h-4 text-emerald-600" />
@@ -224,7 +224,7 @@ export const DemoControlDrawer: React.FC<DemoControlDrawerProps> = ({
               <button
                 disabled={actionLoading}
                 onClick={() => executeDemoAction('simulate_cancellation')}
-                className="w-full p-3 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-amber-900 font-bold flex items-center justify-between transition-all"
+                className="w-full p-3 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-amber-900 font-bold flex items-center justify-between transition-[transform,background-color,color,border-color,box-shadow,opacity]"
               >
                 <div className="flex items-center gap-2">
                   <UserX className="w-4 h-4 text-amber-600" />
@@ -239,7 +239,7 @@ export const DemoControlDrawer: React.FC<DemoControlDrawerProps> = ({
               <button
                 disabled={actionLoading}
                 onClick={() => executeDemoAction('send_digest')}
-                className="w-full p-3 rounded-2xl bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/80 text-indigo-900 font-bold flex items-center justify-between transition-all"
+                className="w-full p-3 rounded-2xl bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/80 text-indigo-900 font-bold flex items-center justify-between transition-[transform,background-color,color,border-color,box-shadow,opacity]"
               >
                 <div className="flex items-center gap-2">
                   <Send className="w-4 h-4 text-indigo-600" />
@@ -254,7 +254,7 @@ export const DemoControlDrawer: React.FC<DemoControlDrawerProps> = ({
               <button
                 disabled={actionLoading}
                 onClick={() => executeDemoAction('reset_demo')}
-                className="w-full p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold flex items-center justify-between transition-all"
+                className="w-full p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold flex items-center justify-between transition-[transform,background-color,color,border-color,box-shadow,opacity]"
               >
                 <div className="flex items-center gap-2">
                   <RotateCcw className="w-4 h-4 text-slate-500" />

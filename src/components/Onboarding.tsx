@@ -96,7 +96,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ lang, enabled }) => {
         {slides.map((_, dot) => (
           <span
             key={dot}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
+            className={`h-1.5 rounded-full transition-[transform,background-color,color,border-color,box-shadow,opacity] duration-300 ${
               dot === index ? 'w-6 bg-[var(--accent)]' : 'w-1.5 bg-slate-300'
             }`}
           />

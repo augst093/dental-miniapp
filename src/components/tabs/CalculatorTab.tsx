@@ -95,7 +95,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
               <button
                 key={plan.id}
                 onClick={() => handlePlanSelect(idx)}
-                className={`p-3.5 rounded-2xl border text-left transition-all ${
+                className={`p-3.5 rounded-2xl border text-left transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
                   isSelected
                     ? 'border-[var(--accent)] bg-[var(--accent-subtle)] ring-1 ring-[var(--accent)] shadow-xs'
                     : 'border-slate-200/80 bg-white/80 hover:border-slate-300'
@@ -130,7 +130,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
             <button
               onClick={handleDecrement}
               disabled={planUnits <= currentPlan.minUnits}
-              className="w-9 h-9 rounded-full bg-white text-[var(--ink)] hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center transition-all border border-slate-200/80 shadow-xs"
+              className="w-9 h-9 rounded-full bg-white text-[var(--ink)] hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center transition-[transform,background-color,color,border-color,box-shadow,opacity] border border-slate-200/80 shadow-xs"
               aria-label="Decrease quantity"
             >
               <Minus className="w-4 h-4" />
@@ -141,7 +141,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
             <button
               onClick={handleIncrement}
               disabled={planUnits >= currentPlan.maxUnits}
-              className="w-9 h-9 rounded-full bg-white text-[var(--ink)] hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center transition-all border border-slate-200/80 shadow-xs"
+              className="w-9 h-9 rounded-full bg-white text-[var(--ink)] hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center transition-[transform,background-color,color,border-color,box-shadow,opacity] border border-slate-200/80 shadow-xs"
               aria-label="Increase quantity"
             >
               <Plus className="w-4 h-4" />

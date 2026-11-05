@@ -106,7 +106,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                   'Неотложная помощь при острой боли'
               );
             }}
-            className="sos-pulse flex-1 py-2.5 px-4 rounded-full bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-sm shadow-red-600/25 transition-all touch-target"
+            className="sos-pulse flex-1 py-2.5 px-4 rounded-full bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-sm shadow-red-600/25 transition-[transform,background-color,color,border-color,box-shadow,opacity] touch-target"
           >
             <span>{t.emergencyBanner.action[lang]}</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -118,7 +118,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             lang={lang}
             title={t.emergencyBanner.callAction[lang]}
             triggerHaptic={triggerHaptic}
-            className="py-2.5 px-4 rounded-full bg-white/80 hover:bg-white active:scale-95 border border-red-200 text-red-700 font-bold text-[12px] sm:text-[13px] hidden sm:flex items-center justify-center gap-1.5 shadow-xs transition-all touch-target"
+            className="py-2.5 px-4 rounded-full bg-white/80 hover:bg-white active:scale-95 border border-red-200 text-red-700 font-bold text-[12px] sm:text-[13px] hidden sm:flex items-center justify-center gap-1.5 shadow-xs transition-[transform,background-color,color,border-color,box-shadow,opacity] touch-target"
           >
             <Phone className="w-3.5 h-3.5 fill-current" />
             <span>{t.emergencyBanner.callAction[lang]}</span>

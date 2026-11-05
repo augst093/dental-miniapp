@@ -380,7 +380,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     triggerHaptic('light');
                     setStatusFilter(f.id);
                   }}
-                  className={`px-3 py-1.5 rounded-full whitespace-nowrap font-semibold border transition-all ${
+                  className={`px-3 py-1.5 rounded-full whitespace-nowrap font-semibold border transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
                     isSelected
                       ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
                       : 'bg-white/80 text-slate-600 border-slate-200 hover:bg-slate-50'
@@ -414,7 +414,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 return (
                   <div
                     key={app.id}
-                    className="clinic-card p-3.5 sm:p-4 rounded-3xl border border-slate-200/90 bg-white/95 space-y-3 transition-all hover:border-slate-300"
+                    className="clinic-card p-3.5 sm:p-4 rounded-3xl border border-slate-200/90 bg-white/95 space-y-3 transition-[transform,background-color,color,border-color,box-shadow,opacity] hover:border-slate-300"
                   >
                     {/* Top Row: Time, Status, Source */}
                     <div className="flex items-center justify-between">
@@ -504,7 +504,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <button
                             disabled={isUpdating}
                             onClick={() => handleUpdateStatus(app.id, 'confirmed')}
-                            className="px-2.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-[11px] font-bold flex items-center gap-1 transition-all"
+                            className="px-2.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-[11px] font-bold flex items-center gap-1 transition-[transform,background-color,color,border-color,box-shadow,opacity]"
                           >
                             <Check className="w-3.5 h-3.5" />
                             <span>Подтвердить</span>
@@ -516,7 +516,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             <button
                               disabled={isUpdating}
                               onClick={() => handleUpdateStatus(app.id, 'completed')}
-                              className="px-2 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-[11px] font-bold flex items-center gap-1 transition-all"
+                              className="px-2 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-[11px] font-bold flex items-center gap-1 transition-[transform,background-color,color,border-color,box-shadow,opacity]"
                               title="Отметить успешный визит"
                             >
                               <Check className="w-3 h-3" />
@@ -525,7 +525,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             <button
                               disabled={isUpdating}
                               onClick={() => handleUpdateStatus(app.id, 'no_show')}
-                              className="px-2 py-1.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold flex items-center gap-1 transition-all"
+                              className="px-2 py-1.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[11px] font-bold flex items-center gap-1 transition-[transform,background-color,color,border-color,box-shadow,opacity]"
                               title="Пациент не явился"
                             >
                               <UserX className="w-3 h-3" />
@@ -534,7 +534,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             <button
                               disabled={isUpdating}
                               onClick={() => handleUpdateStatus(app.id, 'cancelled')}
-                              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
+                              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-[transform,background-color,color,border-color,box-shadow,opacity]"
                               title="Отменить запись (освободить слот)"
                             >
                               <X className="w-4 h-4" />
@@ -571,7 +571,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     triggerHaptic('light');
                     setSelectedCalendarDate(d.iso);
                   }}
-                  className={`py-2 px-1 rounded-2xl flex flex-col items-center justify-center transition-all ${
+                  className={`py-2 px-1 rounded-2xl flex flex-col items-center justify-center transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
                     isSelected
                       ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30 ring-2 ring-blue-600/20'
                       : 'bg-white border border-slate-200/90 text-slate-700 hover:bg-slate-50'
@@ -595,7 +595,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-[11px]">
             <button
               onClick={() => setSelectedDoctorFilter('all')}
-              className={`px-3 py-1.5 rounded-full font-semibold border transition-all ${
+              className={`px-3 py-1.5 rounded-full font-semibold border transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
                 selectedDoctorFilter === 'all'
                   ? 'bg-slate-900 text-white border-slate-900'
                   : 'bg-white text-slate-600 border-slate-200'
@@ -607,7 +607,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <button
                 key={doc.id}
                 onClick={() => setSelectedDoctorFilter(doc.name.ru)}
-                className={`px-3 py-1.5 rounded-full whitespace-nowrap font-semibold border transition-all ${
+                className={`px-3 py-1.5 rounded-full whitespace-nowrap font-semibold border transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
                   selectedDoctorFilter === doc.name.ru
                     ? 'bg-slate-900 text-white border-slate-900'
                     : 'bg-white text-slate-600 border-slate-200'

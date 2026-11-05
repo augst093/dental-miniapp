@@ -57,7 +57,7 @@ export const StickyCta: React.FC<StickyCtaProps> = ({
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={handleClick}
-              className="btn-pill-primary shrink-0 py-1.5 px-3 sm:px-3.5 text-[12px] sm:text-[12.5px] flex items-center gap-1 touch-target shadow-sm active:scale-95 transition-all"
+              className="btn-pill-primary shrink-0 py-1.5 px-3 sm:px-3.5 text-[12px] sm:text-[12.5px] flex items-center gap-1 touch-target shadow-sm active:scale-95 transition-[transform,background-color,color,border-color,box-shadow,opacity]"
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>
@@ -69,7 +69,7 @@ export const StickyCta: React.FC<StickyCtaProps> = ({
             {/* Close cross button */}
             <button
               onClick={handleDismiss}
-              className="w-7 h-7 rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:scale-90 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all touch-target"
+              className="w-7 h-7 rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:scale-90 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-[transform,background-color,color,border-color,box-shadow,opacity] touch-target"
               title={lang === 'uz' ? 'Yopish' : lang === 'en' ? 'Dismiss' : 'Скрыть'}
               aria-label={lang === 'uz' ? 'Yopish' : lang === 'en' ? 'Dismiss' : 'Скрыть'}
             >

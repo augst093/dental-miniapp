@@ -316,7 +316,7 @@ export const OwnerReportTab: React.FC<OwnerReportTabProps> = ({
                     height={totalHeight}
                     rx="4"
                     fill="#cbd5e1"
-                    className="transition-all hover:opacity-80"
+                    className="transition-[transform,background-color,color,border-color,box-shadow,opacity] hover:opacity-80"
                   />
                   {/* Completed Fill */}
                   <rect

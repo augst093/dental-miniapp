@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
   };
 
   return (
-    <header className="fixed top-2.5 sm:top-3 left-3 right-3 max-w-md mx-auto z-40 pointer-events-none pt-safe transition-all duration-300">
+    <header className="fixed top-2.5 sm:top-3 left-3 right-3 max-w-md mx-auto z-40 pointer-events-none pt-safe transition-[transform,background-color,color,border-color,box-shadow,opacity] duration-300">
       <div className="frosted-glass-pill backdrop-blur-2xl backdrop-saturate-150 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-full flex items-center justify-between gap-2 shadow-2xl pointer-events-auto border border-white/95">
         {/* Brand & Clinic Status */}
         <div className="flex items-center gap-2.5 min-w-0">
@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onLanguageChange, triggerH
             lang={lang}
             title={t.header.callButtonAria[lang]}
             triggerHaptic={triggerHaptic}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-50/90 hover:bg-blue-100 active:scale-95 border border-blue-200/70 flex items-center justify-center text-[var(--accent)] transition-all touch-target shadow-xs"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-50/90 hover:bg-blue-100 active:scale-95 border border-blue-200/70 flex items-center justify-center text-[var(--accent)] transition-[transform,background-color,color,border-color,box-shadow,opacity] touch-target shadow-xs"
           >
             <Phone className="w-3.5 h-3.5 fill-current opacity-90" />
           </CallButton>

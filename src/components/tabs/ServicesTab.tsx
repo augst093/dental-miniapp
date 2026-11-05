@@ -170,7 +170,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
           filteredServices.map((srv) => (
             <div
               key={srv.id}
-              className={`clinic-card p-4 sm:p-5 space-y-3 rounded-2xl transition-all ${
+              className={`clinic-card p-4 sm:p-5 space-y-3 rounded-2xl transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
                 srv.highlight ? 'border-blue-300/80 bg-blue-50/20' : ''
               }`}
             >

@@ -64,7 +64,7 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => triggerHaptic('light')}
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[12px] font-semibold text-[var(--ink)] transition-all touch-target"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[12px] font-semibold text-[var(--ink)] transition-[transform,background-color,color,border-color,box-shadow,opacity] touch-target"
           >
             <span>Яндекс Карты</span>
             <ExternalLink className="w-3.5 h-3.5 text-[var(--ink-muted)]" />
@@ -75,7 +75,7 @@ export const ContactsTab: React.FC<ContactsTabProps> = ({
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => triggerHaptic('light')}
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[12px] font-semibold text-[var(--ink)] transition-all touch-target"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[12px] font-semibold text-[var(--ink)] transition-[transform,background-color,color,border-color,box-shadow,opacity] touch-target"
           >
             <span>2GIS</span>
             <ExternalLink className="w-3.5 h-3.5 text-[var(--ink-muted)]" />

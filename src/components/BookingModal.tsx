@@ -328,7 +328,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     {[1, 2, 3].map((s) => (
                       <span
                         key={s}
-                        className={`w-2 h-2 rounded-full transition-all ${
+                        className={`w-2 h-2 rounded-full transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
                           step === s
                             ? 'bg-[var(--accent)] w-4'
                             : step > s
@@ -345,7 +345,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
           <button
             onClick={resetAndClose}
-            className="w-8 h-8 rounded-full bg-[var(--surface-subtle)] hover:bg-[var(--border)] active:scale-95 flex items-center justify-center text-[var(--ink-muted)] hover:text-[var(--ink)] transition-all"
+            className="w-8 h-8 rounded-full bg-[var(--surface-subtle)] hover:bg-[var(--border)] active:scale-95 flex items-center justify-center text-[var(--ink-muted)] hover:text-[var(--ink)] transition-[transform,background-color,color,border-color,box-shadow,opacity]"
             aria-label={t.cancel[lang]}
           >
             <X className="w-4 h-4" />
@@ -412,7 +412,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   href={config.yandexMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 p-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[13px] font-semibold text-[var(--ink)] transition-all touch-target"
+                  className="flex items-center justify-center gap-2 p-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[13px] font-semibold text-[var(--ink)] transition-[transform,background-color,color,border-color,box-shadow,opacity] touch-target"
                 >
                   <MapPin className="w-4 h-4 text-red-500" />
                   <span>{t.routeAction[lang]}</span>
@@ -424,7 +424,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   display={config.phoneDisplay}
                   lang={lang}
                   title={t.callAction[lang]}
-                  className="flex items-center justify-center gap-2 p-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[13px] font-semibold text-[var(--ink)] transition-all touch-target"
+                  className="flex items-center justify-center gap-2 p-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[13px] font-semibold text-[var(--ink)] transition-[transform,background-color,color,border-color,box-shadow,opacity] touch-target"
                 >
                   <Phone className="w-4 h-4 text-emerald-600" />
                   <span>{t.callAction[lang]}</span>
@@ -435,7 +435,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 href={config.telegramAdminUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 p-3.5 rounded-full bg-[#229ED9]/10 hover:bg-[#229ED9]/20 border border-[#229ED9]/30 text-[13px] font-bold text-[#0088cc] transition-all touch-target"
+                className="w-full flex items-center justify-center gap-2 p-3.5 rounded-full bg-[#229ED9]/10 hover:bg-[#229ED9]/20 border border-[#229ED9]/30 text-[13px] font-bold text-[#0088cc] transition-[transform,background-color,color,border-color,box-shadow,opacity] touch-target"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>{t.telegramAction[lang]}</span>
@@ -471,7 +471,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                               triggerHaptic('light');
                               setSelectedService(srv.title);
                             }}
-                            className={`p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
+                            className={`p-3 rounded-xl border text-left transition-[transform,background-color,color,border-color,box-shadow,opacity] relative flex flex-col justify-between ${
                               isSelected
                                 ? 'border-[var(--accent)] bg-[var(--accent-subtle)] ring-1 ring-[var(--accent)]'
                                 : 'border-[var(--border)] bg-[var(--surface)] hover:border-slate-300'
@@ -559,7 +559,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                               triggerHaptic('light');
                               setSelectedDayPreset(item.id as 'today' | 'tomorrow' | 'weekend');
                             }}
-                            className={`p-3 rounded-2xl border text-center transition-all ${
+                            className={`p-3 rounded-2xl border text-center transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
                               isSelected
                                 ? 'border-[var(--accent)] bg-[var(--accent-subtle)] font-bold text-[var(--accent)] ring-1 ring-[var(--accent)]'
                                 : 'border-slate-200/80 bg-white/80 text-[var(--ink-secondary)] hover:border-slate-300'
@@ -588,7 +588,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                               triggerHaptic('light');
                               setSelectedTimeSlot(slot);
                             }}
-                            className={`py-2.5 px-2 rounded-full border text-[13px] font-semibold transition-all ${
+                            className={`py-2.5 px-2 rounded-full border text-[13px] font-semibold transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
                               isSelected
                                 ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-md shadow-blue-600/25'
                                 : 'bg-white/80 border-slate-200/80 text-[var(--ink)] hover:border-slate-300'
