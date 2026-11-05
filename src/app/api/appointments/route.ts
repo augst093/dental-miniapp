@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import { TG_INIT_DATA_HEADER, verifyTelegramUser } from '@/lib/telegramAuth';
 import { clientIp, isRateLimited } from '@/lib/rateLimit';
 import { escapeHtml, notifyAdminGroup } from '@/lib/adminNotify';
+import { prisma } from '@/lib/db';
 
 const IP_LIMIT = 6; // booking attempts per client IP
 const USER_LIMIT = 4; // bookings per verified Telegram user
@@ -58,6 +59,7 @@ export async function POST(request: NextRequest) {
       doctorId,
       doctorName,
       serviceTitle,
+      serviceId,
       dateStr, // "2026-11-05"
       timeStr, // "14:30"
       source = 'miniapp',
@@ -124,13 +126,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // A booked service is taken from the database (title and price), never trusted from the client.
+    // The price is stored on the appointment so later price changes do not rewrite past bookings.
+    let finalServiceTitle: string = serviceTitle || 'Консультация';
+    let priceUzs: number | undefined;
+    if (serviceId) {
+      const service = await prisma.service.findUnique({ where: { id: String(serviceId) } });
+      if (!service || !service.isActive) {
+        return NextResponse.json({ success: false, error: 'Эта услуга сейчас недоступна' }, { status: 400 });
+      }
+      finalServiceTitle = service.title;
+      priceUzs = service.priceUzs;
+    }
+
     const result = await dbRepository.createAppointment({
       patientName: name,
       patientPhone: phone,
       telegramId: verified?.id,
       doctorId: doctorId || undefined,
       doctorName: doctorName || 'Дежурный врач',
-      serviceTitle: serviceTitle || 'Консультация',
+      serviceTitle: finalServiceTitle,
+      priceUzs,
       dateTimeUTC,
       source,
       notes,

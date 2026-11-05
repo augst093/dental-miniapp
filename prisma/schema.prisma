@@ -41,6 +41,7 @@ model Service {
   priceUzs        Int
   durationMinutes Int           @default(30)
   description     String?
+  sortOrder       Int           @default(0)
   isActive        Boolean       @default(true)
   appointments    Appointment[]
   createdAt       DateTime      @default(now())
@@ -81,6 +82,7 @@ model Appointment {
   serviceId       String?
   service         Service?          @relation(fields: [serviceId], references: [id])
   serviceTitle    String
+  priceUzs        Int?              // price snapshot at booking time (null for older records)
   doctorName      String
   dateTime        DateTime          // Slot timestamp in UTC (displayed in Asia/Tashkent UTC+5)
   durationMinutes Int               @default(30)
