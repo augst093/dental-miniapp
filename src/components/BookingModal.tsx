@@ -10,7 +10,6 @@ import { formatDayLong } from '../lib/bookingDates';
 import { markMoving } from '../lib/motion';
 import {
   X,
-  Check,
   Calendar,
   User,
   Phone,
@@ -374,12 +373,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               TRIUMPH SCREEN (SUCCESS STATE)
              ======================================================== */}
           {isSuccess ? (
-            <div className="text-center py-4 space-y-4 animate-in zoom-in-95 duration-200">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
-                <Check className="w-8 h-8 stroke-[3]" />
+            <div className="text-center py-4 space-y-4">
+              <div className="relative w-20 h-20 mx-auto success-pop">
+                <span className="success-halo absolute inset-0 rounded-full bg-emerald-400/30" aria-hidden="true" />
+                <svg viewBox="0 0 80 80" className="relative w-20 h-20" aria-hidden="true">
+                  <circle cx="40" cy="40" r="36" fill="#ecfdf5" stroke="#10b981" strokeWidth="3" pathLength={1} className="success-circle" />
+                  <path d="M25 41 L35 51 L55 30" fill="none" stroke="#059669" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" pathLength={1} className="success-check" />
+                </svg>
               </div>
 
-              <div>
+              <div className="success-rise" style={{ animationDelay: '520ms' }}>
                 <h4 className="text-xl font-bold text-[var(--ink)]">
                   {t.successTitle[lang]}
                 </h4>
@@ -389,7 +392,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               </div>
 
               {/* Booking Summary Card */}
-              <div className="bg-[var(--surface-subtle)] border border-[var(--border)] rounded-xl p-3.5 text-left space-y-2 text-[13px]">
+              <div className="success-rise bg-[var(--surface-subtle)] border border-[var(--border)] rounded-xl p-3.5 text-left space-y-2 text-[13px]" style={{ animationDelay: '640ms' }}>
                 <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-muted)]">
                   {t.successDetailsTitle[lang]}
                 </div>

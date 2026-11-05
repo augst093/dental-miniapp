@@ -99,6 +99,20 @@ export default function MiniAppPage() {
   }, []);
 
   // Switch Tab with Haptic & Smooth Scroll
+  // Chat button hides while the patient reads downwards and returns when scrolling up
+  const [fabHidden, setFabHidden] = useState<boolean>(false);
+  useEffect(() => {
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y > lastY + 6 && y > 140) setFabHidden(true);
+      else if (y < lastY - 6 || y < 140) setFabHidden(false);
+      lastY = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   // Tab slide direction: moving right in the dock slides content in from the right, and back slides from the left
   const [tabDirection, setTabDirection] = useState<'next' | 'prev'>('next');
   // Two phases: the current screen slides out, then the new one slides in from the matching side
@@ -307,9 +321,9 @@ export default function MiniAppPage() {
             setIsChatOpen(true);
           }}
           aria-label="Чат с ассистентом"
-          className={`fixed right-4 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white text-[var(--accent)] border border-blue-100 shadow-2xl flex items-center justify-center active:scale-90 transition-transform chat-fab ${
-            'bottom-[96px]'
-          }`}
+          className={`fixed right-4 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white text-[var(--accent)] border border-blue-100 shadow-2xl flex items-center justify-center active:scale-90 chat-fab ${
+            fabHidden ? 'chat-fab-hidden' : ''
+          } bottom-[96px]`}
         >
           <MessageCircle className="w-6 h-6" />
         </button>

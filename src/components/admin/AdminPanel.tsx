@@ -32,6 +32,7 @@ import {
 import { DBAppointment } from '../../lib/db';
 import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import { CallButton } from '../ui/CallButton';
+import { EmptyState } from '../ui/EmptyState';
 import {
   formatTashkentISODate,
   formatTashkentTime,
@@ -394,17 +395,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           {/* Today Appointments List */}
           {todayAppointments.length === 0 ? (
-            <div className="clinic-card p-8 text-center rounded-3xl space-y-2">
-              <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400">
-                <Calendar className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold text-[14px] text-slate-800">
-                {statusFilter === 'all' ? 'На сегодня нет записей' : 'Нет записей с таким статусом'}
-              </h3>
-              <p className="text-[12px] text-slate-500 max-w-xs mx-auto">
-                Используйте кнопку «Записать по телефону» для добавления записи вручную или откройте Mini App в роли пациента.
-              </p>
-            </div>
+            <EmptyState
+              icon={<Calendar className="w-6 h-6" />}
+              title={statusFilter === 'all' ? 'На сегодня нет записей' : 'Нет записей с таким статусом'}
+              text="Добавьте запись кнопкой «Записать по телефону» или откройте Mini App в роли пациента."
+            />
           ) : (
             <div className="space-y-2.5">
               {todayAppointments.map((app) => {

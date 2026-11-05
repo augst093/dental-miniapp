@@ -14,9 +14,11 @@ interface EmptyStateProps {
 export function EmptyState({ icon, tone = 'neutral', title, text, action }: EmptyStateProps) {
   return (
     <div className="clinic-card rounded-3xl px-6 py-8 flex flex-col items-center text-center gap-3 chat-bubble-in">
-      <IconBadge tone={tone} size="lg">
-        {icon}
-      </IconBadge>
+      <div className="empty-float">
+        <IconBadge tone={tone} size="lg">
+          {icon}
+        </IconBadge>
+      </div>
       <div className="type-card-title">{title}</div>
       {text && <p className="type-caption max-w-[260px]">{text}</p>}
       {action && (
