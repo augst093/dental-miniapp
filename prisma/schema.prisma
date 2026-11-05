@@ -207,6 +207,7 @@ model Outbox {
   nextAttemptAt DateTime     @default(now())
   lastError     String?
   refType       String? // what to update when done: "inbox_message" | "reminder"
+  replyMarkup   Json? // inline keyboard: [[{text, callback_data}]]
   refId         String?
   sentAt        DateTime?
   createdAt     DateTime     @default(now())
