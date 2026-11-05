@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { AlertTriangle, CheckCheck, Inbox, RotateCcw, Send, X } from 'lucide-react';
 import { telegramAuthHeaders } from '../../lib/telegramClient';
 import { EmptyState } from '../ui/EmptyState';
+import { OutboxFailed } from './OutboxFailed';
 
 // Staff inbox: questions handed over from the patient chat. Replies are delivered through the bot.
 
@@ -99,6 +100,7 @@ export function InboxAdmin({ onNewCount }: { onNewCount?: (count: number) => voi
 
   return (
     <div className="space-y-3.5">
+      <OutboxFailed />
       <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
         {filters.map((f) => (
           <button
