@@ -162,3 +162,38 @@ export function authorizeAdminInitData(initData: string): AdminGate {
   }
   return { ok: true, user: result.user };
 }
+
+/**
+ * Returns the Telegram user only when initData carries a valid signature from BOT_TOKEN.
+ * Used to attach the verified Telegram ID to a patient's booking (for reminders).
+ * Unlike validateTelegramInitData it has no demo bypass.
+ */
+export function verifyTelegramUser(initData: string): TelegramUser | null {
+  const botToken = process.env.BOT_TOKEN;
+  if (!botToken || !initData) return null;
+
+  const params = new URLSearchParams(initData);
+  const hash = params.get('hash');
+  if (!hash) return null;
+
+  const pairs: string[] = [];
+  params.forEach((value, key) => {
+    if (key !== 'hash') pairs.push(`${key}=${value}`);
+  });
+  pairs.sort();
+
+  const secretKey = crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
+  const calculated = crypto.createHmac('sha256', secretKey).update(pairs.join('\n')).digest('hex');
+  if (calculated.length !== hash.length) return null;
+  if (!crypto.timingSafeEqual(Buffer.from(calculated), Buffer.from(hash))) return null;
+
+  const authDate = parseInt(params.get('auth_date') || '0', 10);
+  if (!authDate || Math.floor(Date.now() / 1000) - authDate > 86400) return null;
+
+  try {
+    const user = JSON.parse(params.get('user') || 'null');
+    return user && typeof user.id === 'number' ? (user as TelegramUser) : null;
+  } catch {
+    return null;
+  }
+}

@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { headers } from 'next/headers';
+import { TG_INIT_DATA_HEADER, verifyTelegramUser } from '@/lib/telegramAuth';
 import { dbRepository } from '@/lib/db';
 import { fromTashkentDateTime, formatTashkentISODate, getNowUTC } from '@/lib/timezone';
 import { AppointmentStatus } from '@/lib/appointmentLifecycle';
@@ -40,7 +42,6 @@ export async function POST(request: NextRequest) {
     const {
       patientName,
       patientPhone,
-      telegramId,
       doctorId,
       doctorName,
       serviceTitle,
@@ -69,10 +70,15 @@ export async function POST(request: NextRequest) {
     // Parse Tashkent date & time to UTC Date
     const dateTimeUTC = fromTashkentDateTime(dateStr, timeStr);
 
+    // Telegram ID comes only from the signed initData (never from the request body), so reminders
+    // go to the real patient. Phone bookings from the website have no Telegram ID.
+    const h = await headers();
+    const verified = verifyTelegramUser(h.get(TG_INIT_DATA_HEADER) || '');
+
     const result = await dbRepository.createAppointment({
       patientName: patientName.trim(),
       patientPhone: patientPhone.trim(),
-      telegramId: telegramId ? Number(telegramId) : undefined,
+      telegramId: verified?.id,
       doctorId: doctorId || undefined,
       doctorName: doctorName || 'Дежурный врач',
       serviceTitle: serviceTitle || 'Консультация',

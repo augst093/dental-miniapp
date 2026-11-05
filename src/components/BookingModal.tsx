@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { telegramAuthHeaders } from '@/lib/telegramClient';
 import { CallButton } from './ui/CallButton';
 import { saveVisit } from '../lib/patientVisit';
 import {
@@ -227,7 +228,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       // Submit to database API
       const res = await fetch('/api/appointments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...telegramAuthHeaders() },
         body: JSON.stringify({
           patientName: clientName.trim() || (lang === 'uz' ? 'Bemor' : lang === 'en' ? 'Patient' : 'Пациент'),
           patientPhone: clientPhone.trim(),
