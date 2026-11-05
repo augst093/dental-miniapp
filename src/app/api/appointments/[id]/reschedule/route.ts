@@ -21,7 +21,7 @@ export async function POST(
 
     const newDateTimeUTC = fromTashkentDateTime(dateStr, timeStr);
 
-    const result = dbRepository.reschedule(
+    const result = await dbRepository.reschedule(
       id,
       newDateTimeUTC,
       actor as LifecycleActor,

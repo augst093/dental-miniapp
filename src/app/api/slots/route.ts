@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const dateStr = searchParams.get('date') || formatTashkentISODate(getNowUTC());
     const doctorId = searchParams.get('doctorId') || undefined;
 
-    const slots = dbRepository.getSlots(dateStr, doctorId);
+    const slots = await dbRepository.getSlots(dateStr, doctorId);
 
     return NextResponse.json({
       success: true,

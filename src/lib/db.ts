@@ -4,7 +4,9 @@
  * Transparently falls back to an in-memory/persistent store for local development, tests, and demo mode.
  */
 
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+import type { Reminder as PrismaReminder, AuditLog as PrismaAuditLog } from '@prisma/client';
+import { computeMetrics } from './metrics';
 import {
   AppointmentStatus,
   LifecycleActor,
@@ -427,82 +429,9 @@ class MemoryRepository {
   }
 
   public getMetrics(periodDays: number = 7): ClinicMetrics {
-    const now = getNowUTC();
-    const periodStart = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000);
-
-    const relevant = this.appointments.filter((a) => {
-      const appTime = new Date(a.dateTime);
-      return appTime >= periodStart && appTime <= now;
-    });
-
-    const totalBookings = relevant.length;
-    const botBookings = relevant.filter((a) => a.source !== 'phone_admin').length;
-    const phoneBookings = totalBookings - botBookings;
-
-    const completedCount = relevant.filter((a) => a.status === 'completed').length;
-    const confirmedCount = relevant.filter(
-      (a) => a.status === 'confirmed' || a.status === 'completed'
-    ).length;
-    const confirmationRatePercent =
-      totalBookings > 0 ? Math.round((confirmedCount / totalBookings) * 100) : 0;
-
-    const cancellations = relevant.filter((a) => a.status === 'cancelled');
-    const cancellationsCount = cancellations.length;
-
-    // Early cancellations: cancelled at least 3h before visit
-    const cancellationsEarlyCount = Math.round(cancellationsCount * 0.7);
-
-    const noShowCount = relevant.filter((a) => a.status === 'no_show').length;
-    const noShowRatePercent =
-      totalBookings > 0 ? Math.round((noShowCount / totalBookings) * 100) : 0;
-
-    // Saved slots: slots freed and re-booked
-    const savedSlotsCount = Math.min(
-      cancellationsEarlyCount,
-      Math.round(cancellationsEarlyCount * 0.8)
-    );
-
-    const adminMinutesSaved = botBookings * 4;
-    const adminHoursSaved = Number((adminMinutesSaved / 60).toFixed(1));
-
-    // Daily breakdown for charts
-    const dailyStats: ClinicMetrics['dailyStats'] = [];
-    for (let i = periodDays - 1; i >= 0; i--) {
-      const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-      const isoDate = formatTashkentISODate(d);
-      const dayApps = relevant.filter((a) => formatTashkentISODate(a.dateTime) === isoDate);
-
-      const daysOfWeekRu = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-      const dayLabel = `${daysOfWeekRu[toTashkentClock(d).getUTCDay()]} ${toTashkentClock(d).getUTCDate()}`;
-
-      dailyStats.push({
-        date: isoDate,
-        dayLabel,
-        total: dayApps.length,
-        completed: dayApps.filter((a) => a.status === 'completed').length,
-        cancelled: dayApps.filter((a) => a.status === 'cancelled').length,
-        noShow: dayApps.filter((a) => a.status === 'no_show').length,
-      });
-    }
-
-    return {
-      periodDays,
-      totalBookings,
-      botBookings,
-      phoneBookings,
-      confirmedCount,
-      confirmationRatePercent,
-      completedCount,
-      cancellationsCount,
-      cancellationsEarlyCount,
-      noShowCount,
-      noShowRatePercent,
-      savedSlotsCount,
-      adminMinutesSaved,
-      adminHoursSaved,
-      dailyStats,
-    };
+    return computeMetrics(this.appointments, periodDays);
   }
+
 
   public seedInitialDemoData() {
     if (this.seeded) return;
@@ -660,5 +589,413 @@ class MemoryRepository {
   }
 }
 
-// Global repository instance
-export const dbRepository = new MemoryRepository();
+// ---------------------------------------------------------------------------
+// PostgreSQL repository (Prisma). Used whenever DATABASE_URL is set.
+// The same rules as the in-memory store: slot conflicts, status transitions,
+// reminders and the audit log. Booking and rescheduling run in serializable
+// transactions, so two patients cannot take the same slot at the same moment.
+// ---------------------------------------------------------------------------
+
+type CreateAppointmentParams = Parameters<MemoryRepository['createAppointment']>[0];
+
+type AppointmentRecord = Prisma.AppointmentGetPayload<{ include: { patient: true } }>;
+
+class BookingRuleError extends Error {}
+
+function toDBReminder(r: PrismaReminder): DBReminder {
+  return {
+    id: r.id,
+    appointmentId: r.appointmentId,
+    type: r.type as DBReminder['type'],
+    dueAt: r.dueAt.toISOString(),
+    sentAt: r.sentAt ? r.sentAt.toISOString() : null,
+    status: r.status as DBReminder['status'],
+    attemptCount: r.attemptCount,
+  };
+}
+
+function toDBAuditLog(l: PrismaAuditLog): DBAuditLog {
+  return {
+    id: l.id,
+    appointmentId: l.appointmentId,
+    actorType: l.actorType as LifecycleActor,
+    actorId: l.actorId,
+    action: l.action,
+    fromStatus: l.fromStatus,
+    toStatus: l.toStatus,
+    details: l.details,
+    createdAt: l.createdAt.toISOString(),
+  };
+}
+
+function toDBAppointment(
+  row: AppointmentRecord,
+  extras?: { reminders?: PrismaReminder[]; auditLogs?: PrismaAuditLog[] }
+): DBAppointment {
+  return {
+    id: row.id,
+    patientId: row.patientId,
+    patientName: row.patient.name,
+    patientPhone: row.patient.phone,
+    telegramId: row.patient.telegramId ? Number(row.patient.telegramId) : null,
+    doctorId: row.doctorId,
+    doctorName: row.doctorName,
+    serviceId: row.serviceId,
+    serviceTitle: row.serviceTitle,
+    dateTime: row.dateTime.toISOString(),
+    durationMinutes: row.durationMinutes,
+    status: row.status as AppointmentStatus,
+    source: row.source,
+    notes: row.notes,
+    isDemo: row.isDemo,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+    reminders: extras?.reminders?.map(toDBReminder),
+    auditLogs: extras?.auditLogs?.map(toDBAuditLog),
+  };
+}
+
+/** Day boundaries in Tashkent time, returned as UTC instants. */
+function tashkentDayRange(dateStr: string): { start: Date; end: Date } {
+  const start = fromTashkentDateTime(dateStr, '00:00');
+  return { start, end: new Date(start.getTime() + 24 * 60 * 60 * 1000) };
+}
+
+/** Appointments that occupy a slot for the doctor (a doctor-less booking blocks everyone). */
+function occupyingFor(doctorId: string | null | undefined): Prisma.AppointmentWhereInput {
+  return {
+    status: { not: 'cancelled' },
+    ...(doctorId ? { OR: [{ doctorId }, { doctorId: null }] } : {}),
+  };
+}
+
+function reminderRowsFor(appointmentId: string, dateTimeUTC: Date) {
+  return calculateRequiredReminders(dateTimeUTC).map((r) => ({
+    appointmentId,
+    type: r.type,
+    dueAt: r.dueAt,
+    status: 'pending' as const,
+    attemptCount: 0,
+  }));
+}
+
+class PrismaRepository {
+  async getAppointments(filters?: {
+    dateStr?: string;
+    doctorId?: string;
+    status?: AppointmentStatus;
+  }): Promise<DBAppointment[]> {
+    const where: Prisma.AppointmentWhereInput = {};
+    if (filters?.dateStr) {
+      const { start, end } = tashkentDayRange(filters.dateStr);
+      where.dateTime = { gte: start, lt: end };
+    }
+    if (filters?.doctorId) where.doctorId = filters.doctorId;
+    if (filters?.status) where.status = filters.status;
+
+    const rows = await prisma.appointment.findMany({
+      where,
+      include: { patient: true },
+      orderBy: { dateTime: 'asc' },
+    });
+    return rows.map((row) => toDBAppointment(row));
+  }
+
+  async getAppointmentById(id: string): Promise<DBAppointment | null> {
+    const row = await prisma.appointment.findUnique({
+      where: { id },
+      include: {
+        patient: true,
+        reminders: true,
+        auditLogs: { orderBy: { createdAt: 'asc' } },
+      },
+    });
+    if (!row) return null;
+    return toDBAppointment(row, { reminders: row.reminders, auditLogs: row.auditLogs });
+  }
+
+  async createAppointment(
+    params: CreateAppointmentParams
+  ): Promise<{ success: boolean; appointment?: DBAppointment; error?: string }> {
+    const {
+      patientName,
+      patientPhone,
+      telegramId,
+      doctorId,
+      doctorName,
+      serviceTitle,
+      dateTimeUTC,
+      source = 'miniapp',
+      notes,
+      consentAt,
+      isDemo = false,
+      actor = 'patient',
+      actorId,
+    } = params;
+
+    try {
+      const appointmentId = await prisma.$transaction(
+        async (tx) => {
+          const dayStart = new Date(dateTimeUTC.getTime() - 24 * 60 * 60 * 1000);
+          const dayEnd = new Date(dateTimeUTC.getTime() + 24 * 60 * 60 * 1000);
+          const busy = await tx.appointment.findMany({
+            where: { dateTime: { gte: dayStart, lte: dayEnd }, ...occupyingFor(doctorId) },
+            select: { dateTime: true },
+          });
+          const validation = validateSlotBooking(
+            dateTimeUTC,
+            new Set(busy.map((a) => a.dateTime.getTime())),
+            120
+          );
+          if (!validation.valid && !isDemo) {
+            throw new BookingRuleError(validation.error ?? 'Слот недоступен');
+          }
+
+          // Find the patient by phone or Telegram ID, otherwise create one
+          const existing = await tx.patient.findFirst({
+            where: {
+              OR: [
+                { phone: patientPhone },
+                ...(telegramId ? [{ telegramId: BigInt(telegramId) }] : []),
+              ],
+            },
+          });
+          let patientId: string;
+          if (!existing) {
+            const created = await tx.patient.create({
+              data: {
+                telegramId: telegramId ? BigInt(telegramId) : null,
+                name: patientName,
+                phone: patientPhone,
+                consentAt: consentAt ?? new Date(),
+              },
+            });
+            patientId = created.id;
+          } else {
+            patientId = existing.id;
+            if (consentAt && !existing.consentAt) {
+              await tx.patient.update({ where: { id: existing.id }, data: { consentAt } });
+            }
+          }
+
+          const appointment = await tx.appointment.create({
+            data: {
+              patientId,
+              doctorId: doctorId ?? null,
+              doctorName,
+              serviceTitle,
+              dateTime: dateTimeUTC,
+              durationMinutes: 30,
+              status: 'pending',
+              source,
+              notes: notes ?? null,
+              isDemo,
+            },
+          });
+
+          await tx.reminder.createMany({ data: reminderRowsFor(appointment.id, dateTimeUTC) });
+
+          await tx.auditLog.create({
+            data: {
+              appointmentId: appointment.id,
+              actorType: actor,
+              actorId: actorId ?? (telegramId ? String(telegramId) : null),
+              action: 'created',
+              fromStatus: null,
+              toStatus: 'pending',
+              details: `Запись создана через ${source}: ${serviceTitle} к ${doctorName}`,
+            },
+          });
+
+          return appointment.id;
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+      );
+
+      return { success: true, appointment: (await this.getAppointmentById(appointmentId)) ?? undefined };
+    } catch (error) {
+      if (error instanceof BookingRuleError) {
+        return { success: false, error: error.message };
+      }
+      // Serializable conflict: another booking took the slot at the same time
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034') {
+        return { success: false, error: 'Слот уже занят, выберите другое время' };
+      }
+      throw error;
+    }
+  }
+
+  async updateStatus(
+    id: string,
+    newStatus: AppointmentStatus,
+    actor: LifecycleActor = 'admin',
+    actorId?: string,
+    reason?: string
+  ): Promise<{ success: boolean; appointment?: DBAppointment; error?: string }> {
+    const outcome = await prisma.$transaction(
+      async (tx) => {
+        const app = await tx.appointment.findUnique({ where: { id } });
+        if (!app) return { error: 'Запись не найдена' as string | null };
+
+        const validation = validateTransition(app.status as AppointmentStatus, newStatus);
+        if (!validation.allowed) return { error: validation.error ?? 'Переход запрещён' };
+
+        await tx.appointment.update({ where: { id }, data: { status: newStatus } });
+        if (newStatus === 'cancelled') {
+          await tx.reminder.updateMany({
+            where: { appointmentId: id, status: 'pending' },
+            data: { status: 'cancelled' },
+          });
+        }
+        await tx.auditLog.create({
+          data: {
+            appointmentId: id,
+            actorType: actor,
+            actorId: actorId ?? null,
+            action: 'status_change',
+            fromStatus: app.status,
+            toStatus: newStatus,
+            details: reason ?? `Статус изменен с ${app.status} на ${newStatus}`,
+          },
+        });
+        return { error: null };
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+    );
+
+    if (outcome.error) return { success: false, error: outcome.error };
+    return { success: true, appointment: (await this.getAppointmentById(id)) ?? undefined };
+  }
+
+  async reschedule(
+    id: string,
+    newDateTimeUTC: Date,
+    actor: LifecycleActor = 'patient',
+    actorId?: string
+  ): Promise<{ success: boolean; appointment?: DBAppointment; error?: string }> {
+    const outcome = await prisma.$transaction(
+      async (tx) => {
+        const app = await tx.appointment.findUnique({ where: { id } });
+        if (!app) return { error: 'Запись не найдена' as string | null };
+
+        const dayStart = new Date(newDateTimeUTC.getTime() - 24 * 60 * 60 * 1000);
+        const dayEnd = new Date(newDateTimeUTC.getTime() + 24 * 60 * 60 * 1000);
+        const busy = await tx.appointment.findMany({
+          where: {
+            id: { not: id },
+            dateTime: { gte: dayStart, lte: dayEnd },
+            ...occupyingFor(app.doctorId),
+          },
+          select: { dateTime: true },
+        });
+        const validation = validateSlotBooking(
+          newDateTimeUTC,
+          new Set(busy.map((a) => a.dateTime.getTime())),
+          120
+        );
+        if (!validation.valid && !app.isDemo) {
+          return { error: validation.error ?? 'Слот недоступен' };
+        }
+
+        const oldDateTime = app.dateTime;
+        await tx.appointment.update({
+          where: { id },
+          data: { dateTime: newDateTimeUTC, status: 'confirmed' },
+        });
+        await tx.reminder.deleteMany({ where: { appointmentId: id } });
+        await tx.reminder.createMany({ data: reminderRowsFor(id, newDateTimeUTC) });
+        await tx.auditLog.create({
+          data: {
+            appointmentId: id,
+            actorType: actor,
+            actorId: actorId ?? null,
+            action: 'rescheduled',
+            fromStatus: app.status,
+            toStatus: 'confirmed',
+            details: `Перенесено с ${formatTashkentTime(oldDateTime)} на ${formatTashkentTime(newDateTimeUTC)}`,
+          },
+        });
+        return { error: null };
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+    );
+
+    if (outcome.error) return { success: false, error: outcome.error };
+    return { success: true, appointment: (await this.getAppointmentById(id)) ?? undefined };
+  }
+
+  async getSlots(dateStr: string, doctorId?: string): Promise<TimeSlot[]> {
+    const { start, end } = tashkentDayRange(dateStr);
+    const busy = await prisma.appointment.findMany({
+      where: { dateTime: { gte: start, lt: end }, ...occupyingFor(doctorId) },
+      select: { dateTime: true },
+    });
+    return generateDailySlots(
+      dateStr,
+      DEFAULT_DOCTOR_SCHEDULE,
+      new Set(busy.map((a) => a.dateTime.getTime())),
+      120
+    );
+  }
+
+  async getMetrics(periodDays: number = 7): Promise<ClinicMetrics> {
+    const now = getNowUTC();
+    const periodStart = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000);
+    const rows = await prisma.appointment.findMany({
+      where: { dateTime: { gte: periodStart, lte: now } },
+      include: { patient: true },
+      orderBy: { dateTime: 'asc' },
+    });
+    return computeMetrics(rows.map((row) => toDBAppointment(row)), periodDays);
+  }
+
+  /** Demo data lives only in the in-memory store; the real database is never reset from the demo panel. */
+  async resetDemoData(): Promise<void> {
+    return;
+  }
+}
+
+/** Same interface as PrismaRepository, backed by the in-memory store (local development and tests). */
+class AsyncMemoryRepository {
+  constructor(private readonly store: MemoryRepository) {}
+
+  async getAppointments(filters?: Parameters<MemoryRepository['getAppointments']>[0]) {
+    return this.store.getAppointments(filters);
+  }
+
+  async getAppointmentById(id: string) {
+    return this.store.getAppointmentById(id);
+  }
+
+  async createAppointment(params: CreateAppointmentParams) {
+    return this.store.createAppointment(params);
+  }
+
+  async updateStatus(...args: Parameters<MemoryRepository['updateStatus']>) {
+    return this.store.updateStatus(...args);
+  }
+
+  async reschedule(...args: Parameters<MemoryRepository['reschedule']>) {
+    return this.store.reschedule(...args);
+  }
+
+  async getSlots(dateStr: string, doctorId?: string) {
+    return this.store.getSlots(dateStr, doctorId);
+  }
+
+  async getMetrics(periodDays: number = 7) {
+    return this.store.getMetrics(periodDays);
+  }
+
+  async resetDemoData() {
+    this.store.resetDemoData();
+  }
+}
+
+/**
+ * The repository used by the API routes. Every method returns a Promise.
+ * With DATABASE_URL set (Vercel production) data goes to PostgreSQL; otherwise to the in-memory demo store.
+ */
+export const dbRepository: PrismaRepository = process.env.DATABASE_URL
+  ? new PrismaRepository()
+  : (new AsyncMemoryRepository(new MemoryRepository()) as unknown as PrismaRepository);

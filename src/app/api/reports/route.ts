@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const periodDays = parseInt(searchParams.get('days') || '7', 10);
 
-    const metrics = dbRepository.getMetrics(periodDays);
+    const metrics = await dbRepository.getMetrics(periodDays);
 
     return NextResponse.json({
       success: true,

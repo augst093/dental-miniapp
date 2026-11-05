@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const doctorId = searchParams.get('doctorId') || undefined;
     const status = (searchParams.get('status') as AppointmentStatus) || undefined;
 
-    const appointments = dbRepository.getAppointments({
+    const appointments = await dbRepository.getAppointments({
       dateStr,
       doctorId,
       status,
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     // Parse Tashkent date & time to UTC Date
     const dateTimeUTC = fromTashkentDateTime(dateStr, timeStr);
 
-    const result = dbRepository.createAppointment({
+    const result = await dbRepository.createAppointment({
       patientName: patientName.trim(),
       patientPhone: patientPhone.trim(),
       telegramId: telegramId ? Number(telegramId) : undefined,

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
         const tomorrowIso = formatTashkentISODate(tomorrow);
         const dt = fromTashkentDateTime(tomorrowIso, '15:00');
 
-        const result = dbRepository.createAppointment({
+        const result = await dbRepository.createAppointment({
           patientName: 'Тестовый Пациент (Демо)',
           patientPhone: '+998 (90) 999-88-77',
           telegramId: 99999999,
@@ -39,12 +39,12 @@ export async function POST(request: NextRequest) {
 
       case 'simulate_cancellation': {
         // Find first active appointment to cancel
-        const active = dbRepository
-          .getAppointments()
-          .filter((a) => a.status === 'confirmed' || a.status === 'pending');
+        const active = (await dbRepository.getAppointments()).filter(
+          (a) => a.status === 'confirmed' || a.status === 'pending'
+        );
 
         const target = appointmentId
-          ? dbRepository.getAppointmentById(appointmentId)
+          ? await dbRepository.getAppointmentById(appointmentId)
           : active[0];
 
         if (!target) {
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const updated = dbRepository.updateStatus(
+        const updated = await dbRepository.updateStatus(
           target.id,
           'cancelled',
           'patient',
@@ -72,12 +72,12 @@ export async function POST(request: NextRequest) {
 
       case 'send_reminder': {
         // Find nearest upcoming appointment
-        const upcoming = dbRepository
-          .getAppointments()
-          .filter((a) => a.status === 'confirmed' || a.status === 'pending');
+        const upcoming = (await dbRepository.getAppointments()).filter(
+          (a) => a.status === 'confirmed' || a.status === 'pending'
+        );
 
         const target = appointmentId
-          ? dbRepository.getAppointmentById(appointmentId)
+          ? await dbRepository.getAppointmentById(appointmentId)
           : upcoming[0];
 
         if (!target) {
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
       }
 
       case 'reset_demo': {
-        dbRepository.resetDemoData();
+        await dbRepository.resetDemoData();
         return NextResponse.json({
           success: true,
           action: 'reset_demo',
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
       }
 
       case 'send_digest': {
-        const metrics = dbRepository.getMetrics(7);
+        const metrics = await dbRepository.getMetrics(7);
         return NextResponse.json({
           success: true,
           action: 'send_digest',

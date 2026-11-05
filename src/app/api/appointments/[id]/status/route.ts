@@ -18,7 +18,7 @@ export async function PATCH(
       );
     }
 
-    const result = dbRepository.updateStatus(
+    const result = await dbRepository.updateStatus(
       id,
       status as AppointmentStatus,
       actor as LifecycleActor,
