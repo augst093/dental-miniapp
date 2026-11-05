@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { TG_INIT_DATA_HEADER, verifyTelegramUser } from '@/lib/telegramAuth';
 import { clientIp, isRateLimited } from '@/lib/rateLimit';
+import { escapeHtml, notifyAdminGroup } from '@/lib/adminNotify';
 
 const IP_LIMIT = 6; // booking attempts per client IP
 const USER_LIMIT = 4; // bookings per verified Telegram user
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
       timeStr, // "14:30"
       source = 'miniapp',
       notes,
-      consentAgreed = true,
+      consentAgreed = false,
       actor = 'patient',
     } = body;
 
@@ -86,6 +87,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { success: false, error: 'Слишком много попыток. Попробуйте через несколько минут.' },
         { status: 429 }
+      );
+    }
+
+    // The client must confirm consent to personal data processing (law on personal data)
+    if (consentAgreed !== true) {
+      return NextResponse.json(
+        { success: false, error: 'Нужно согласие на обработку персональных данных' },
+        { status: 400 }
       );
     }
 
@@ -135,6 +144,16 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Tell the clinic's admin group about the new booking (the bot no longer does this for Mini App bookings)
+    await notifyAdminGroup(
+      '🆕 <b>Новая запись (Mini App)</b>\n' +
+        `👤 ${escapeHtml(name)}\n` +
+        `📞 <code>${escapeHtml(phone)}</code>\n` +
+        `🦷 ${escapeHtml(String(serviceTitle || 'Консультация'))}\n` +
+        `👨‍⚕️ ${escapeHtml(String(doctorName || 'Дежурный врач'))}\n` +
+        `📅 ${escapeHtml(String(dateStr))} ${escapeHtml(String(timeStr))} (Ташкент)`
+    );
 
     return NextResponse.json({
       success: true,
