@@ -33,6 +33,8 @@ import { DBAppointment } from '../../lib/db';
 import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import { CallButton } from '../ui/CallButton';
 import { EmptyState } from '../ui/EmptyState';
+import { CatalogAdmin } from './CatalogAdmin';
+import { InboxAdmin } from './InboxAdmin';
 import {
   formatTashkentISODate,
   formatTashkentTime,
@@ -57,8 +59,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [activeSubTab, setActiveSubTab] = useState<'today' | 'week' | 'doctors'>('today');
-  const subTabIndicator = useSlidingIndicator<'today' | 'week' | 'doctors'>(activeSubTab);
+  const [activeSubTab, setActiveSubTab] = useState<'today' | 'week' | 'doctors' | 'inbox'>('today');
+  const [inboxNew, setInboxNew] = useState<number>(0);
+  const subTabIndicator = useSlidingIndicator<'today' | 'week' | 'doctors' | 'inbox'>(activeSubTab);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -323,6 +326,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           }`}
         >
           Врачи ({CLINIC_DOCTORS.length})
+        </button>
+        <button
+          data-seg-key={'inbox'}
+          onClick={() => {
+            triggerHaptic('light');
+            setActiveSubTab('inbox');
+          }}
+          className={`relative flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
+            activeSubTab === 'inbox'
+              ? 'text-slate-900'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          Инбокс{inboxNew > 0 ? ` (${inboxNew})` : ''}
         </button>
       </div>
 
@@ -679,45 +696,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* ========================================================
           SUB-TAB 3: DOCTOR SCHEDULE QUICK EDITOR
          ======================================================== */}
-      {activeSubTab === 'doctors' && (
-        <div className="space-y-2.5">
-          <div className="text-[12px] text-slate-500 pb-1">
-            Оперативное управление сменами и рабочими часами врачей клиники:
-          </div>
-
-          {CLINIC_DOCTORS.map((doc) => (
-            <div
-              key={doc.id}
-              className="clinic-card p-4 rounded-3xl border border-slate-200/90 bg-white/95 space-y-2.5"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-[14px] text-slate-900">{doc.name.ru}</h4>
-                  <p className="text-[11px] text-slate-500">{doc.role.ru}</p>
-                </div>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                  Активен
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-[12px] pt-1 border-t border-slate-100">
-                <div className="bg-slate-50 p-2 rounded-xl">
-                  <span className="text-slate-500 text-[10px] block">Рабочие часы:</span>
-                  <span className="font-bold font-mono text-slate-800">
-                    {String(doc.schedule.startHour).padStart(2, '0')}:00 — {doc.schedule.endHour}:00
-                  </span>
-                </div>
-                <div className="bg-slate-50 p-2 rounded-xl">
-                  <span className="text-slate-500 text-[10px] block">Длительность слота:</span>
-                  <span className="font-bold text-slate-800">
-                    {doc.schedule.slotDurationMinutes} минут
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {activeSubTab === 'doctors' && <CatalogAdmin />}
+      {activeSubTab === 'inbox' && <InboxAdmin onNewCount={setInboxNew} />}
 
       {/* ========================================================
           MODAL: MANUAL PHONE APPOINTMENT ENTRY

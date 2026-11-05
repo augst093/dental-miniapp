@@ -175,6 +175,7 @@ class MemoryRepository {
     doctorId?: string;
     doctorName: string;
     serviceTitle: string;
+    priceUzs?: number | null;
     dateTimeUTC: Date;
     source?: string;
     notes?: string;
@@ -190,6 +191,7 @@ class MemoryRepository {
       doctorId,
       doctorName,
       serviceTitle,
+      priceUzs,
       dateTimeUTC,
       source = 'miniapp',
       notes,
@@ -724,6 +726,7 @@ class PrismaRepository {
       doctorId,
       doctorName,
       serviceTitle,
+      priceUzs,
       dateTimeUTC,
       source = 'miniapp',
       notes,
@@ -784,6 +787,7 @@ class PrismaRepository {
               doctorId: doctorId ?? null,
               doctorName,
               serviceTitle,
+              priceUzs: priceUzs ?? null,
               dateTime: dateTimeUTC,
               durationMinutes: 30,
               status: 'pending',

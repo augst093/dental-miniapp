@@ -41,6 +41,7 @@ model Service {
   priceUzs        Int
   durationMinutes Int           @default(30)
   description     String?
+  sortOrder       Int           @default(0)
   isActive        Boolean       @default(true)
   appointments    Appointment[]
   createdAt       DateTime      @default(now())
@@ -81,19 +82,20 @@ model Appointment {
   serviceId       String?
   service         Service?          @relation(fields: [serviceId], references: [id])
   serviceTitle    String
+  priceUzs        Int? // price snapshot at booking time (null for older records)
   doctorName      String
-  dateTime        DateTime          // Slot timestamp in UTC (displayed in Asia/Tashkent UTC+5)
+  dateTime        DateTime // Slot timestamp in UTC (displayed in Asia/Tashkent UTC+5)
   durationMinutes Int               @default(30)
   status          AppointmentStatus @default(pending)
   source          String            @default("miniapp") // miniapp, bot, phone_admin
   notes           String?
   isDemo          Boolean           @default(false)
 
-  reminders       Reminder[]
-  auditLogs       AuditLog[]
+  reminders Reminder[]
+  auditLogs AuditLog[]
 
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([doctorId, dateTime])
   @@index([dateTime])
@@ -118,7 +120,7 @@ model Reminder {
   appointmentId String
   appointment   Appointment    @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
   type          ReminderType
-  dueAt         DateTime       // UTC timestamp when reminder should be sent
+  dueAt         DateTime // UTC timestamp when reminder should be sent
   sentAt        DateTime?
   status        ReminderStatus @default(pending)
   attemptCount  Int            @default(0)
@@ -134,9 +136,9 @@ model AuditLog {
   id            String       @id @default(uuid())
   appointmentId String?
   appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
-  actorType     String       // patient, admin, system, bot
-  actorId       String?      // telegram_id or admin name
-  action        String       // status_change, created, rescheduled, cancelled
+  actorType     String // patient, admin, system, bot
+  actorId       String? // telegram_id or admin name
+  action        String // status_change, created, rescheduled, cancelled
   fromStatus    String?
   toStatus      String?
   details       String?
@@ -150,4 +152,66 @@ model Setting {
   key       String   @id
   value     String
   updatedAt DateTime @updatedAt
+}
+
+enum InboxStatus {
+  new
+  answered
+  resolved
+}
+
+// A conversation between a patient and the clinic's administrators (questions handed off from the chat)
+model InboxThread {
+  id                 String         @id @default(uuid())
+  telegramId         BigInt
+  patientName        String
+  status             InboxStatus    @default(new)
+  patientUnreachable Boolean        @default(false)
+  lastMessageAt      DateTime       @default(now())
+  messages           InboxMessage[]
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@index([status, lastMessageAt])
+  @@index([telegramId])
+}
+
+model InboxMessage {
+  id             String      @id @default(uuid())
+  threadId       String
+  thread         InboxThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  direction      String // "in" (patient) or "out" (clinic staff)
+  text           String
+  deliveryStatus String? // for "out": "sent" or "failed"
+  deliveryError  String?
+  authorId       String? // staff Telegram id for "out"
+  createdAt      DateTime    @default(now())
+
+  @@index([threadId, createdAt])
+}
+
+enum OutboxStatus {
+  pending
+  sent
+  failed
+}
+
+// Outgoing Telegram messages. Every send goes here first, so a Telegram outage delays a message instead of losing it.
+model Outbox {
+  id            String       @id @default(uuid())
+  chatId        BigInt // patient Telegram id, or the staff group id (negative)
+  kind          String // "inbox_reply" | "staff_alert" | "reminder"
+  text          String
+  status        OutboxStatus @default(pending)
+  attempts      Int          @default(0)
+  nextAttemptAt DateTime     @default(now())
+  lastError     String?
+  refType       String? // what to update when done: "inbox_message" | "reminder"
+  replyMarkup   Json? // inline keyboard: [[{text, callback_data}]]
+  refId         String?
+  sentAt        DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([status, nextAttemptAt])
 }
