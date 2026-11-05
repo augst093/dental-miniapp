@@ -19,19 +19,6 @@ export function isInboxStatus(value: unknown): value is InboxStatusValue {
   return typeof value === 'string' && (INBOX_STATUSES as readonly string[]).includes(value);
 }
 
-export type DeliveryOutcome = 'sent' | 'blocked' | 'failed';
-
-/**
- * Turns a Telegram sendMessage result into what we store.
- * 403 means the patient blocked the bot or never started it: stop trying and show it to staff.
- * Anything else is a failure that staff can retry.
- */
-export function deliveryOutcome(result: { ok: boolean; status: number }): DeliveryOutcome {
-  if (result.ok) return 'sent';
-  if (result.status === 403) return 'blocked';
-  return 'failed';
-}
-
 /** Replies are allowed unless the patient cannot be reached in Telegram */
 export function canReply(thread: { patientUnreachable: boolean }): boolean {
   return !thread.patientUnreachable;

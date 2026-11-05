@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npx tsx src/__tests__/test_lifecycle_and_rules.ts && npx tsx src/__tests__/doctors_admin.test.ts && npx tsx src/__tests__/services_admin.test.ts && npx tsx src/__tests__/inbox.test.ts",
+    "test": "npx tsx src/__tests__/test_lifecycle_and_rules.ts && npx tsx src/__tests__/doctors_admin.test.ts && npx tsx src/__tests__/services_admin.test.ts && npx tsx src/__tests__/inbox.test.ts && npx tsx src/__tests__/outbox.test.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
