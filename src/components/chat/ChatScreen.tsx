@@ -1,7 +1,8 @@
 'use client';
 
 import React, { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ArrowLeft, CalendarDays, SendHorizonal, Trash2 } from 'lucide-react';
+import { ArrowLeft, CalendarDays, SendHorizonal, Trash2, User } from 'lucide-react';
+import { telegramAuthHeaders } from '../../lib/telegramClient';
 import { Language } from '../../data/clinicData';
 import { clearHistory, loadHistory, saveHistory } from './chatStorage';
 
@@ -16,6 +17,27 @@ import { clearHistory, loadHistory, saveHistory } from './chatStorage';
 // - No backdrop blur and no infinite animations inside the chat.
 
 type Role = 'user' | 'assistant';
+
+const HANDOFF_TEXT: Record<Language, { label: string; sent: string; failed: string; empty: string }> = {
+  ru: {
+    label: 'Связаться с администратором',
+    sent: 'Передали администратору. Ответ придёт сюда, в Telegram.',
+    failed: 'Не получилось передать вопрос. Позвоните в клинику.',
+    empty: 'Напишите вопрос, и мы передадим его администратору.',
+  },
+  uz: {
+    label: 'Administrator bilan bog‘lanish',
+    sent: 'Savol administratorga yuborildi. Javob shu yerga, Telegram’ga keladi.',
+    failed: 'Savolni yuborib bo‘lmadi. Klinikaga qo‘ng‘iroq qiling.',
+    empty: 'Savolni yozing, uni administratorga yuboramiz.',
+  },
+  en: {
+    label: 'Contact the administrator',
+    sent: 'Passed to the administrator. The reply will come here, in Telegram.',
+    failed: 'Could not pass the question on. Please call the clinic.',
+    empty: 'Type your question and we will pass it to the administrator.',
+  },
+};
 
 interface ChatMessage {
   id: string;
@@ -462,6 +484,36 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     return () => controllerRef.current?.abort();
   }, []);
 
+  const [handoffBusy, setHandoffBusy] = useState<boolean>(false);
+
+  // Hand the question over to the administrators. It is the typed text, or the patient's last question.
+  const handoff = async () => {
+    const lastUserText = [...messages].reverse().find((m) => m.role === 'user')?.text ?? '';
+    const text = (draft.trim() || lastUserText).trim();
+    const copyHandoff = HANDOFF_TEXT[lang];
+    if (!text) {
+      setMessages((prev) => [...prev, { id: newId(), role: 'assistant', text: copyHandoff.empty, time: Date.now() }]);
+      return;
+    }
+    setHandoffBusy(true);
+    try {
+      const res = await fetch('/api/inbox', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...telegramAuthHeaders() },
+        body: JSON.stringify({ text }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) throw new Error(data.error || 'failed');
+      if (draft.trim()) setDraft('');
+      setMessages((prev) => [...prev, { id: newId(), role: 'assistant', text: copyHandoff.sent, time: Date.now() }]);
+    } catch (error) {
+      const reason = error instanceof Error && error.message !== 'failed' ? error.message : copyHandoff.failed;
+      setMessages((prev) => [...prev, { id: newId(), role: 'assistant', text: reason, time: Date.now() }]);
+    } finally {
+      setHandoffBusy(false);
+    }
+  };
+
   const send = async (raw: string) => {
     const text = raw.trim();
     if (!text || busy) return;
@@ -593,6 +645,16 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
             className="w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 active:scale-90 transition-transform"
           >
             <Trash2 className="w-[18px] h-[18px]" />
+          </button>
+          <button
+            type="button"
+            onClick={handoff}
+            disabled={handoffBusy}
+            aria-label={HANDOFF_TEXT[lang].label}
+            title={HANDOFF_TEXT[lang].label}
+            className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--accent)] hover:bg-slate-100 active:scale-90 transition-transform disabled:opacity-40"
+          >
+            <User className="w-[18px] h-[18px]" />
           </button>
         </div>
       </header>

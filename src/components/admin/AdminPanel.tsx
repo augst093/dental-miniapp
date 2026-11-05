@@ -34,6 +34,7 @@ import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import { CallButton } from '../ui/CallButton';
 import { EmptyState } from '../ui/EmptyState';
 import { CatalogAdmin } from './CatalogAdmin';
+import { InboxAdmin } from './InboxAdmin';
 import {
   formatTashkentISODate,
   formatTashkentTime,
@@ -58,8 +59,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [activeSubTab, setActiveSubTab] = useState<'today' | 'week' | 'doctors'>('today');
-  const subTabIndicator = useSlidingIndicator<'today' | 'week' | 'doctors'>(activeSubTab);
+  const [activeSubTab, setActiveSubTab] = useState<'today' | 'week' | 'doctors' | 'inbox'>('today');
+  const [inboxNew, setInboxNew] = useState<number>(0);
+  const subTabIndicator = useSlidingIndicator<'today' | 'week' | 'doctors' | 'inbox'>(activeSubTab);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -324,6 +326,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           }`}
         >
           Врачи ({CLINIC_DOCTORS.length})
+        </button>
+        <button
+          data-seg-key={'inbox'}
+          onClick={() => {
+            triggerHaptic('light');
+            setActiveSubTab('inbox');
+          }}
+          className={`relative flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
+            activeSubTab === 'inbox'
+              ? 'text-slate-900'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          Инбокс{inboxNew > 0 ? ` (${inboxNew})` : ''}
         </button>
       </div>
 
@@ -681,6 +697,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           SUB-TAB 3: DOCTOR SCHEDULE QUICK EDITOR
          ======================================================== */}
       {activeSubTab === 'doctors' && <CatalogAdmin />}
+      {activeSubTab === 'inbox' && <InboxAdmin onNewCount={setInboxNew} />}
 
       {/* ========================================================
           MODAL: MANUAL PHONE APPOINTMENT ENTRY
