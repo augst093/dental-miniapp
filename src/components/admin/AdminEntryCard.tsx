@@ -91,9 +91,13 @@ export const AdminEntryCard: React.FC<AdminEntryCardProps> = ({ lang, onOpen }) 
         </IconBadge>
         <div className="min-w-0 flex-1">
           <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--accent)]">{copy.title}</div>
-          <div className="text-[13px] text-[var(--ink-secondary)] truncate">
-            {loading ? copy.loading : `${copy.today(summary.total)}${summary.pending ? ` · ${copy.pending(summary.pending)}` : ''}`}
-          </div>
+          {loading ? (
+            <div className="chat-skeleton h-3.5 w-44 rounded-full mt-1.5" aria-label={copy.loading} />
+          ) : (
+            <div className="text-[13px] text-[var(--ink-secondary)] truncate">
+              {`${copy.today(summary.total)}${summary.pending ? ` · ${copy.pending(summary.pending)}` : ''}`}
+            </div>
+          )}
         </div>
       </div>
 

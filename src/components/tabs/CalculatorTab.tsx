@@ -88,7 +88,7 @@ export const CalculatorTab: React.FC<CalculatorTabProps> = ({
         <label className="text-[12px] font-bold text-[var(--ink)] block">
           {t.selectProtocol[lang]}
         </label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 stagger">
           {TREATMENT_CALCULATOR_OPTIONS.map((plan, idx) => {
             const isSelected = selectedPlanIdx === idx;
             return (

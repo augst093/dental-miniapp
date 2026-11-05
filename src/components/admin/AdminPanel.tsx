@@ -394,7 +394,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
 
           {/* Today Appointments List */}
-          {todayAppointments.length === 0 ? (
+          {todayAppointments.length === 0 && loading && appointments.length === 0 ? (
+            <div className="space-y-2.5" aria-busy="true">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="chat-skeleton h-20 rounded-3xl" />
+              ))}
+            </div>
+          ) : todayAppointments.length === 0 ? (
             <EmptyState
               icon={<Calendar className="w-6 h-6" />}
               title={statusFilter === 'all' ? 'На сегодня нет записей' : 'Нет записей с таким статусом'}

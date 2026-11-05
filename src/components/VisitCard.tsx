@@ -135,7 +135,7 @@ export const VisitCard: React.FC<VisitCardProps> = ({ lang, onAskChat }) => {
   const confirmed = visit.status === 'confirmed';
 
   return (
-    <div className="clinic-card p-4 sm:p-5 rounded-3xl space-y-3 chat-bubble-in">
+    <div key={visit.status} className="clinic-card p-4 sm:p-5 rounded-3xl space-y-3 chat-bubble-in">
       <div className="flex items-start gap-3">
         <IconBadge tone={confirmed ? 'success' : 'accent'}>
           <CalendarCheck className="w-5 h-5" />
