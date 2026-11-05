@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Calendar, Award, User, Heart } from 'lucide-react';
+import { Calendar, Award, User, Heart, Info } from 'lucide-react';
 import { loadFavoriteDoctor, saveFavoriteDoctor } from '../../lib/favoriteDoctor';
 import { DOCTORS, Language, UI_TRANSLATIONS } from '../../data/clinicData';
+import { DoctorAboutSheet } from './DoctorAboutSheet';
 
 interface DoctorsTabProps {
   lang: Language;
@@ -20,6 +21,9 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
 
   // The patient's chosen doctor (kept on this device)
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
+
+  // Which doctor's "About" sheet is open
+  const [aboutId, setAboutId] = useState<string | null>(null);
   useEffect(() => {
     setFavoriteId(loadFavoriteDoctor());
   }, []);
@@ -101,13 +105,24 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
             </div>
 
             {/* Action */}
-            <div className="pt-1 flex items-center justify-end">
+            <div className="pt-1 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  setAboutId(doc.id);
+                }}
+                className="btn-pill-secondary shrink-0 py-3 px-4 text-[13px] flex items-center justify-center gap-1.5 touch-target"
+              >
+                <Info className="w-4 h-4 text-[var(--accent)]" />
+                <span>{lang === 'uz' ? 'Haqida' : lang === 'en' ? 'About' : 'О враче'}</span>
+              </button>
               <button
                 onClick={() => {
                   triggerHaptic('medium');
                   onOpenBooking('Консультация профильного специалиста', doc.name[lang]);
                 }}
-                className="btn-pill-primary w-full sm:w-auto py-3 px-6 text-[13px] flex items-center justify-center gap-2 touch-target"
+                className="btn-pill-primary flex-1 sm:flex-none py-3 px-6 text-[13px] flex items-center justify-center gap-2 touch-target"
               >
                 <Calendar className="w-4 h-4" />
                 <span>
@@ -123,6 +138,20 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
           );
         })}
       </div>
+
+      {aboutId && (() => {
+        const doc = DOCTORS.find((item) => item.id === aboutId);
+        if (!doc) return null;
+        return (
+          <DoctorAboutSheet
+            doctor={doc}
+            lang={lang}
+            triggerHaptic={triggerHaptic}
+            onClose={() => setAboutId(null)}
+            onBook={(doctorName) => onOpenBooking('Консультация профильного специалиста', doctorName)}
+          />
+        );
+      })()}
     </div>
   );
 };

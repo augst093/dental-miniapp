@@ -99,6 +99,10 @@ export interface Doctor {
   credentials: Record<Language, string>;
   initials: string;
   photoUrl: string | null; // TODO: заменить реальным фото врача (null = аккуратный плейсхолдер)
+  // "О враче": biography, education and languages. TODO: заменить текстами, подтверждёнными клиникой
+  bio: Record<Language, string>;
+  education: Record<Language, string[]>;
+  languages: Record<Language, string>;
 }
 
 export interface TreatmentPlanOption {
@@ -374,6 +378,21 @@ export const DOCTORS: Doctor[] = [
       uz: 'Toshkent tibbiyot akademiyasi. Straumann jarrohlik protokollari bo‘yicha sertifikatlangan.',
       en: 'Tashkent Medical Academy. Certified in Straumann surgical protocols.',
     },
+    bio: {
+      ru: 'Главный врач клиники. Занимается дентальной имплантацией и костной пластикой: от диагностики по 3D-снимку до полного восстановления улыбки. Перед операцией объясняет каждый этап и показывает план лечения на снимке.',
+      uz: 'Klinikaning bosh shifokori. Dental implantatsiya va suyak plastikasi bilan shug‘ullanadi: 3D-suratdan tashxisdan to tabassumni to‘liq tiklashgacha. Operatsiyadan oldin har bir bosqichni tushuntiradi va davolash rejasini suratda ko‘rsatadi.',
+      en: 'Chief Medical Officer. Works in dental implantology and bone grafting, from 3D-scan diagnostics to a full smile restoration. Explains every step before surgery and shows the treatment plan on the scan.',
+    },
+    education: {
+      ru: ['Ташкентская медицинская академия, стоматология', 'Курс имплантологии Straumann', 'Синус-лифтинг и направленная регенерация кости'],
+      uz: ['Toshkent tibbiyot akademiyasi, stomatologiya', 'Straumann implantologiya kursi', 'Sinus-lifting va suyakni yo‘naltirilgan tiklash'],
+      en: ['Tashkent Medical Academy, Dentistry', 'Straumann implantology course', 'Sinus lift and guided bone regeneration'],
+    },
+    languages: {
+      ru: 'Русский, узбекский, английский',
+      uz: 'Rus, o‘zbek, ingliz',
+      en: 'Russian, Uzbek, English',
+    },
     initials: 'СК',
     photoUrl: null, // TODO: заменить реальным фото врача
   },
@@ -399,6 +418,21 @@ export const DOCTORS: Doctor[] = [
       ru: 'Сертифицированный специалист по самолигирующим системам Ormco и прозрачным элайнерам.',
       uz: 'Ormco tizimlari va shaffof elaynerlar bo‘yicha sertifikatlangan mutaxassis.',
       en: 'Certified specialist in Ormco self-ligating systems and clear aligners.',
+    },
+    bio: {
+      ru: 'Лечит прикус брекет-системами Damon и прозрачными элайнерами Spark. Перед началом составляет план по 3D-снимку и показывает пациенту, как будет выглядеть улыбка по итогам лечения.',
+      uz: 'Tish qatorini Damon breket tizimlari va Spark shaffof elaynerlari bilan tekislaydi. Davolashni boshlashdan oldin 3D-suratga asoslangan reja tuzadi va davolash natijasini bemorga ko‘rsatadi.',
+      en: 'Corrects bites with Damon bracket systems and Spark clear aligners. Builds the plan from a 3D scan and shows the patient the expected smile before treatment starts.',
+    },
+    education: {
+      ru: ['Ортодонтия, клиническая ординатура', 'Сертификация Ormco (Damon)', 'Курс Spark Aligner Technology'],
+      uz: ['Ortodontiya, klinik ordinatura', 'Ormco (Damon) sertifikati', 'Spark Aligner Technology kursi'],
+      en: ['Orthodontics, clinical residency', 'Ormco (Damon) certification', 'Spark Aligner Technology course'],
+    },
+    languages: {
+      ru: 'Русский, узбекский',
+      uz: 'Rus, o‘zbek',
+      en: 'Russian, Uzbek',
     },
     initials: 'МУ',
     photoUrl: null, // TODO: заменить реальным фото врача
@@ -426,6 +460,21 @@ export const DOCTORS: Doctor[] = [
       uz: 'Raqamli tish protezlash va mikroprotezlash bo‘yicha ixtisoslashgan.',
       en: 'Specialized in digital prosthodontic protocols and ceramic micro-restorations.',
     },
+    bio: {
+      ru: 'Изготавливает керамические виниры E.max и коронки из диоксида циркония. Работает по цифровому протоколу: скан, моделирование и примерка до фиксации, чтобы результат совпадал с ожиданием.',
+      uz: 'E.max keramika vinirlari va sirkoniy dioksidi qoplamalarini tayyorlaydi. Raqamli protokol bo‘yicha ishlaydi: skanerlash, modellashtirish va mahkamlashdan oldin sinov, natija kutilganidek bo‘lishi uchun.',
+      en: 'Makes E.max ceramic veneers and zirconia crowns. Works on a digital protocol: scan, design and try-in before bonding, so the result matches expectations.',
+    },
+    education: {
+      ru: ['Стоматологический институт, ортопедия', 'Цифровое протезирование и CAD/CAM', 'Микропротезирование зубов'],
+      uz: ['Stomatologiya instituti, ortopediya', 'Raqamli protezlash va CAD/CAM', 'Tishlarni mikroprotezlash'],
+      en: ['Dental Institute, Prosthodontics', 'Digital prosthetics and CAD/CAM', 'Ceramic micro-restorations'],
+    },
+    languages: {
+      ru: 'Русский, узбекский, английский',
+      uz: 'Rus, o‘zbek, ingliz',
+      en: 'Russian, Uzbek, English',
+    },
     initials: 'ТР',
     photoUrl: null, // TODO: заменить реальным фото врача
   },
@@ -451,6 +500,21 @@ export const DOCTORS: Doctor[] = [
       ru: 'Обучение современным протоколам эндодонтического лечения и приёма детей без слёз.',
       uz: 'Zamonaviy endodontik davolash va bolalarni qo‘rquvsiz qabul qilish protokollari bo‘yicha mutaxassis.',
       en: 'Trained in advanced endodontic treatment protocols and pediatric care.',
+    },
+    bio: {
+      ru: 'Лечит зубы и детей. Умеет спокойно работать с тревожными пациентами и малышами: сначала знакомство и игра, потом лечение. Эндодонтия и эстетические пломбы, сохраняющие естественный вид зуба.',
+      uz: 'Tishlarni va bolalarni davolaydi. Xavotirli bemorlar va kichik bolalar bilan xotirjam ishlaydi: avval tanishuv va o‘yin, keyin davolash. Endodontiya va tabiiy ko‘rinishni saqlaydigan estetik plomba.',
+      en: 'Treats teeth and children. Works calmly with anxious patients and little ones: first getting to know each other and play, then treatment. Endodontics and aesthetic fillings that keep the natural look.',
+    },
+    education: {
+      ru: ['Стоматологический факультет, терапия', 'Эндодонтия: современные протоколы лечения каналов', 'Детская стоматология и адаптация малышей'],
+      uz: ['Stomatologiya fakulteti, terapiya', 'Endodontiya: kanallarni davolashning zamonaviy protokollari', 'Bolalar stomatologiyasi va kichkintoylarni moslashtirish'],
+      en: ['Dental Faculty, Therapy', 'Endodontics: modern root canal protocols', 'Pediatric dentistry and child adaptation'],
+    },
+    languages: {
+      ru: 'Русский, узбекский',
+      uz: 'Rus, o‘zbek',
+      en: 'Russian, Uzbek',
     },
     initials: 'НА',
     photoUrl: null, // TODO: заменить реальным фото врача

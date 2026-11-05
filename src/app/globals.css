@@ -815,3 +815,23 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .success-circle, .success-check { stroke-dashoffset: 0; }
   .chat-fab { transition: none; }
 }
+
+/* ---------- About-doctor sheet ---------- */
+@keyframes sheet-out {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to { opacity: 0; transform: translate3d(0, 48px, 0); }
+}
+@keyframes about-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes about-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes sheet-reveal {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.sheet-exit { animation: sheet-out 260ms cubic-bezier(0.4, 0, 1, 1) both; will-change: transform, opacity; }
+.about-backdrop-in { animation: about-fade-in 320ms ease both; }
+.about-backdrop-out { animation: about-fade-out 240ms ease both; }
+.sheet-reveal { animation: sheet-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-exit, .about-backdrop-in, .about-backdrop-out, .sheet-reveal { animation: none; }
+}
