@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { buildSystemPrompt } from '../../../lib/clinicAssistant';
+import { clientIp, isRateLimited } from '../../../lib/rateLimit';
 
 // The DeepSeek key stays on the server: the browser only talks to this route.
 export const maxDuration = 30;
@@ -9,24 +10,10 @@ const MAX_CHARS = 1000;
 const RATE_LIMIT = 20; // requests per window, per client IP
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 
-// Best-effort limiter: each serverless instance keeps its own counter
-const rateCounters = new Map<string, { count: number; resetAt: number }>();
-
 type ChatRole = 'user' | 'assistant';
 interface IncomingMessage {
   role: ChatRole;
   content: string;
-}
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateCounters.get(ip);
-  if (!entry || entry.resetAt < now) {
-    rateCounters.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return false;
-  }
-  entry.count += 1;
-  return entry.count > RATE_LIMIT;
 }
 
 // Same idea as the bot's PII stripping: phone-like sequences never reach the AI provider
@@ -55,8 +42,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'not_configured' }, { status: 503 });
   }
 
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown';
-  if (isRateLimited(ip)) {
+  if (isRateLimited('chat:' + clientIp(request), RATE_LIMIT, RATE_WINDOW_MS)) {
     return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
   }
 

@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { TG_INIT_DATA_HEADER, verifyTelegramUser } from '@/lib/telegramAuth';
+import { clientIp, isRateLimited } from '@/lib/rateLimit';
+
+const IP_LIMIT = 6; // booking attempts per client IP
+const USER_LIMIT = 4; // bookings per verified Telegram user
+const WINDOW_MS = 10 * 60 * 1000;
+const HOUR_MS = 60 * 60 * 1000;
+
+// Uzbek mobile/landline numbers: +998 and 9 digits
+function normalizePhone(raw: string): string | null {
+  const digits = raw.replace(/\D/g, '');
+  return digits.length === 12 && digits.startsWith('998') ? '+' + digits : null;
+}
 import { dbRepository } from '@/lib/db';
 import { fromTashkentDateTime, formatTashkentISODate, getNowUTC } from '@/lib/timezone';
 import { AppointmentStatus } from '@/lib/appointmentLifecycle';
@@ -70,14 +82,42 @@ export async function POST(request: NextRequest) {
     // Parse Tashkent date & time to UTC Date
     const dateTimeUTC = fromTashkentDateTime(dateStr, timeStr);
 
+    if (isRateLimited('book:ip:' + clientIp(request), IP_LIMIT, WINDOW_MS)) {
+      return NextResponse.json(
+        { success: false, error: 'Слишком много попыток. Попробуйте через несколько минут.' },
+        { status: 429 }
+      );
+    }
+
+    const name = String(patientName).trim();
+    if (name.length < 2 || name.length > 80) {
+      return NextResponse.json({ success: false, error: 'Укажите имя (от 2 до 80 символов)' }, { status: 400 });
+    }
+    const phone = normalizePhone(String(patientPhone));
+    if (!phone) {
+      return NextResponse.json({ success: false, error: 'Укажите номер в формате +998 XX XXX XX XX' }, { status: 400 });
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(dateStr)) || !/^\d{2}:\d{2}$/.test(String(timeStr))) {
+      return NextResponse.json({ success: false, error: 'Некорректная дата или время' }, { status: 400 });
+    }
+    if (String(doctorName || '').length > 100 || String(serviceTitle || '').length > 100 || String(notes || '').length > 500) {
+      return NextResponse.json({ success: false, error: 'Слишком длинное значение' }, { status: 400 });
+    }
+
     // Telegram ID comes only from the signed initData (never from the request body), so reminders
     // go to the real patient. Phone bookings from the website have no Telegram ID.
     const h = await headers();
     const verified = verifyTelegramUser(h.get(TG_INIT_DATA_HEADER) || '');
+    if (verified && isRateLimited('book:tg:' + verified.id, USER_LIMIT, HOUR_MS)) {
+      return NextResponse.json(
+        { success: false, error: 'Вы уже создали несколько записей за последний час. Позвоните в клинику.' },
+        { status: 429 }
+      );
+    }
 
     const result = await dbRepository.createAppointment({
-      patientName: patientName.trim(),
-      patientPhone: patientPhone.trim(),
+      patientName: name,
+      patientPhone: phone,
       telegramId: verified?.id,
       doctorId: doctorId || undefined,
       doctorName: doctorName || 'Дежурный врач',
