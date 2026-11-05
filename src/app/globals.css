@@ -680,3 +680,39 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ---------- Booking calendar and time picker ---------- */
+@keyframes cal-next {
+  from { opacity: 0; transform: translate3d(28px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cal-prev {
+  from { opacity: 0; transform: translate3d(-28px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cal-title-next {
+  from { opacity: 0; transform: translate3d(14px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cal-title-prev {
+  from { opacity: 0; transform: translate3d(-14px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cal-pop {
+  0% { transform: scale(0.84); }
+  60% { transform: scale(1.07); }
+  100% { transform: scale(1); }
+}
+.cal-enter-next { animation: cal-next 420ms var(--ease-spring) both; will-change: transform, opacity; }
+.cal-enter-prev { animation: cal-prev 420ms var(--ease-spring) both; will-change: transform, opacity; }
+.cal-title-next { animation: cal-title-next 360ms var(--ease-standard) both; }
+.cal-title-prev { animation: cal-title-prev 360ms var(--ease-standard) both; }
+.cal-day-selected { animation: cal-pop 420ms var(--ease-spring) both; }
+.cal-chip-enter { animation: dl-rise 420ms var(--ease-standard) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cal-enter-next, .cal-enter-prev, .cal-title-next, .cal-title-prev,
+  .cal-day-selected, .cal-chip-enter {
+    animation: none;
+  }
+}

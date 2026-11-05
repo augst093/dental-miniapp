@@ -4,6 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { telegramAuthHeaders } from '@/lib/telegramClient';
 import { CallButton } from './ui/CallButton';
 import { saveVisit } from '../lib/patientVisit';
+import { CalendarPicker } from './booking/CalendarPicker';
+import { TimePicker } from './booking/TimePicker';
+import { formatDayLong } from '../lib/bookingDates';
 import {
   X,
   Check,
@@ -34,8 +37,6 @@ interface BookingModalProps {
   triggerHaptic: (style?: 'light' | 'medium' | 'heavy') => void;
   userNamePrefill?: string;
 }
-
-const TIME_SLOTS = ['10:00', '12:30', '14:30', '16:30', '18:30', '20:00'];
 
 const QUICK_SERVICES: Record<
   Language,
@@ -109,8 +110,9 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const [selectedDoctor, setSelectedDoctor] = useState<string>(
     initialDoctor || t.anyDoctor[lang]
   );
-  const [selectedDayPreset, setSelectedDayPreset] = useState<'today' | 'tomorrow' | 'weekend'>('today');
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('12:30');
+  const selectedDoctorId = DOCTORS.find((doc) => Object.values(doc.name).includes(selectedDoctor))?.id;
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [clientName, setClientName] = useState<string>(userNamePrefill || '');
   const [clientPhone, setClientPhone] = useState<string>('+998 ');
   const [consentAgreed, setConsentAgreed] = useState<boolean>(true);
@@ -209,21 +211,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     setBookingError(null);
 
     try {
-      // Determine target ISO date based on day preset
-      const now = new Date();
-      const nowTashkent = new Date(now.getTime() + 5 * 60 * 60 * 1000);
-      const targetDate = new Date(nowTashkent);
-      if (selectedDayPreset === 'tomorrow') {
-        targetDate.setDate(targetDate.getDate() + 1);
-      } else if (selectedDayPreset === 'weekend') {
-        const day = targetDate.getDay();
-        const daysUntilSat = (6 - day + 7) % 7 || 7;
-        targetDate.setDate(targetDate.getDate() + daysUntilSat);
+      if (!selectedDate || !selectedTimeSlot) {
+        setBookingError(lang === 'uz' ? 'Sana va vaqtni tanlang' : lang === 'en' ? 'Please choose a date and time' : 'Выберите дату и время');
+        setIsSubmitting(false);
+        return;
       }
-      const y = targetDate.getFullYear();
-      const m = String(targetDate.getMonth() + 1).padStart(2, '0');
-      const d = String(targetDate.getDate()).padStart(2, '0');
-      const dateStr = `${y}-${m}-${d}`;
+      const dateStr = selectedDate;
 
       // Submit to database API
       const res = await fetch('/api/appointments', {
@@ -291,6 +284,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     triggerHaptic('light');
     setIsSuccess(false);
     setStep(1);
+    setSelectedDate(null);
+    setSelectedTimeSlot(null);
     onClose();
   };
 
@@ -390,12 +385,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 <div className="flex items-center justify-between gap-2 border-b border-[var(--border)] pb-2">
                   <span className="text-[var(--ink-muted)]">Время:</span>
                   <span className="font-semibold text-[var(--accent)]">
-                    {selectedDayPreset === 'today'
-                      ? 'Сегодня'
-                      : selectedDayPreset === 'tomorrow'
-                      ? 'Завтра'
-                      : 'В выходные'}
-                    , {selectedTimeSlot}
+                    {selectedDate ? formatDayLong(selectedDate, lang) : ''}, {selectedTimeSlot}
                   </span>
                 </div>
                 <div className="flex items-start justify-between gap-2">
@@ -537,69 +527,37 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
               )}
 
-              {/* STEP 2: DATE & TIME SELECTION */}
+              {/* STEP 2: DATE & TIME SELECTION (live calendar + live free slots) */}
               {step === 2 && (
-                <div className="space-y-4 animate-in fade-in duration-200">
-                  <div>
-                    <label className="block text-[13px] font-bold text-[var(--ink)] mb-2">
-                      {t.dayLabel[lang]}
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { id: 'today', label: lang === 'uz' ? 'Bugun' : lang === 'en' ? 'Today' : 'Сегодня', sub: 'В день визита' },
-                        { id: 'tomorrow', label: lang === 'uz' ? 'Ertaga' : lang === 'en' ? 'Tomorrow' : 'Завтра', sub: 'С утра / днём' },
-                        { id: 'weekend', label: lang === 'uz' ? 'Dam olishda' : lang === 'en' ? 'Weekend' : 'В выходные', sub: 'Сб или Вс' },
-                      ].map((item) => {
-                        const isSelected = selectedDayPreset === item.id;
-                        return (
-                          <button
-                            type="button"
-                            key={item.id}
-                            onClick={() => {
-                              triggerHaptic('light');
-                              setSelectedDayPreset(item.id as 'today' | 'tomorrow' | 'weekend');
-                            }}
-                            className={`p-3 rounded-2xl border text-center transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
-                              isSelected
-                                ? 'border-[var(--accent)] bg-[var(--accent-subtle)] font-bold text-[var(--accent)] ring-1 ring-[var(--accent)]'
-                                : 'border-slate-200/80 bg-white/80 text-[var(--ink-secondary)] hover:border-slate-300'
-                            }`}
-                          >
-                            <div className="text-[13px] font-semibold">{item.label}</div>
-                            <div className="text-[10px] text-[var(--ink-muted)] mt-0.5">{item.sub}</div>
-                          </button>
-                        );
-                      })}
-                    </div>
+                <div className="space-y-5 animate-in fade-in duration-200">
+                  <div className="clinic-card p-3.5 rounded-3xl">
+                    <CalendarPicker
+                      value={selectedDate}
+                      lang={lang}
+                      triggerHaptic={triggerHaptic}
+                      onChange={(iso) => {
+                        setSelectedDate(iso);
+                        setSelectedTimeSlot(null);
+                      }}
+                    />
                   </div>
 
-                  <div>
-                    <label className="block text-[13px] font-bold text-[var(--ink)] mb-2">
-                      {t.timeLabel[lang]}
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {TIME_SLOTS.map((slot) => {
-                        const isSelected = selectedTimeSlot === slot;
-                        return (
-                          <button
-                            type="button"
-                            key={slot}
-                            onClick={() => {
-                              triggerHaptic('light');
-                              setSelectedTimeSlot(slot);
-                            }}
-                            className={`py-2.5 px-2 rounded-full border text-[13px] font-semibold transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
-                              isSelected
-                                ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-md shadow-blue-600/25'
-                                : 'bg-white/80 border-slate-200/80 text-[var(--ink)] hover:border-slate-300'
-                            }`}
-                          >
-                            {slot}
-                          </button>
-                        );
-                      })}
+                  {selectedDate && (
+                    <div className="space-y-2.5 sheet-enter">
+                      <label className="block text-[13px] font-bold text-[var(--ink)]">
+                        {formatDayLong(selectedDate, lang)}
+                      </label>
+                      <TimePicker
+                        key={`${selectedDate}-${selectedDoctorId ?? 'any'}`}
+                        dateIso={selectedDate}
+                        doctorId={selectedDoctorId}
+                        value={selectedTimeSlot}
+                        lang={lang}
+                        triggerHaptic={triggerHaptic}
+                        onChange={(time) => setSelectedTimeSlot(time)}
+                      />
                     </div>
-                  </div>
+                  )}
 
                   {/* Summary of Step 1 */}
                   <div className="bg-slate-100/80 border border-slate-200/80 p-2.5 rounded-2xl text-[12px] flex items-center justify-between">
@@ -621,7 +579,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     <button
                       type="button"
                       onClick={handleNextStep}
-                      className="btn-pill-primary flex-1 py-3 text-[14px] flex items-center justify-center gap-1.5 touch-target"
+                      disabled={step === 2 && (!selectedDate || !selectedTimeSlot)}
+                      className="btn-pill-primary flex-1 py-3 text-[14px] flex items-center justify-center gap-1.5 touch-target disabled:opacity-40 disabled:pointer-events-none"
                     >
                       <span>{t.nextStep[lang]}</span>
                       <ArrowRight className="w-4 h-4" />
@@ -707,12 +666,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     <div className="flex justify-between">
                       <span className="text-[var(--ink-muted)]">Дата и время:</span>
                       <span className="font-semibold text-[var(--accent)]">
-                        {selectedDayPreset === 'today'
-                          ? 'Сегодня'
-                          : selectedDayPreset === 'tomorrow'
-                          ? 'Завтра'
-                          : 'В выходные'}
-                        , {selectedTimeSlot}
+                        {selectedDate ? formatDayLong(selectedDate, lang) : ''}, {selectedTimeSlot}
                       </span>
                     </div>
                   </div>
