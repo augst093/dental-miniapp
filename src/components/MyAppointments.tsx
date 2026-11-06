@@ -64,7 +64,16 @@ export function MyAppointments({ lang, triggerHaptic }: { lang: Language; trigge
     if (has) load();
   }, [load]);
 
-  if (!inTelegram || items === null) return null;
+  if (!inTelegram) return null;
+  if (items === null) {
+    // Reserve the space of the next-visit card while loading, so nothing pops in later
+    return (
+      <section className="space-y-3" aria-label="Мои записи" aria-busy="true">
+        <div className="chat-skeleton h-6 w-40 rounded-full" />
+        <div className="chat-skeleton h-[220px] rounded-3xl" />
+      </section>
+    );
+  }
 
   const upcoming = items.filter((i) => new Date(i.dateTime).getTime() >= Date.now() - 60 * 60 * 1000 && i.status !== 'cancelled');
   if (upcoming.length === 0) return null;

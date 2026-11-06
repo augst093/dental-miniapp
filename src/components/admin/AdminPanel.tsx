@@ -292,7 +292,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             triggerHaptic('light');
             setActiveSubTab('today');
           }}
-          className={`relative flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
+          className={`relative flex-1 py-2 px-1 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors duration-300 ${
             activeSubTab === 'today'
               ? 'text-slate-900'
               : 'text-slate-600 hover:text-slate-900'
@@ -306,7 +306,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             triggerHaptic('light');
             setActiveSubTab('week');
           }}
-          className={`relative flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
+          className={`relative flex-1 py-2 px-1 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors duration-300 ${
             activeSubTab === 'week'
               ? 'text-slate-900'
               : 'text-slate-600 hover:text-slate-900'
@@ -320,7 +320,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             triggerHaptic('light');
             setActiveSubTab('doctors');
           }}
-          className={`relative flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
+          className={`relative flex-1 py-2 px-1 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors duration-300 ${
             activeSubTab === 'doctors'
               ? 'text-slate-900'
               : 'text-slate-600 hover:text-slate-900'
@@ -334,7 +334,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             triggerHaptic('light');
             setActiveSubTab('inbox');
           }}
-          className={`relative flex-1 py-2 px-3 rounded-xl text-[12px] font-bold transition-colors duration-300 ${
+          className={`relative flex-1 py-2 px-1 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors duration-300 ${
             activeSubTab === 'inbox'
               ? 'text-slate-900'
               : 'text-slate-600 hover:text-slate-900'

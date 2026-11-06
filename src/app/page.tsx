@@ -260,11 +260,13 @@ export default function MiniAppPage() {
         ) : (
           /* ================= PATIENT VIEW ================= */
           <>
-            {activeTab === 'home' && (isTgAdmin || isDemoMode) && (
-              <AdminEntryCard lang={lang} onOpen={() => handleRoleChange('admin')} />
-            )}
-            {activeTab === 'home' && <MyAppointments lang={lang} triggerHaptic={triggerHaptic} />}
-            {activeTab === 'home' && !inTelegramUser && <VisitCard lang={lang} onAskChat={openChatWith} />}
+            <div className="space-y-5">
+              {activeTab === 'home' && (isTgAdmin || isDemoMode) && (
+                <AdminEntryCard lang={lang} onOpen={() => handleRoleChange('admin')} />
+              )}
+              {activeTab === 'home' && <MyAppointments lang={lang} triggerHaptic={triggerHaptic} />}
+              {activeTab === 'home' && !inTelegramUser && <VisitCard lang={lang} onAskChat={openChatWith} />}
+            </div>
             {activeTab === 'home' && (
               <HomeTab
                 lang={lang}
