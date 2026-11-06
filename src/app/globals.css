@@ -109,6 +109,17 @@ main > * {
   }
 }
 
+/* Booking sheet body: height eases to the new content (step changes and the success screen) */
+.booking-body {
+  transition: height 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booking-body {
+    transition: none;
+  }
+}
+
 /* Hero photo slot: uses public/hero-clinic.jpg when present, gradient otherwise */
 .hero-media {
   position: relative;

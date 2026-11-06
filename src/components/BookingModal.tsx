@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from 'react';
 import { telegramAuthHeaders } from '@/lib/telegramClient';
 import { CallButton } from './ui/CallButton';
 import { saveVisit } from '../lib/patientVisit';
@@ -109,6 +109,20 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const [stepExiting, setStepExiting] = useState(false);
   const stepTimer = useRef<number | undefined>(undefined);
   const [closing, setClosing] = useState<boolean>(false);
+
+  // The body height follows its content, so the sheet grows/shrinks smoothly between steps and the success screen
+  const [innerEl, setInnerEl] = useState<HTMLDivElement | null>(null);
+  const [bodyHeight, setBodyHeight] = useState<number | undefined>(undefined);
+  // Measure after every render (step change, error text, success) and whenever the content resizes
+  useLayoutEffect(() => {
+    if (!innerEl) return;
+    const measure = () => setBodyHeight(innerEl.offsetHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(innerEl);
+    return () => ro.disconnect();
+  });
 
   // Close with the sheet sliding down; `after` runs when the exit is done (used to reset the form without jumps)
   const closeAnimated = useCallback(
@@ -391,7 +405,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 overflow-y-auto space-y-4">
+        <div
+          className="booking-body overflow-y-auto"
+          style={bodyHeight === undefined ? undefined : { height: bodyHeight }}
+        >
+        <div ref={setInnerEl} className="p-5 space-y-4">
           {/* ========================================================
               TRIUMPH SCREEN (SUCCESS STATE)
              ======================================================== */}
@@ -739,6 +757,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               )}
             </div>
           )}
+        </div>
         </div>
       </div>
     </div>
