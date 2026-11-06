@@ -34,6 +34,7 @@ import { SlidingIndicator, useSlidingIndicator } from '../ui/SlidingIndicator';
 import { CallButton } from '../ui/CallButton';
 import { EmptyState } from '../ui/EmptyState';
 import { CatalogAdmin } from './CatalogAdmin';
+import { MonthCalendar } from './MonthCalendar';
 import { InboxAdmin } from './InboxAdmin';
 import {
   formatTashkentISODate,
@@ -573,124 +574,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           SUB-TAB 2: CALENDAR & WEEK VIEW
          ======================================================== */}
       {activeSubTab === 'week' && (
-        <div className="space-y-3">
-          {/* 7-Day Horizontal Selector */}
-          <div className="grid grid-cols-7 gap-1">
-            {next7Days.map((d) => {
-              const isSelected = selectedCalendarDate === d.iso;
-              const count = appointments.filter(
-                (a) => formatTashkentISODate(a.dateTime) === d.iso && a.status !== 'cancelled'
-              ).length;
-
-              return (
-                <button
-                  key={d.iso}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    setSelectedCalendarDate(d.iso);
-                  }}
-                  className={`py-2 px-1 rounded-2xl flex flex-col items-center justify-center transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
-                    isSelected
-                      ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30 ring-2 ring-blue-600/20'
-                      : 'bg-white border border-slate-200/90 text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  <span className="text-[10px] opacity-80 uppercase leading-none">{d.dayName}</span>
-                  <span className="text-[15px] font-extrabold my-0.5 leading-none">{d.dayNum}</span>
-                  <span
-                    className={`text-[9px] px-1.5 rounded-full font-semibold ${
-                      isSelected ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-500'
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Doctor Filter Pill Selector */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-[11px]">
-            <button
-              onClick={() => setSelectedDoctorFilter('all')}
-              className={`px-3 py-1.5 rounded-full font-semibold border transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
-                selectedDoctorFilter === 'all'
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-600 border-slate-200'
-              }`}
-            >
-              Все врачи
-            </button>
-            {CLINIC_DOCTORS.map((doc) => (
-              <button
-                key={doc.id}
-                onClick={() => setSelectedDoctorFilter(doc.name.ru)}
-                className={`px-3 py-1.5 rounded-full whitespace-nowrap font-semibold border transition-[transform,background-color,color,border-color,box-shadow,opacity] ${
-                  selectedDoctorFilter === doc.name.ru
-                    ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-white text-slate-600 border-slate-200'
-                }`}
-              >
-                {doc.name.ru}
-              </button>
-            ))}
-          </div>
-
-          {/* Appointments on selected date */}
-          <div className="space-y-2">
-            <div className="text-[12px] font-bold text-slate-700 flex items-center justify-between">
-              <span>Записи на {selectedCalendarDate}:</span>
-              <span className="text-slate-500 font-normal">
-                {calendarAppointments.length} визитов
-              </span>
-            </div>
-
-            {calendarAppointments.length === 0 ? (
-              <div className="clinic-card p-6 text-center rounded-2xl space-y-2">
-                <p className="text-[13px] text-slate-500">На этот день записей нет.</p>
-                <button
-                  onClick={() => {
-                    setManualDate(selectedCalendarDate);
-                    setIsManualModalOpen(true);
-                  }}
-                  className="btn-pill-primary py-2 px-4 text-[12px] inline-flex items-center gap-1"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Добавить запись на этот день</span>
-                </button>
-              </div>
-            ) : (
-              calendarAppointments.map((app) => (
-                <div
-                  key={app.id}
-                  className="clinic-card p-3 rounded-2xl border border-slate-200/90 bg-white/95 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-[14px] text-blue-900 bg-blue-50 px-2 py-0.5 rounded-lg">
-                      {formatTashkentTime(app.dateTime)}
-                    </span>
-                    <div>
-                      <div className="font-bold text-[13px] text-slate-900">
-                        {app.patientName}
-                      </div>
-                      <div className="text-[11px] text-slate-500">
-                        {app.serviceTitle} ({app.doctorName})
-                      </div>
-                    </div>
-                  </div>
-
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                      STATUS_LABELS[app.status]?.badgeColor
-                    }`}
-                  >
-                    {STATUS_LABELS[app.status]?.ru}
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        <MonthCalendar
+          appointments={appointments}
+          selected={selectedCalendarDate}
+          onSelect={setSelectedCalendarDate}
+          todayIso={todayIso}
+          lang="ru"
+          onAddForDate={(iso) => {
+            setManualDate(iso);
+            setIsManualModalOpen(true);
+          }}
+        />
       )}
 
       {/* ========================================================
