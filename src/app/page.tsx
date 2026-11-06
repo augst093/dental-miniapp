@@ -52,6 +52,10 @@ export default function MiniAppPage() {
 
   // Admin inside Telegram: the server checks the signed initData and says whether this person is an admin
   const [isTgAdmin, setIsTgAdmin] = useState<boolean>(false);
+  const [inTelegramUser, setInTelegramUser] = useState<boolean>(false);
+  useEffect(() => {
+    setInTelegramUser(Boolean(window.Telegram?.WebApp?.initData));
+  }, []);
   useEffect(() => {
     if (typeof window === 'undefined' || !window.Telegram?.WebApp?.initData) return;
     fetch('/api/me', { headers: telegramAuthHeaders() })
@@ -260,7 +264,7 @@ export default function MiniAppPage() {
               <AdminEntryCard lang={lang} onOpen={() => handleRoleChange('admin')} />
             )}
             {activeTab === 'home' && <MyAppointments lang={lang} triggerHaptic={triggerHaptic} />}
-            {activeTab === 'home' && <VisitCard lang={lang} onAskChat={openChatWith} />}
+            {activeTab === 'home' && !inTelegramUser && <VisitCard lang={lang} onAskChat={openChatWith} />}
             {activeTab === 'home' && (
               <HomeTab
                 lang={lang}
