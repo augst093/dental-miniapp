@@ -325,7 +325,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          Врачи ({CLINIC_DOCTORS.length})
+          Врачи
         </button>
         <button
           data-seg-key={'inbox'}

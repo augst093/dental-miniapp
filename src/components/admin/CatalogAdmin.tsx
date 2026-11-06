@@ -358,6 +358,24 @@ function EditSheet({ kind, item, onClose, onSaved }: { kind: Section; item: Doct
 
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
+
+  const remove = async (force = false) => {
+    if (!item) return;
+    setSaving(true);
+    setFormError(null);
+    const url = isDoctor ? `/api/admin/doctors/${item.id}?force=${force}` : `/api/admin/services/${item.id}`;
+    const res = await fetch(url, { method: 'DELETE', headers: telegramAuthHeaders() });
+    const data = await res.json().catch(() => ({}));
+    setSaving(false);
+    if (res.status === 409 && data?.error?.code === 'HAS_FUTURE_APPOINTMENTS') {
+      setFormError(data.error.message);
+      setConfirmDelete(true);
+      return;
+    }
+    if (!res.ok) return setFormError(errorText(data));
+    onSaved(data.mode === 'deleted' ? 'Удалено' : 'Скрыто от пациентов: по ней были записи, история сохранена');
+  };
 
   // Doctor fields
   const [name, setName] = useState(doc?.name ?? '');
@@ -518,6 +536,18 @@ function EditSheet({ kind, item, onClose, onSaved }: { kind: Section; item: Doct
 
         {formError && <p role="alert" className="text-[12px] font-semibold text-red-600 bg-red-50 border border-red-200 rounded-2xl px-3 py-2">{formError}</p>}
 
+        {item && (
+          confirmDelete ? (
+            <div className="grid grid-cols-2 gap-2.5">
+              <button type="button" onClick={() => setConfirmDelete(false)} className="min-h-[44px] rounded-full border border-slate-200 text-slate-700 font-semibold text-[13px]">Не удалять</button>
+              <button type="button" onClick={() => remove(true)} disabled={saving} className="min-h-[44px] rounded-full bg-red-600 text-white font-bold text-[13px] disabled:opacity-60">Удалить всё равно</button>
+            </div>
+          ) : (
+            <button type="button" onClick={() => remove(false)} disabled={saving} className="min-h-[44px] w-full rounded-full border border-red-200 text-red-600 font-semibold text-[13px] disabled:opacity-60">
+              Удалить
+            </button>
+          )
+        )}
         <div className="grid grid-cols-2 gap-2.5 pt-1">
           <button type="button" onClick={onClose} className="min-h-[44px] rounded-full border border-slate-200 text-slate-700 font-semibold text-[13px]">
             Отмена

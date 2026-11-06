@@ -26,3 +26,27 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ success: false, error: 'Не удалось сохранить изменения' }, { status: 500 });
   }
 }
+
+// Staff: delete a service. A service that was ever booked is hidden instead of deleted, so history is kept.
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const gate = authorizeAdminRequest(request);
+  if (!gate.ok) return NextResponse.json({ success: false, error: gate.error }, { status: gate.status });
+
+  const { id } = await params;
+  try {
+    const service = await prisma.service.findUnique({ where: { id } });
+    if (!service) return NextResponse.json({ success: false, error: 'Услуга не найдена' }, { status: 404 });
+
+    const bookings = await prisma.appointment.count({ where: { serviceId: id } });
+    if (bookings === 0) {
+      await prisma.service.delete({ where: { id } });
+      await writeAdminAudit(gate.user.id, 'service_deleted', id, service.title);
+      return NextResponse.json({ success: true, mode: 'deleted' });
+    }
+    await prisma.service.update({ where: { id }, data: { isActive: false } });
+    await writeAdminAudit(gate.user.id, 'service_hidden', id, service.title);
+    return NextResponse.json({ success: true, mode: 'hidden' });
+  } catch {
+    return NextResponse.json({ success: false, error: 'Не удалось удалить услугу' }, { status: 500 });
+  }
+}
