@@ -108,6 +108,21 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const [stepDir, setStepDir] = useState<'next' | 'prev'>('next');
   const [stepExiting, setStepExiting] = useState(false);
   const stepTimer = useRef<number | undefined>(undefined);
+  const [closing, setClosing] = useState<boolean>(false);
+
+  // Close with the sheet sliding down; `after` runs when the exit is done (used to reset the form without jumps)
+  const closeAnimated = useCallback(
+    (after?: () => void) => {
+      if (closing) return;
+      setClosing(true);
+      window.setTimeout(() => {
+        after?.();
+        setClosing(false);
+        onClose();
+      }, 260);
+    },
+    [closing, onClose]
+  );
 
   const goToStep = useCallback(
     (target: 1 | 2 | 3) => {
@@ -167,9 +182,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   // Handle Telegram BackButton
   const handleTelegramBack = useCallback(() => {
     if (isSuccess) {
-      setIsSuccess(false);
-      setStep(1);
-      onClose();
+      closeAnimated(() => {
+        setIsSuccess(false);
+        setStep(1);
+      });
       return;
     }
 
@@ -181,9 +197,9 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       goToStep(1);
     } else {
       triggerHaptic('light');
-      onClose();
+      closeAnimated();
     }
-  }, [step, isSuccess, onClose, triggerHaptic, goToStep]);
+  }, [step, isSuccess, closeAnimated, triggerHaptic, goToStep]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -307,15 +323,17 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
   const resetAndClose = () => {
     triggerHaptic('light');
-    setIsSuccess(false);
-    setStep(1);
-    setSelectedDate(null);
-    setSelectedTimeSlot(null);
-    onClose();
+    closeAnimated(() => {
+      setIsSuccess(false);
+      setStep(1);
+      setSelectedDate(null);
+      setSelectedTimeSlot(null);
+    });
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+      <div aria-hidden="true" className={`absolute inset-0 bg-slate-950/55 ${closing ? 'about-backdrop-out' : 'about-backdrop-in'}`} />
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
@@ -323,7 +341,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       />
 
       {/* Modal Card / Bottom Sheet */}
-      <div className="sheet-enter relative w-full max-w-lg bg-white/[0.98] border-t sm:border border-white/90 rounded-t-[32px] sm:rounded-3xl max-h-[92dvh] flex flex-col shadow-2xl z-10 overflow-hidden pb-safe">
+      <div className={`${closing ? 'sheet-exit' : 'sheet-enter'} relative w-full max-w-lg bg-white/[0.98] border-t sm:border border-white/90 rounded-t-[32px] sm:rounded-3xl max-h-[92dvh] flex flex-col shadow-2xl z-10 overflow-hidden pb-safe`}>
         {/* Drag handle for mobile */}
         <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mt-2.5 mb-1 sm:hidden shrink-0" />
 
