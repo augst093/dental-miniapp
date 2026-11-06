@@ -13,6 +13,7 @@ import { ContactsTab } from '../components/tabs/ContactsTab';
 import { AdminPanel } from '../components/admin/AdminPanel';
 import { markMoving } from '../lib/motion';
 import { AdminEntryCard } from '../components/admin/AdminEntryCard';
+import { MyAppointments } from '../components/MyAppointments';
 import { telegramAuthHeaders } from '../lib/telegramClient';
 import { OwnerReportTab } from '../components/admin/OwnerReportTab';
 import { DemoControlDrawer } from '../components/admin/DemoControlDrawer';
@@ -258,6 +259,7 @@ export default function MiniAppPage() {
             {activeTab === 'home' && (isTgAdmin || isDemoMode) && (
               <AdminEntryCard lang={lang} onOpen={() => handleRoleChange('admin')} />
             )}
+            {activeTab === 'home' && <MyAppointments lang={lang} triggerHaptic={triggerHaptic} />}
             {activeTab === 'home' && <VisitCard lang={lang} onAskChat={openChatWith} />}
             {activeTab === 'home' && (
               <HomeTab
