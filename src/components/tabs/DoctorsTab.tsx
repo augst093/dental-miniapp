@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, Award, User, Heart, Info } from 'lucide-react';
 import { loadFavoriteDoctor, saveFavoriteDoctor } from '../../lib/favoriteDoctor';
-import { DOCTORS, Language, UI_TRANSLATIONS } from '../../data/clinicData';
+import { Language, UI_TRANSLATIONS } from '../../data/clinicData';
+import { useCatalog } from '../../lib/useCatalog';
 import { DoctorAboutSheet } from './DoctorAboutSheet';
 
 interface DoctorsTabProps {
@@ -21,6 +22,8 @@ export const DoctorsTab: React.FC<DoctorsTabProps> = ({
 
   // The patient's chosen doctor (kept on this device)
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
+
+  const { doctors: DOCTORS } = useCatalog();
 
   // Which doctor's "About" sheet is open
   const [aboutId, setAboutId] = useState<string | null>(null);

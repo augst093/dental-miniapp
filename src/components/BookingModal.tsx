@@ -8,6 +8,7 @@ import { CalendarPicker } from './booking/CalendarPicker';
 import { TimePicker } from './booking/TimePicker';
 import { formatDayLong } from '../lib/bookingDates';
 import { markMoving } from '../lib/motion';
+import { useCatalog } from '../lib/useCatalog';
 import {
   X,
   Calendar,
@@ -23,7 +24,6 @@ import {
 } from 'lucide-react';
 import {
   CLINIC_CONFIG,
-  DOCTORS,
   Language,
   UI_TRANSLATIONS,
 } from '../data/clinicData';
@@ -130,7 +130,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const [selectedDoctor, setSelectedDoctor] = useState<string>(
     initialDoctor || t.anyDoctor[lang]
   );
-  const selectedDoctorId = DOCTORS.find((doc) => Object.values(doc.name).includes(selectedDoctor))?.id;
+  const catalog = useCatalog();
+  const matchedDoctor = catalog.doctors.find((doc) => Object.values(doc.name).includes(selectedDoctor));
+  const selectedDoctorId = matchedDoctor ? (matchedDoctor.dbId ?? matchedDoctor.id) : undefined;
+  const serviceChoices = catalog.source === 'database'
+    ? catalog.services.map((s) => ({ id: s.id, title: s.name[lang], price: s.priceUzs, isFree: false, isSos: s.id === 'emergency-relief' }))
+    : QUICK_SERVICES[lang];
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [clientName, setClientName] = useState<string>(userNamePrefill || '');
@@ -475,7 +480,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       {t.step1Title[lang]}
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {QUICK_SERVICES[lang].map((srv) => {
+                      {serviceChoices.map((srv) => {
                         const isSelected = selectedService === srv.title;
                         return (
                           <button
@@ -529,7 +534,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--ink)] text-[14px] focus:border-[var(--accent)] focus:outline-none"
                     >
                       <option value={t.anyDoctor[lang]}>{t.anyDoctor[lang]}</option>
-                      {DOCTORS.map((doc) => (
+                      {catalog.doctors.map((doc) => (
                         <option key={doc.id} value={doc.name[lang]}>
                           {doc.name[lang]} — {doc.role[lang]} ({doc.experienceYears}{' '}
                           {lang === 'uz' ? 'yil' : lang === 'en' ? 'yrs' : 'лет'})

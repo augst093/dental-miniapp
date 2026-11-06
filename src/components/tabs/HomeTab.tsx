@@ -22,8 +22,6 @@ import {
 } from 'lucide-react';
 import {
   CLINIC_CONFIG,
-  DOCTORS,
-  SERVICES,
   Language,
   UI_TRANSLATIONS,
 } from '../../data/clinicData';
@@ -36,6 +34,8 @@ interface HomeTabProps {
   triggerHaptic: (style?: 'light' | 'medium' | 'heavy') => void;
 }
 
+import { useCatalog } from '../../lib/useCatalog';
+
 export const HomeTab: React.FC<HomeTabProps> = ({
   lang,
   onNavigateTab,
@@ -45,6 +45,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
   const t = UI_TRANSLATIONS;
   const config = CLINIC_CONFIG;
 
+  const { doctors: DOCTORS, services: SERVICES } = useCatalog();
   const featuredServices = SERVICES.filter((s) => s.highlight);
 
   // The doctor the patient chose on the doctors tab

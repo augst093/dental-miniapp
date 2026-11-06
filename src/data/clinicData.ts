@@ -99,6 +99,7 @@ export interface Doctor {
   credentials: Record<Language, string>;
   initials: string;
   photoUrl: string | null; // TODO: заменить реальным фото врача (null = аккуратный плейсхолдер)
+  dbId?: string; // id of the doctor row in the database, when the doctor comes from the database
   // "О враче": biography, education and languages. TODO: заменить текстами, подтверждёнными клиникой
   bio: Record<Language, string>;
   education: Record<Language, string[]>;

@@ -6,7 +6,6 @@ import { Search, X, AlertCircle } from 'lucide-react';
 import { EmptyState } from '../ui/EmptyState';
 import {
   CATEGORIES,
-  SERVICES,
   Language,
   UI_TRANSLATIONS,
 } from '../../data/clinicData';
@@ -16,6 +15,8 @@ interface ServicesTabProps {
   onOpenBooking: (serviceTitle?: string) => void;
   triggerHaptic: (style?: 'light' | 'medium' | 'heavy') => void;
 }
+
+import { useCatalog } from '../../lib/useCatalog';
 
 export const ServicesTab: React.FC<ServicesTabProps> = ({
   lang,
@@ -38,6 +39,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
     setSearchQuery('');
   };
 
+  const { services: SERVICES } = useCatalog();
   const filteredServices = SERVICES.filter((s) => {
     const matchesCategory = selectedCategory === 'all' || s.category === selectedCategory;
     const query = searchQuery.trim().toLowerCase();
