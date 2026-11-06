@@ -121,8 +121,8 @@ export function CatalogAdmin() {
   const [confirmOff, setConfirmOff] = useState<{ id: string; count: number; name: string } | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
     const [d, s] = await Promise.all([
       apiCall<{ doctors: DoctorRow[] }>('GET', '/api/admin/doctors'),
@@ -147,18 +147,24 @@ export function CatalogAdmin() {
   };
 
   // Switch a doctor on or off. Turning off with future bookings asks for confirmation first.
+  const setDoctorActive = (id: string, isActive: boolean) =>
+    setDoctors((prev) => prev.map((d) => (d.id === id ? { ...d, isActive } : d)));
+
   const toggleDoctor = async (doc: DoctorRow, force = false) => {
-    setBusyId(doc.id);
-    const res = await apiCall<any>('PATCH', `/api/admin/doctors/${doc.id}`, { isActive: !doc.isActive, force });
-    setBusyId(null);
+    const next = !doc.isActive;
+    setDoctorActive(doc.id, next); // instant feedback
+    const res = await apiCall<any>('PATCH', `/api/admin/doctors/${doc.id}`, { isActive: next, force });
     if (res.status === 409 && res.data?.error?.code === 'HAS_FUTURE_APPOINTMENTS') {
+      setDoctorActive(doc.id, doc.isActive); // roll back, ask first
       setConfirmOff({ id: doc.id, count: res.data.error.count, name: doc.name });
       return;
     }
-    if (!res.ok) return flash(errorText(res.data));
+    if (!res.ok) {
+      setDoctorActive(doc.id, doc.isActive);
+      return flash(errorText(res.data));
+    }
     setConfirmOff(null);
-    flash(doc.isActive ? 'Врач отключён' : 'Врач включён');
-    load();
+    flash(next ? 'Врач включён' : 'Врач отключён');
   };
 
   // Move a service up or down by swapping sort orders
@@ -167,14 +173,18 @@ export function CatalogAdmin() {
     if (other < 0 || other >= services.length) return;
     const a = services[index];
     const b = services[other];
-    setBusyId(a.id);
+    const swapped = [...services];
+    swapped[index] = { ...b, sortOrder: a.sortOrder };
+    swapped[other] = { ...a, sortOrder: b.sortOrder };
+    setServices(swapped); // instant
     const [r1, r2] = await Promise.all([
       apiCall<any>('PATCH', `/api/admin/services/${a.id}`, { sortOrder: b.sortOrder }),
       apiCall<any>('PATCH', `/api/admin/services/${b.id}`, { sortOrder: a.sortOrder }),
     ]);
-    setBusyId(null);
-    if (!r1.ok || !r2.ok) return flash('Не удалось изменить порядок');
-    load();
+    if (!r1.ok || !r2.ok) {
+      setServices(services); // roll back
+      return flash('Не удалось изменить порядок');
+    }
   };
 
   return (
@@ -221,7 +231,7 @@ export function CatalogAdmin() {
       {!loading && error && (
         <div className="clinic-card p-4 rounded-2xl flex items-center justify-between gap-3">
           <span className="text-[13px] text-slate-700">{error}</span>
-          <button type="button" onClick={load} className="min-h-[40px] px-3.5 rounded-full bg-[var(--accent)] text-white text-[12px] font-bold">
+          <button type="button" onClick={() => load()} className="min-h-[40px] px-3.5 rounded-full bg-[var(--accent)] text-white text-[12px] font-bold">
             Повторить
           </button>
         </div>
@@ -248,11 +258,18 @@ export function CatalogAdmin() {
                     role="switch"
                     aria-checked={doc.isActive}
                     aria-label={doc.isActive ? 'Отключить врача' : 'Включить врача'}
-                    disabled={busyId === doc.id}
                     onClick={() => toggleDoctor(doc)}
-                    className={`relative shrink-0 w-12 h-7 rounded-full transition-colors duration-300 ${doc.isActive ? 'bg-emerald-500' : 'bg-slate-300'} disabled:opacity-50`}
+                    style={{ transition: 'background-color 360ms cubic-bezier(0.22, 1, 0.36, 1)' }}
+                    className={`relative shrink-0 w-12 h-7 rounded-full ${doc.isActive ? 'bg-emerald-500' : 'bg-slate-300'}`}
                   >
-                    <span className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] ${doc.isActive ? 'translate-x-5' : ''}`} />
+                    <span
+                      className="absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-md"
+                      style={{
+                        transform: doc.isActive ? 'translate3d(20px, 0, 0)' : 'translate3d(0, 0, 0)',
+                        transition: 'transform 420ms cubic-bezier(0.22, 1, 0.36, 1)',
+                        willChange: 'transform',
+                      }}
+                    />
                   </button>
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-2">
@@ -314,7 +331,7 @@ export function CatalogAdmin() {
           onSaved={(message) => {
             setEditing(null);
             flash(message);
-            load();
+            load(true);
           }}
         />
       )}
