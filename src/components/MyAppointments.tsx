@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CalendarClock, ChevronRight, X } from 'lucide-react';
 import type { Language } from '../data/clinicData';
@@ -58,11 +58,15 @@ export function MyAppointments({ lang, triggerHaptic }: { lang: Language; trigge
     setItems(data.appointments ?? []);
   }, []);
 
-  useEffect(() => {
+  // Layout effect: the placeholder is in place before the first paint, so nothing pops in later
+  useLayoutEffect(() => {
     const has = Boolean(window.Telegram?.WebApp?.initData);
     setInTelegram(has);
-    if (has) load();
-  }, [load]);
+  }, []);
+
+  useEffect(() => {
+    if (inTelegram) load();
+  }, [inTelegram, load]);
 
   if (!inTelegram) return null;
   if (items === null) {

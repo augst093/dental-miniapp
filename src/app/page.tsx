@@ -266,15 +266,15 @@ export default function MiniAppPage() {
               )}
               {activeTab === 'home' && <MyAppointments lang={lang} triggerHaptic={triggerHaptic} />}
               {activeTab === 'home' && !inTelegramUser && <VisitCard lang={lang} onAskChat={openChatWith} />}
+              {activeTab === 'home' && (
+                <HomeTab
+                  lang={lang}
+                  onNavigateTab={handleTabChange}
+                  onOpenBooking={handleOpenBooking}
+                  triggerHaptic={triggerHaptic}
+                />
+              )}
             </div>
-            {activeTab === 'home' && (
-              <HomeTab
-                lang={lang}
-                onNavigateTab={handleTabChange}
-                onOpenBooking={handleOpenBooking}
-                triggerHaptic={triggerHaptic}
-              />
-            )}
 
             {activeTab === 'services' && (
               <ServicesTab
